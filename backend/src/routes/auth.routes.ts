@@ -1,14 +1,12 @@
-import Fastify from "fastify";
+import { FastifyInstance } from "fastify";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import "dotenv/config";
 
-const fastify = Fastify({ logger: true });
 const prisma = new PrismaClient();
 
-// ─── Tipos ───────────────────────────────────────────────────────────────────
-
+// Tipos 
 interface RegisterBody {
     nome: string;
     email: string;
@@ -20,86 +18,73 @@ interface LoginBody {
     senha: string;
 }
 
-// ─── REGISTER ────────────────────────────────────────────────────────────────
+export async function authRoutes(app: FastifyInstance) {
+    // REGISTER
+    app.post<{ Body: RegisterBody }>("/auth/register", async (request, reply) => {
+        try {
+            const { nome, email, senha } = request.body;
 
-fastify.post<{ Body: RegisterBody }>("/auth/register", async (request, reply) => {
-    try {
-        const { nome, email, senha } = request.body;
+            const userExists = await prisma.usuario.findUnique({
+                where: { email },
+            });
 
-        const userExists = await prisma.usuario.findUnique({
-            where: { email },
-        });
+            if (userExists) {
+                return reply.status(400).send({ error: "Usuário já existe" });
+            }
 
-        if (userExists) {
-            return reply.status(400).send({ error: "Usuário já existe" });
-        }
+            const senhaHash = await bcrypt.hash(senha, 10);
 
-        const senhaHash = await bcrypt.hash(senha, 10);
+            const user = await prisma.usuario.create({
+                data: { nome, email, senha_hash: senhaHash },
+            });
 
-        const user = await prisma.usuario.create({
-            data: { nome, email, senha_hash: senhaHash },
-        });
-
-        return reply.status(201).send({
-            id: user.id,
-            nome: user.nome,
-            email: user.email,
-        });
-
-    } catch (error) {
-        return reply.status(500).send({ error: "Erro ao registrar usuário" });
-    }
-});
-
-// ─── LOGIN ────────────────────────────────────────────────────────────────────
-
-fastify.post<{ Body: LoginBody }>("/auth/login", async (request, reply) => {
-    try {
-        const { email, senha } = request.body;
-        const user = await prisma.usuario.findUnique({
-            where: { email },
-        });
-
-        if (!user) {
-            return reply.status(401).send({ error: "Usuário não encontrado" });
-        }
-
-        const senhaValida = await bcrypt.compare(senha, user.senha_hash);
-
-        if (!senhaValida) {
-            return reply.status(401).send({ error: "Senha inválida" });
-        }
-
-        const expiresIn = (process.env.JWT_EXPIRES_IN ?? "1d") as jwt.SignOptions["expiresIn"] & string;
-        const token = jwt.sign(
-            { id: user.id, email: user.email },
-            process.env.JWT_SECRET as string,
-            { expiresIn }
-        );
-
-        return reply.send({
-            token,
-            user: {
+            return reply.status(201).send({
                 id: user.id,
                 nome: user.nome,
                 email: user.email,
-            },
-        });
+            });
 
-    } catch (error) {
-        return reply.status(500).send({ error: "Erro ao fazer login" });
-    }
-});
+        } catch (error) {
+            return reply.status(500).send({ error: "Erro ao registrar usuário" });
+        }
+    });
 
-// ─── START ────────────────────────────────────────────────────────────────────
+    // LOGIN 
+    app.post<{ Body: LoginBody }>("/auth/login", async (request, reply) => {
+        try {
+            const { email, senha } = request.body;
+            const user = await prisma.usuario.findUnique({
+                where: { email },
+            });
 
-const start = async () => {
-    try {
-        await fastify.listen({ port: 3000, host: "0.0.0.0" });
-    } catch (err) {
-        fastify.log.error(err);
-        process.exit(1);
-    }
-};
+            if (!user) {
+                return reply.status(401).send({ error: "Usuário não encontrado" });
+            }
 
-start();
+            const senhaValida = await bcrypt.compare(senha, user.senha_hash);
+
+            if (!senhaValida) {
+                return reply.status(401).send({ error: "Senha inválida" });
+            }
+
+            const expiresIn = (process.env.JWT_EXPIRES_IN ?? "1d") as jwt.SignOptions["expiresIn"] & string;
+            const token = jwt.sign(
+                { id: user.id, email: user.email },
+                process.env.JWT_SECRET as string,
+                { expiresIn }
+            );
+
+            return reply.send({
+                token,
+                user: {
+                    id: user.id,
+                    nome: user.nome,
+                    email: user.email,
+                },
+            });
+
+        } catch (error) {
+            return reply.status(500).send({ error: "Erro ao fazer login" });
+        }
+    });
+}

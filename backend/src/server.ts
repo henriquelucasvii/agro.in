@@ -1,5 +1,6 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
+import { authRoutes } from './routes/auth.routes.js'
 import 'dotenv/config'
 
 const app = Fastify({ logger: true })
@@ -11,6 +12,8 @@ app.get('/', async () => {
 
 const start = async () => {
     await app.register(cors)
+    await app.register(authRoutes)
+    
     await app.listen({ port, host: '0.0.0.0' })
     console.log(`Servidor rodando em http://localhost:${port}`)
 }
