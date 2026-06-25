@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Usuario {
+  id         Int          @id @default(autoincrement())
+  nome       String
+  email      String       @unique
+  senha_hash String
+  criado_em  DateTime     @default(now())
+
+  propriedades Propriedade[]
+}
+
+model Propriedade {
+  id             Int      @id @default(autoincrement())
+  usuario_id     Int
+  nome           String
+  area_total     Float?
+  tipo_producao  String?
+  localizacao    String?
+  criado_em      DateTime @default(now())
+
+  usuario    Usuario      @relation(fields: [usuario_id], references: [id])
+  financeiro Financeiro[]
+  producoes  Producao[]
+  estoque    Estoque[]
+  metas      Meta[]
+}
+
+model Financeiro {
+  id             Int         @id @default(autoincrement())
+  propriedade_id Int
+  tipo           TipoFinanceiro
+  categoria      String?
+  descricao      String?
+  valor          Float
+  data           DateTime    @default(now())
+
+  propriedade Propriedade @relation(fields: [propriedade_id], references: [id])
+}
+
+model Producao {
+  id             Int      @id @default(autoincrement())
+  propriedade_id Int
+  tipo           String
+  area_utilizada Float?
+  quantidade     Float?
+  data_inicio    DateTime?
+  data_fim       DateTime?
+  status         String?
+
+  propriedade Propriedade @relation(fields: [propriedade_id], references: [id])
+}
+
+model Estoque {
+  id                Int      @id @default(autoincrement())
+  propriedade_id    Int
+  item              String
+  categoria         String?
+  quantidade        Float
+  unidade           String?
+  quantidade_minima Float?
+
+  propriedade Propriedade @relation(fields: [propriedade_id], references: [id])
+}
+
+model Meta {
+  id             Int      @id @default(autoincrement())
+  propriedade_id Int
+  descricao      String
+  valor_alvo     Float?
+  valor_atual    Float?   @default(0)
+  prazo          DateTime?
+  status         String?  @default("pendente")
+
+  propriedade Propriedade @relation(fields: [propriedade_id], references: [id])
+}
+
+enum TipoFinanceiro {
+  entrada
+  saida
+}
