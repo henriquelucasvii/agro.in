@@ -20,7 +20,7 @@ interface LoginBody {
 
 export async function authRoutes(app: FastifyInstance) {
     // REGISTER
-    app.post<{ Body: RegisterBody }>("/auth/register", async (request, reply) => {
+    app.post<{ Body: RegisterBody }>("/register", async (request, reply) => {
         try {
             const { nome, email, senha } = request.body;
 
@@ -50,7 +50,7 @@ export async function authRoutes(app: FastifyInstance) {
     });
 
     // LOGIN 
-    app.post<{ Body: LoginBody }>("/auth/login", async (request, reply) => {
+    app.post<{ Body: LoginBody }>("/login", async (request, reply) => {
         try {
             const { email, senha } = request.body;
             const user = await prisma.usuario.findUnique({
