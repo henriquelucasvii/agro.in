@@ -45,6 +45,8 @@ export async function authRoutes(app: FastifyInstance) {
             });
 
         } catch (error) {
+            request.log.error(error);
+
             return reply.status(500).send({ error: "Erro ao registrar usuário" });
         }
     });
