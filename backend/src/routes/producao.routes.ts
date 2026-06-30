@@ -1,7 +1,5 @@
 import { FastifyInstance } from "fastify"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import { prisma } from "../lib/prisma.js"
 
 interface CreateProducaoBody {
     propriedade_id: number
@@ -56,7 +54,6 @@ export const producaoRoutes = async (app: FastifyInstance) => {
 
             if (!producao) return reply.status(404).send({error: "Não foi possível criar a produção"})
 
-
             return reply.status(200).send(producao)
         } catch (error) {
             request.log.error(error)
@@ -65,7 +62,7 @@ export const producaoRoutes = async (app: FastifyInstance) => {
         }
     })
 
-    // GET
+    // GET 
     app.get("/", async (_, reply) => {
         const producao = await prisma.producao.findMany()
         return reply.status(200).send(producao)

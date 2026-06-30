@@ -5,8 +5,8 @@ import "dotenv/config";
 import { authRoutes } from "./routes/auth.routes.js";
 import { propriedadesRoutes } from "./routes/propriedades.routes.js";
 import { financeiroRoutes } from "./routes/financeiro.routes.js";
-// import { producoesRoutes } from "./routes/producoes.routes.js";
-// import { estoqueRoutes } from "./routes/estoque.routes.js";
+import { producaoRoutes } from "./routes/producao.routes.js";
+import { estoqueRoutes } from "./routes/estoque.routes.js";
 // import { relatoriosRoutes } from "./routes/relatorios.routes.js";
 
 const app = Fastify({
@@ -40,14 +40,14 @@ const start = async () => {
     });
 
     // Rotas de produção
-    // await app.register(producoesRoutes, {
-    //     prefix: "/producoes",
-    // });
+    await app.register(producaoRoutes, {
+        prefix: "/producao",
+    });
 
     // Rotas de estoque
-    // await app.register(estoqueRoutes, {
-    //     prefix: "/estoque",
-    // });
+    await app.register(estoqueRoutes, {
+        prefix: "/estoque",
+    });
 
     // Rotas de relatórios
     // await app.register(relatoriosRoutes, {
