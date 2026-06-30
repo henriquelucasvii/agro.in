@@ -1,49 +1,62 @@
-# Agro.in | Backend
+# `Agro.in — Backend`
 
-## Tecnologias
-    - Node.Js
-    - TypeScript
-    - Fastify
-    - Prisma ORM
-    - PostgreSQL
-    - JWT
+## Stack
 
-## ALTERAÇÕES - 25/06/2026 | Commit: "fix: repair prisma client error"
+| Tecnologia   | Função                        |
+|--------------|-------------------------------|
+| Node.js      | Runtime                       |
+| TypeScript   | Tipagem estática              |
+| Fastify      | Framework HTTP                |
+| Prisma ORM   | Abstração do banco de dados   |
+| PostgreSQL   | Banco de dados relacional     |
+| JWT          | Autenticação                  |
 
-### Rotas de autenticação
+---
+## Changelog
 
-- Adicionado o tipo FastifyInstance em auth.routes.ts para melhorar a tipagem e integração das rotas com o Fastify.
-- Implementadas as rotas de cadastro e login de usuários.
-- Integração com JWT para autenticação.
-- Integração com Bcrypt para criptografia de senhas.
+### [29/06/2026] 
 
-### Prisma
+**Commit:** `feat: add meta.routes and new import for prismaClient`
 
-- Realizado downgrade do Prisma 7 para o Prisma 6.19.3.
-- Ajustada a configuração do Prisma Client.
-- Corrigidos problemas de inicialização do servidor relacionados ao Prisma Client.
-- Regenerado o Prisma Client utilizando:
-npx prisma generate
-
-## Atenção ao Prisma e Detalhes Adicionais
-
-Durante o desenvolvimento houve problemas relacionados às versões do Prisma. Atualmente o projeto está utilizando:
-
-- prisma: 6.19.3
-- @prisma/client: 6.19.3
-
-Anteriormente, o prisma estava configurado na versão 7, porém estava acontecendo erros de desenvolvimento relacionados ao .env e a autenticação das rotas. Acontecimento de bugs ao rodar o servidor 
-
-Pesquisei e vi que o Prisma 7 é novo e não há praticamente nenhum suporte sobre os bugs dessa versão. Por isso, optei pelo Prisma 6, que além de ser mais estável, é mais seguro e menos complicado de mexer, além de que essa versão possui mais tutoriais e exemplos já consolidados
+**Autor:** `@Lucas`
 
 ---
 
-Tentei cadastrar um novo usuário na rota auth/register. Deu erro 500. Não entendi o porquê. Talvez você saiba resolver.
+## Feature: Nova Forma de Implementar o Prisma
+
+**Problema:** Cada arquivo de rotas instanciava seu próprio `PrismaClient`
+
+```ts
+import { PrismaClient } from "@prisma/client";
+
+// Instancia um novo objeto Prisma a cada rota
+const prisma = new PrismaClient();    
+```
+
+Esse método instancia um novo objeto do Prisma a cada rota, o que pode resultar em um desgaste no banco de dados. Isso gera múltiplas conexões abertas ao banco de dados desnecessariamente.
+
+**Solução:** Criado o arquivo `src/lib/prisma.ts`
+
+```ts
+import { PrismaClient } from "@prisma/client"
+
+export const prisma = new PrismaClient()
+```
+
+Todas as rotas agora importam essa instância única:
+
+```ts
+import { prisma } from "../lib/prisma.js"
+```
+---
+
+### Arquivos Alterados
+ - `src/lib/prisma.ts` — criado
+ - `src/routes/` - criação das demais rotas e import do PrismaClient atualizado
+
+---
 
 ## Próximos passos sugeridos
 
-- Middleware de autenticação JWT.
-- Controle de permissões.
-- CRUD de propriedades rurais.
-- CRUD de produtores.
-- CRUD de culturas/plantios.
+- Implementação da `middleware`
+- Possível implementação da Arquitetura `MVC`
