@@ -1,10 +1,8 @@
 import { FastifyInstance } from "fastify";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../lib/prisma.js"
 import "dotenv/config";
-
-const prisma = new PrismaClient();
 
 // Tipos 
 interface RegisterBody {

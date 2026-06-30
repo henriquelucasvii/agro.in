@@ -1,7 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { PrismaClient, TipoFinanceiro } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { TipoFinanceiro } from "@prisma/client";
+import { prisma } from "../lib/prisma.js";
 
 interface CreateFinanceiroBody {
     propriedade_id: number;

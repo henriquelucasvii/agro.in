@@ -64,7 +64,7 @@ export const estoqueRoutes = async (app: FastifyInstance) => {
         } catch (error) {
             request.log.error(error)
 
-            return reply.status(500).send({ errpr: "Erro ao obter estoque" })
+            return reply.status(500).send({ error: "Erro ao obter estoque" })
         }
     })
 
