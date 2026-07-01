@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { PrismaClient, TipoFinanceiro } from "@prisma/client";
+import { TipoFinanceiro } from "@prisma/client";
+import { prisma } from "../lib/prisma.js";
 
-const prisma = new PrismaClient();
 
 export async function relatoriosRoutes(app: FastifyInstance) {
 

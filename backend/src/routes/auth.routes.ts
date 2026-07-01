@@ -58,7 +58,7 @@ export async function authRoutes(app: FastifyInstance) {
             });
 
             if (!user) {
-                return reply.status(401).send({ error: "Usu2ário não encontrado" });
+                return reply.status(401).send({ error: "Usuário não encontrado" });
             }
 
             const senhaValida = await bcrypt.compare(senha, user.senha_hash);

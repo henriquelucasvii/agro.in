@@ -7,7 +7,8 @@ import { propriedadesRoutes } from "./routes/propriedades.routes.js";
 import { financeiroRoutes } from "./routes/financeiro.routes.js";
 import { producaoRoutes } from "./routes/producao.routes.js";
 import { estoqueRoutes } from "./routes/estoque.routes.js";
-// import { relatoriosRoutes } from "./routes/relatorios.routes.js";
+import { metaRoutes } from "./routes/meta.routes.js";
+import { relatoriosRoutes } from "./routes/relatorios.routes.js";
 
 const app = Fastify({
     logger: true,
@@ -48,11 +49,16 @@ const start = async () => {
     await app.register(estoqueRoutes, {
         prefix: "/estoque",
     });
+    
+    // Rotas de metas
+    await app.register(metaRoutes, {
+        prefix: "/metas"
+    });
 
     // Rotas de relatórios
-    // await app.register(relatoriosRoutes, {
-    //     prefix: "/relatorios",
-    // });
+    await app.register(relatoriosRoutes, {
+        prefix: "/relatorios",
+    });
 
     await app.listen({
         port,

@@ -1,6 +1,5 @@
 import { FastifyInstance } from "fastify"
 import { prisma } from "../lib/prisma.js"
-import { request } from "node:http"
 
 interface CreateMetaBody {
     propriedade_id: number,
@@ -33,7 +32,7 @@ export const metaRoutes = (app: FastifyInstance) => {
             const { propriedade_id, descricao, valor_alvo, valor_atual, prazo, status } = request.body
             
             const meta = await prisma.meta.create({
-                data: { propriedade_id, descricao, valor_alvo, valor_atual, prazo, status}
+                data: { propriedade_id, descricao, valor_alvo, valor_atual, prazo: new Date(prazo), status}
             })
 
             if (!meta) return reply.status(404).send({ error: "Não foi possível criar a meta" })
