@@ -1,62 +1,136 @@
-# `Agro.in — Backend`
+# AGRO.IN — Backend
 
 ## Stack
 
-| Tecnologia   | Função                        |
-|--------------|-------------------------------|
-| Node.js      | Runtime                       |
-| TypeScript   | Tipagem estática              |
-| Fastify      | Framework HTTP                |
-| Prisma ORM   | Abstração do banco de dados   |
-| PostgreSQL   | Banco de dados relacional     |
-| JWT          | Autenticação                  |
+| Tecnologia | Função |
+|------------|--------|
+| Node.js | Runtime |
+| TypeScript | Tipagem estática |
+| Fastify | Framework HTTP |
+| Prisma ORM | ORM para comunicação com o banco |
+| PostgreSQL | Banco de dados relacional |
+| JWT | Autenticação e autorização |
+| bcrypt | Criptografia de senhas |
+| dotenv | Gerenciamento de variáveis de ambiente |
 
 ---
+
 ## Changelog
 
-### [29/06/2026] 
+### [01/07/2026]
 
-**Commit:** `feat: add meta.routes and new import for prismaClient`
+**Commit:** `feat: implement authentication middleware and complete backend routes`
 
-**Autor:** `@Lucas`
+**Autor:** `@Ruan`
 
 ---
 
-## Feature: Nova Forma de Implementar o Prisma
+## Novidades
 
-**Problema:** Cada arquivo de rotas instanciava seu próprio `PrismaClient`
+### Autenticação
 
-```ts
-import { PrismaClient } from "@prisma/client";
+Foi implementado o sistema completo de autenticação utilizando JWT.
 
-// Instancia um novo objeto Prisma a cada rota
-const prisma = new PrismaClient();    
+Funcionalidades:
+
+- Cadastro de usuários
+- Login
+- Criptografia de senhas com bcrypt
+- Geração de Token JWT
+- Expiração configurável através do arquivo `.env`
+
+Exemplo:
+
+```env
+JWT_SECRET=sua_chave_secreta
+JWT_EXPIRES_IN=1d
 ```
 
-Esse método instancia um novo objeto do Prisma a cada rota, o que pode resultar em um desgaste no banco de dados. Isso gera múltiplas conexões abertas ao banco de dados desnecessariamente.
+---
 
-**Solução:** Criado o arquivo `src/lib/prisma.ts`
+### Middleware de Autenticação
 
-```ts
-import { PrismaClient } from "@prisma/client"
+Foi criada uma middleware responsável por proteger as rotas da aplicação.
 
-export const prisma = new PrismaClient()
-```
+Responsabilidades:
 
-Todas as rotas agora importam essa instância única:
+- Verificar se existe um token no cabeçalho da requisição.
+- Validar o JWT.
+- Bloquear acessos não autorizados.
+- Disponibilizar os dados do usuário autenticado durante a requisição.
+
+---
+
+### Organização do Prisma
+
+Foi criada uma instância única do PrismaClient.
 
 ```ts
 import { prisma } from "../lib/prisma.js"
 ```
----
 
-### Arquivos Alterados
- - `src/lib/prisma.ts` — criado
- - `src/routes/` - criação das demais rotas e import do PrismaClient atualizado
+Essa abordagem evita múltiplas conexões desnecessárias com o banco de dados.
 
 ---
 
-## Próximos passos sugeridos
+### Rotas Implementadas
 
-- Implementação da `middleware`
-- Possível implementação da Arquitetura `MVC`
+- Auth
+    - Cadastro
+    - Login
+
+- Propriedades
+    - Criar
+    - Listar
+    - Buscar por ID
+    - Atualizar
+    - Excluir
+
+- Financeiro
+    - CRUD completo
+
+- Produções
+    - CRUD completo
+
+- Estoque
+    - CRUD completo
+
+- Relatórios
+    - Endpoints para geração de informações do sistema
+
+---
+
+## Estrutura do Projeto
+
+```text
+src/
+│
+├── routes/
+│   ├── auth.routes.ts
+│   ├── propriedades.routes.ts
+│   ├── financeiro.routes.ts
+│   ├── producoes.routes.ts
+│   ├── estoque.routes.ts
+│   └── relatorios.routes.ts
+│
+├── middlewares/
+│   └── auth.middleware.ts
+│
+├── lib/
+│   └── prisma.ts
+│
+├── @types/
+│   └── fastify.d.ts
+│
+├── server.ts
+└── .env
+```
+
+---
+
+## Próximos passos
+
+- Testes da API (Postman)
+- Documentação dos endpoints
+- Integração com o Front-end
+- Deploy da aplicação
