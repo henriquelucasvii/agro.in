@@ -50,6 +50,7 @@ export default function Login() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full h-12 rounded-md bg-[#E4E4E4] px-4 outline-none text-sm"
+                                placeholder="Insira seu e-mail"
                             />
                         </div>
                         <div>
@@ -59,6 +60,7 @@ export default function Login() {
                                 value={senha}
                                 onChange={(e) => setSenha(e.target.value)}
                                 className="w-full h-12 rounded-md bg-[#E4E4E4] px-4 outline-none text-sm"
+                                placeholder="Insira sua senha"
                             />
                         </div>
                     </div>
@@ -86,7 +88,7 @@ export default function Login() {
             </div>
 
             <div className="flex-1 bg-[#0D5006] flex flex-col justify-between px-8 py-12 overflow-hidden">
-                <div className="max-w-md">
+                <div className="max-w-md self-center-safe">
                     <p className="text-[#48F36B] font-bold uppercase text-sm tracking-widest mb-4">TUDO EM UM SÓ LUGAR</p>
                     <h2 className="text-white font-bold text-3xl lg:text-4xl xl:text-5xl leading-tight mb-6">
                         Conheça o melhor software de gestão de fazendas
@@ -95,7 +97,7 @@ export default function Login() {
                         O Agro.in é um sistema que ajuda a gerenciar as atividades da fazenda, desde a operação até o controle de máquinas.
                     </p>
                 </div>
-                <img src={notebook} alt="Notebook" className="w-full max-w-lg mt-8 self-end" />
+                <img src={notebook} alt="Notebook" className="w-full max-w-lg mt-8 self-center" />
             </div>
 
         </div>
