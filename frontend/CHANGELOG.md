@@ -14,25 +14,28 @@
 
 ### [09/07/2026]
 
-**Commit:** `feat: add login and register pages`
+**Commit:** `feat: add dashboard, .env and fix logo.png and notebook.png`
 
-**Autor:** `@ruanmartinsq`
+**Autor:** `@henriquelucasvii`
 
 ---
 
 ## Novidades
 
-Desenvolvimento das telas iniciais de autenticação do sistema utilizando React, TypeScript e Tailwind CSS.
+Desenvolvimento do Dashboard Inicial
 
-Foram criadas as páginas de **Login** e **Registro**, seguindo o protótipo definido para o projeto, mantendo a identidade visual do AGRO.IN.
+- Foram criadas as páginas de **Dashboard**, seguindo o protótipo definido para o projeto, mantendo a identidade visual do AGRO.IN.
 
-As telas possuem estrutura responsiva, separação entre área de autenticação e apresentação do sistema, além da organização dos componentes para facilitar a futura integração com o backend.
+- Meus tokens de I.A acabaram e é necessário adicionar responsividade ao aside, acabei não conseguindo fazer isso nesse commit.
+
+Criado um arquivo .env, no qual o **"VITE_API_UR"** recebe o localhost do backend.
 
 ```tsx
 src/
 ├── pages/
 │   ├── Login.tsx
 │   └── Register.tsx
+│   └── Dashboard.tsx
 ├── assets/
 │   ├── logo.png
 │   └── notebook.png
