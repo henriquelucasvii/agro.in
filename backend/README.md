@@ -19,7 +19,7 @@
 
 ### [09/07/2026]
 
-**Commit:** `feat(MVC): implements MVC architecture at producao api`
+**Commit:** `feat(MVC): implements MVC architecture at financeiro api`
 
 **Autor:** `@henriquelucasvii`
 
@@ -34,9 +34,9 @@
 
 ```ts
 import { prisma } from "../lib/prisma.js"
-import { CreateProducaoBody, UpdateProducaoBody } from "../types/producao.types.js"
+import { ApiProducaoBody, ApiProducaoBody } from "../types/producao.types.js"
 
-class ProducaoService {
+class apiService {
     
     async create() { 
         // ... 
@@ -46,25 +46,25 @@ class ProducaoService {
 }
 
 // Exportação da classe já instanciada
-export const producaoService = new ProducaoService()
+export const apiService = new ApiService()
 ```
 
-- Criação de `producao.controller.ts` no diretório controllers, responsável pelas requisições HTTP
+- Criação de `api.controller.ts` no diretório controllers, responsável pelas requisições HTTP
 
 ```ts
-import { producaoService } from "../service/producao.service.js"
+import { apiService } from "../service/api.service.js"
 
-class ProducaoController {
+class ApiController {
     /// ...
 }
 
-export const producaoController = new ProducaoController()
+export const apiController = new ApiController()
 ```
 
 - Criação do diretório `types` para a reutilização de interfaces para as requisiçoes
 
 ```ts
-export interface CreateProducaoBody {
+export interface CreateApiBody {
     // ...
 }
 ```
