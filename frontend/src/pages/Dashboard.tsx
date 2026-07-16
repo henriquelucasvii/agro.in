@@ -249,31 +249,54 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        let ativo = true;
+    if (USE_MOCK) {
+        setData(MOCK_DATA);
+        setLoading(false);
+        return;
+    }
 
-        const carregarDashboard = async () => {
-            if (USE_MOCK) {
-                setData(MOCK_DATA);
-                setLoading(false);
-                return;
-            }
-            try {
-                const { data: resposta } = await api.get<DashboardData>("/dashboard");
-                if (ativo) setData(resposta);
-            } catch (error) {
-                console.error("Erro ao carregar dashboard:", error);
-                // Sem dados ainda (ou usuário novo): cada card cai no próprio estado vazio.
-                if (ativo) setData(DASHBOARD_VAZIO);
-            } finally {
-                if (ativo) setLoading(false);
-            }
-        };
+    const carregarDashboard = async () => {
+        try {
+            const [propriedadesRes, estoqueRes] = await Promise.all([
+                api.get("/propriedades"),
+                api.get("/estoque"),
+            ]);
 
-        carregarDashboard();
-        return () => {
-            ativo = false;
-        };
-    }, []);
+            const propriedades = propriedadesRes.data;
+            const estoque = estoqueRes.data;
+
+            const primeiraPropriedade = propriedades[0] ?? null;
+
+            setData({
+                propriedade: primeiraPropriedade
+                    ? {
+                          nome: primeiraPropriedade.nome,
+                          status: "Ativa",
+                          areaTotalHa: primeiraPropriedade.area_total,
+                          talhoes: propriedades.length,
+                      }
+                    : null,
+                financeiro: null,
+                producao: null,
+                estoque: estoque.map((item: any) => ({
+                    nome: item.item,
+                    percentual: item.quantidade_minima && item.quantidade_minima > 0
+                        ? Math.min(Math.round((item.quantidade / item.quantidade_minima) * 100), 100)
+                        : 100,
+                })),
+                meta: null,
+                relatorios: [],
+            });
+        } catch (error) {
+            console.error("Erro ao carregar dashboard:", error);
+            setData(DASHBOARD_VAZIO);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    carregarDashboard();
+}, []);
 
     if (loading || !data) {
         return (
@@ -371,7 +394,7 @@ export default function Dashboard() {
                                 </div>
                             </div>
                         ) : (
-                            <EmptyState label="Nenhuma propriedade cadastrada" cta="Cadastrar propriedade" onClick={() => navigate("/propriedade/novo")} />
+                            <EmptyState label="Nenhuma propriedade cadastrada" cta="Cadastrar propriedade" onClick={() => navigate("/propriedade")} />
                         )}
                     </Card>
 
@@ -427,7 +450,7 @@ export default function Dashboard() {
                                 ))}
                             </div>
                         ) : (
-                            <EmptyState label="Estoque ainda não configurado" cta="Adicionar item" onClick={() => navigate("/estoque/novo")} />
+                            <EmptyState label="Estoque ainda não configurado" cta="Adicionar item" onClick={() => navigate("/estoque")} />
                         )}
                     </Card>
 
