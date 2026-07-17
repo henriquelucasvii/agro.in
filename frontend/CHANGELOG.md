@@ -12,41 +12,37 @@
 
 ## Changelog
 
-### [09/07/2026]
+### [17/07/2026]
 
-**Commit:** `feat: add dashboard, .env and fix logo.png and notebook.png`
+**Commit:** `feat: add financial and integrate dashboard data`
 
-**Autor:** `@henriquelucasvii`
+**Autor:** `@ruanmartinsq`
 
 ---
 
 ## Novidades
 
-Desenvolvimento do Dashboard Inicial
+Desenvolvimento das novas telas do sistema e integração inicial com o backend.
 
-- Foram criadas as páginas de **Dashboard**, seguindo o protótipo definido para o projeto, mantendo a identidade visual do AGRO.IN.
+- Criadas as páginas de **Financeiro**, **Estoque** e **Propriedades**, permitindo o gerenciamento das informações da fazenda.
 
-- Meus tokens de I.A acabaram e é necessário adicionar responsividade ao aside, acabei não conseguindo fazer isso nesse commit.
+- Ajustada a função `carregarDashboard`, que agora realiza requisições para a API e exibe corretamente os dados das propriedades e do estoque no Dashboard.
 
-Criado um arquivo .env, no qual o **"VITE_API_UR"** recebe o localhost do backend.
+- Organização das requisições utilizando a instância da API para consumir os endpoints do backend.
 
 ```tsx
 src/
 ├── pages/
-│   ├── Login.tsx
-│   └── Register.tsx
-│   └── Dashboard.tsx
-├── assets/
-│   ├── logo.png
-│   └── notebook.png
+│   ├── Dashboard.tsx
+│   ├── Financeiro.tsx
+│   ├── Estoque.tsx
+│   └── Propriedades.tsx
 ```
 
 ---
 
 ## Próximos Passos
 
-- Integração das telas com a API do backend
-- Implementação da autenticação utilizando JWT
-- Validação dos formulários
-- Estrutura inicial do Dashboard
-- Gerenciamento de rotas com React Router
+- Exibir dados de Produção, Metas e Relatórios no Dashboard
+- Implementar proteção de rotas utilizando JWT
+- Melhorar responsividade das páginas

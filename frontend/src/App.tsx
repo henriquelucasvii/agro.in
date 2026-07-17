@@ -4,6 +4,8 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Estoque from "./pages/Estoque";
 import Propriedade from "./pages/Propriedade";
+import Financeiro from "./pages/Financeiro";
+
 
 function App() {
     return (
@@ -14,6 +16,8 @@ function App() {
                 <Route path="/dashboard" element= {<Dashboard />} />
                 <Route path="/estoque" element={<Estoque />} />
                 <Route path="/propriedade" element={<Propriedade />} />
+                <Route path="/financeiro" element={<Financeiro />} />
+
             </Routes>
         </BrowserRouter>
     );

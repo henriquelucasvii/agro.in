@@ -60,7 +60,7 @@ const DASHBOARD_VAZIO: DashboardData = {
     meta: null,
     relatorios: [],
 };
-console.log(api.get("proriedades"))
+
 // Dados de exemplo, só para visualizar o layout preenchido (mesmos valores do mockup).
 // Troque USE_MOCK para true enquanto o endpoint /dashboard ainda não existir no backend.
 const USE_MOCK = false;
@@ -249,54 +249,77 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-    if (USE_MOCK) {
-        setData(MOCK_DATA);
-        setLoading(false);
-        return;
-    }
-
-    const carregarDashboard = async () => {
-        try {
-            const [propriedadesRes, estoqueRes] = await Promise.all([
-                api.get("/propriedades"),
-                api.get("/estoque"),
-            ]);
-
-            const propriedades = propriedadesRes.data;
-            const estoque = estoqueRes.data;
-
-            const primeiraPropriedade = propriedades[0] ?? null;
-
-            setData({
-                propriedade: primeiraPropriedade
-                    ? {
-                          nome: primeiraPropriedade.nome,
-                          status: "Ativa",
-                          areaTotalHa: primeiraPropriedade.area_total,
-                          talhoes: propriedades.length,
-                      }
-                    : null,
-                financeiro: null,
-                producao: null,
-                estoque: estoque.map((item: any) => ({
-                    nome: item.item,
-                    percentual: item.quantidade_minima && item.quantidade_minima > 0
-                        ? Math.min(Math.round((item.quantidade / item.quantidade_minima) * 100), 100)
-                        : 100,
-                })),
-                meta: null,
-                relatorios: [],
-            });
-        } catch (error) {
-            console.error("Erro ao carregar dashboard:", error);
-            setData(DASHBOARD_VAZIO);
-        } finally {
+        if (USE_MOCK) {
+            setData(MOCK_DATA);
             setLoading(false);
+            return;
         }
-    };
 
-    carregarDashboard();
-}, []);
+        const carregarDashboard = async () => {
+            try {
+                const [propriedadesRes, estoqueRes, financeiroRes] = await Promise.all([
+                    api.get("/propriedades"),
+                    api.get("/estoque"),
+                    api.get("/financeiro"),
+                ]);
+
+                const propriedades = propriedadesRes.data;
+                const estoque = estoqueRes.data;
+                const financeiro = financeiroRes.data;
+
+                const entradas = financeiro
+                    .filter((item: any) => item.tipo === "entrada")
+                    .reduce((total: number, item: any) => total + Number(item.valor), 0);
+
+                const saidas = financeiro
+                    .filter((item: any) => item.tipo === "saida")
+                    .reduce((total: number, item: any) => total + Number(item.valor), 0);
+
+                const saldoMes = entradas - saidas;
+
+                const historicoFinanceiro: number[] = [...financeiro]
+                    .sort((a: any, b: any) => new Date(a.data).getTime() - new Date(b.data).getTime())
+                    .reduce((acc: number[], item: any) => {
+                        const ultimo = acc.length ? acc[acc.length - 1] : 0;
+                        const valor = item.tipo === "entrada" ? Number(item.valor) : -Number(item.valor);
+                        acc.push(ultimo + valor);
+                        return acc;
+                    }, []);
+
+                const primeiraPropriedade = propriedades[0] ?? null;
+
+                setData({
+                    propriedade: primeiraPropriedade
+                        ? {
+                            nome: primeiraPropriedade.nome,
+                            status: "Ativa",
+                            areaTotalHa: primeiraPropriedade.area_total,
+                            talhoes: propriedades.length,
+                        }
+                        : null,
+                    financeiro: financeiro.length
+                        ? { saldoMes, historico: historicoFinanceiro }
+                        : null,
+                    producao: null,
+                    estoque: estoque.map((item: any) => ({
+                        nome: item.item,
+                        percentual: item.quantidade_minima && item.quantidade_minima > 0
+                            ? Math.min(Math.round((item.quantidade / item.quantidade_minima) * 100), 100)
+                            : 100,
+                    })),
+                    meta: null,
+                    relatorios: [],
+                });
+            } catch (error) {
+                console.error("Erro ao carregar dashboard:", error);
+                setData(DASHBOARD_VAZIO);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        carregarDashboard();
+    }, []);
 
     if (loading || !data) {
         return (
@@ -414,7 +437,7 @@ export default function Dashboard() {
                                 </div>
                             </div>
                         ) : (
-                            <EmptyState label="Nenhum lançamento este mês" cta="Adicionar lançamento" onClick={() => navigate("/financeiro/novo")} />
+                            <EmptyState label="Nenhum lançamento este mês" cta="Adicionar lançamento" onClick={() => navigate("/financeiro")} />
                         )}
                     </Card>
 
