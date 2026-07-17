@@ -10,6 +10,8 @@ import { estoqueRoutes } from "./routes/estoque.routes.js";
 import { metaRoutes } from "./routes/meta.routes.js";
 import { relatoriosRoutes } from "./routes/relatorios.routes.js";
 
+
+
 const app = Fastify({
     logger: true,
 });
@@ -23,7 +25,10 @@ app.get("/", async () => {
 });
 
 const start = async () => {
-    await app.register(cors);
+    await app.register(cors, {
+        origin: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    });
 
     // Rotas de autenticação
     await app.register(authRoutes, {
@@ -49,7 +54,7 @@ const start = async () => {
     await app.register(estoqueRoutes, {
         prefix: "/estoque",
     });
-    
+
     // Rotas de metas
     await app.register(metaRoutes, {
         prefix: "/metas"
