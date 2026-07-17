@@ -23,7 +23,10 @@ app.get("/", async () => {
 });
 
 const start = async () => {
-    await app.register(cors);
+    await app.register(cors, {
+        origin: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    });
 
     // Rotas de autenticação
     await app.register(authRoutes, {
