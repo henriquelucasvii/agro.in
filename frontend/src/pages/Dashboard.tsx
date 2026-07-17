@@ -61,27 +61,8 @@ const DASHBOARD_VAZIO: DashboardData = {
     relatorios: [],
 };
 
-// Dados de exemplo, só para visualizar o layout preenchido (mesmos valores do mockup).
-// Troque USE_MOCK para true enquanto o endpoint /dashboard ainda não existir no backend.
-const USE_MOCK = false;
-const MOCK_DATA: DashboardData = {
-    propriedade: { nome: "Fazenda São João", status: "Ativa", areaTotalHa: 340, talhoes: 6 },
-    financeiro: { saldoMes: 18240, historico: [12000, 13500, 13000, 14200, 15800, 15200, 18240] },
-    producao: { colhendoTon: 70, historico: [45, 52, 68, 58, 70] },
-    estoque: [
-        { nome: "Fertilizante", percentual: 65 },
-        { nome: "Sementes de Milho", percentual: 55 },
-        { nome: "Ração Animal", percentual: 30 },
-    ],
-    meta: { titulo: "Produção anual de milho", atual: 720, alvo: 1000, unidade: "ton", prazo: "dez/2026" },
-    relatorios: [
-        { titulo: "Fechamento financeiro - Jun/26", atualizadoEm: "2 dias atrás" },
-        { titulo: "Produtividade por talhão", atualizadoEm: "1 semana atrás" },
-        { titulo: "Movimentação de Estoque", atualizadoEm: "2 semanas atrás" },
-    ],
-};
-
 const NAV: { key: string; label: string }[] = [
+    { key: "dashboard", label: "Dashboard"},
     { key: "propriedade", label: "Propriedade" },
     { key: "financeiro", label: "Financeiro" },
     { key: "producao", label: "Produção" },
@@ -129,7 +110,10 @@ function Card({
     onFooterClick?: () => void;
     children: ReactNode;
 }) {
+
+
     return (
+        
         <div
             className="rounded-2xl bg-white flex flex-col overflow-hidden transition-shadow hover:shadow-md"
             style={{ border: "1px solid #E7E9E4", minHeight: 230 }}
@@ -247,13 +231,10 @@ export default function Dashboard() {
     const location = useLocation();
     const [data, setData] = useState<DashboardData | null>(null);
     const [loading, setLoading] = useState(true);
+    const [hoveredKey, setHoveredKey] = useState<string | null>(null)
 
     useEffect(() => {
-        if (USE_MOCK) {
-            setData(MOCK_DATA);
-            setLoading(false);
-            return;
-        }
+
 
         const carregarDashboard = async () => {
             try {
@@ -346,16 +327,26 @@ export default function Dashboard() {
                 </div>
 
                 <nav className="flex flex-col gap-1 flex-1">
+                                    
                     {NAV.map(({ key, label }) => {
+                        
                         const path = `/${key}`;
                         const isActive = location.pathname === path;
+                        const isHovered = hoveredKey === key;
+
                         return (
                             <button
                                 key={key}
                                 onClick={() => navigate(path)}
+                                onMouseEnter={() => setHoveredKey(key)}
+                                onMouseLeave={() => setHoveredKey(null)}
                                 className="px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left"
                                 style={{
-                                    background: isActive ? "#4FF47B" : "transparent",
+                                    background: isActive
+                                        ? "#4FF47B"
+                                        : isHovered
+                                        ? "rgba(255,255,255,0.08)"
+                                        : "transparent",
                                     color: isActive ? "#0D5006" : "rgba(255,255,255,0.85)",
                                 }}
                             >

@@ -59,6 +59,7 @@ export default function Propriedade() {
     const [form, setForm] = useState<FormData>(FORM_VAZIO);
     const [salvando, setSalvando] = useState(false);
     const [erro, setErro] = useState("");
+    const [hoveredKey, setHoveredKey] = useState<string | null>(null)
 
     const carregarPropriedades = async () => {
         try {
@@ -171,15 +172,26 @@ export default function Propriedade() {
                 </div>
 
                 <nav className="flex flex-col gap-1 flex-1">
+                                    
                     {NAV.map(({ key, label }) => {
-                        const isActive = key === "propriedade";
+                        
+                        const path = `/${key}`;
+                        const isActive = location.pathname === path;
+                        const isHovered = hoveredKey === key;
+
                         return (
                             <button
                                 key={key}
-                                onClick={() => navigate(`/${key}`)}
+                                onClick={() => navigate(path)}
+                                onMouseEnter={() => setHoveredKey(key)}
+                                onMouseLeave={() => setHoveredKey(null)}
                                 className="px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left"
                                 style={{
-                                    background: isActive ? "#4FF47B" : "transparent",
+                                    background: isActive
+                                        ? "#4FF47B"
+                                        : isHovered
+                                        ? "rgba(255,255,255,0.08)"
+                                        : "transparent",
                                     color: isActive ? "#0D5006" : "rgba(255,255,255,0.85)",
                                 }}
                             >
