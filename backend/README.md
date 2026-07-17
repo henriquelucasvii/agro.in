@@ -17,60 +17,57 @@
 
 ## Changelog
 
-### [01/07/2026]
+### [09/07/2026]
 
-**Commit:** `feat: implement authentication middleware and complete backend routes`
+**Commit:** `feat(MVC): implements MVC architecture at financeiro api`
 
-**Autor:** `@Ruan`
+**Autor:** `@henriquelucasvii`
 
 ---
 
 ## Novidades
 
-### Autenticação
+### Organização de Pasta e Arquivos
 
-Foi implementado o sistema completo de autenticação utilizando JWT.
-
-Funcionalidades:
-
-- Cadastro de usuários
-- Login
-- Criptografia de senhas com bcrypt
-- Geração de Token JWT
-- Expiração configurável através do arquivo `.env`
-
-Exemplo:
-
-```env
-JWT_SECRET=sua_chave_secreta
-JWT_EXPIRES_IN=1d
-```
-
----
-
-### Middleware de Autenticação
-
-Foi criada uma middleware responsável por proteger as rotas da aplicação.
-
-Responsabilidades:
-
-- Verificar se existe um token no cabeçalho da requisição.
-- Validar o JWT.
-- Bloquear acessos não autorizados.
-- Disponibilizar os dados do usuário autenticado durante a requisição.
-
----
-
-### Organização do Prisma
-
-Foi criada uma instância única do PrismaClient.
+- Criação do diretório **service** para a implementação das regras de negócios das api, com a nomenclatura padrão de `rota.service.ts`
+- Adoção de Classes e Objetos para o desenvolvimento
 
 ```ts
 import { prisma } from "../lib/prisma.js"
+import { ApiProducaoBody, ApiProducaoBody } from "../types/producao.types.js"
+
+class apiService {
+    
+    async create() { 
+        // ... 
+    }
+
+    // ...
+}
+
+// Exportação da classe já instanciada
+export const apiService = new ApiService()
 ```
 
-Essa abordagem evita múltiplas conexões desnecessárias com o banco de dados.
+- Criação de `api.controller.ts` no diretório controllers, responsável pelas requisições HTTP
 
+```ts
+import { apiService } from "../service/api.service.js"
+
+class ApiController {
+    /// ...
+}
+
+export const apiController = new ApiController()
+```
+
+- Criação do diretório `types` para a reutilização de interfaces para as requisiçoes
+
+```ts
+export interface CreateApiBody {
+    // ...
+}
+```
 ---
 
 ### Rotas Implementadas
@@ -90,7 +87,7 @@ Essa abordagem evita múltiplas conexões desnecessárias com o banco de dados.
     - CRUD completo
 
 - Produções
-    - CRUD completo
+    - CRUD completo + MVC
 
 - Estoque
     - CRUD completo
@@ -111,6 +108,7 @@ src/
 │   ├── financeiro.routes.ts
 │   ├── producoes.routes.ts
 │   ├── estoque.routes.ts
+|   |── meta.routes.ts
 │   └── relatorios.routes.ts
 │
 ├── middlewares/
@@ -130,6 +128,7 @@ src/
 
 ## Próximos passos
 
+- Implementação de todas as rotas para a MVC
 - Testes da API (Postman)
 - Documentação dos endpoints
 - Integração com o Front-end
