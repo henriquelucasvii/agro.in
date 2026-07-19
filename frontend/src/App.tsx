@@ -5,7 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Estoque from "./pages/Estoque";
 import Propriedade from "./pages/Propriedade";
 import Financeiro from "./pages/Financeiro";
-
+import Metas from "./pages/Metas";
 
 function App() {
     return (
@@ -17,7 +17,7 @@ function App() {
                 <Route path="/estoque" element={<Estoque />} />
                 <Route path="/propriedade" element={<Propriedade />} />
                 <Route path="/financeiro" element={<Financeiro />} />
-
+                <Route path="/meta" element={<Metas />} />
             </Routes>
         </BrowserRouter>
     );
