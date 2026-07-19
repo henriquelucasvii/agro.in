@@ -12,11 +12,11 @@
 
 ## Changelog
 
-### [17/07/2026]
+### [19/07/2026]
 
-**Commit:** `feat: add financial and integrate dashboard data`
+**Commit:** `feat: add metas pages`
 
-**Autor:** `@ruanmartinsq`
+**Autor:** `@henriquelucasvii`
 
 ---
 
@@ -24,7 +24,7 @@
 
 Desenvolvimento das novas telas do sistema e integração inicial com o backend.
 
-- Criadas as páginas de **Financeiro**, **Estoque** e **Propriedades**, permitindo o gerenciamento das informações da fazenda.
+- Criadas as páginas de **Metas**, permitindo o gerenciamento das informações da fazenda.
 
 - Ajustada a função `carregarDashboard`, que agora realiza requisições para a API e exibe corretamente os dados das propriedades e do estoque no Dashboard.
 
@@ -36,6 +36,7 @@ src/
 │   ├── Dashboard.tsx
 │   ├── Financeiro.tsx
 │   ├── Estoque.tsx
+│   ├── Metas.ts
 │   └── Propriedades.tsx
 ```
 
@@ -43,6 +44,6 @@ src/
 
 ## Próximos Passos
 
-- Exibir dados de Produção, Metas e Relatórios no Dashboard
+- Exibir dados de Produção e Relatórios no Dashboard
 - Implementar proteção de rotas utilizando JWT
 - Melhorar responsividade das páginas
