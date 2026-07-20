@@ -6,6 +6,8 @@ import Estoque from "./pages/Estoque";
 import Propriedade from "./pages/Propriedade";
 import Financeiro from "./pages/Financeiro";
 import Metas from "./pages/Metas";
+import Producao from "./pages/Producao";
+import Relatorios from "./pages/Relatorios";
 
 function App() {
     return (
@@ -18,6 +20,8 @@ function App() {
                 <Route path="/propriedade" element={<Propriedade />} />
                 <Route path="/financeiro" element={<Financeiro />} />
                 <Route path="/meta" element={<Metas />} />
+                <Route path="/producao" element={<Producao />} />
+                <Route path="/relatorios" element={<Relatorios />} />
             </Routes>
         </BrowserRouter>
     );

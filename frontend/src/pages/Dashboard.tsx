@@ -1,8 +1,8 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Search, Plus, ChevronRight, Bot, Leaf } from "lucide-react";
-import logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom";
+import { Plus, ChevronRight, Leaf} from "lucide-react";
 import { api } from "../lib/api.ts";
+import Sidebar from "../components/Sidebar.tsx";
 
 // ============================================================
 // Tipos
@@ -60,17 +60,6 @@ const DASHBOARD_VAZIO: DashboardData = {
     meta: null,
     relatorios: [],
 };
-
-const NAV: { key: string; label: string }[] = [
-    { key: "dashboard", label: "Dashboard"},
-    { key: "propriedade", label: "Propriedade" },
-    { key: "financeiro", label: "Financeiro" },
-    { key: "producao", label: "Produção" },
-    { key: "estoque", label: "Estoque" },
-    { key: "meta", label: "Meta" },
-    { key: "relatorios", label: "Relatórios" },
-    { key: "perfil", label: "Perfil" },
-];
 
 const formatBRL = (valor: number) =>
     valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -222,31 +211,34 @@ function ProgressRing({ percentual, color }: { percentual: number; color: string
     );
 }
 
-// ============================================================
-// Dashboard
-// ============================================================
+const formatPrazo = (data?: string | null) => {
+    if (!data) return "Sem prazo definido";
+    const d = new Date(data);
+    if (Number.isNaN(d.getTime())) return "Sem prazo definido";
+    const mes = d.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "");
+    return `${mes}/${d.getFullYear()}`;
+}
 
 export default function Dashboard() {
     const navigate = useNavigate();
-    const location = useLocation();
     const [data, setData] = useState<DashboardData | null>(null);
     const [loading, setLoading] = useState(true);
-    const [hoveredKey, setHoveredKey] = useState<string | null>(null)
 
     useEffect(() => {
 
-
         const carregarDashboard = async () => {
             try {
-                const [propriedadesRes, estoqueRes, financeiroRes] = await Promise.all([
+                const [propriedadesRes, estoqueRes, financeiroRes, metasRes] = await Promise.all([
                     api.get("/propriedades"),
                     api.get("/estoque"),
                     api.get("/financeiro"),
+                    api.get("/metas")
                 ]);
 
                 const propriedades = propriedadesRes.data;
                 const estoque = estoqueRes.data;
                 const financeiro = financeiroRes.data;
+                const meta = metasRes.data;
 
                 const entradas = financeiro
                     .filter((item: any) => item.tipo === "entrada")
@@ -288,7 +280,15 @@ export default function Dashboard() {
                             ? Math.min(Math.round((item.quantidade / item.quantidade_minima) * 100), 100)
                             : 100,
                     })),
-                    meta: null,
+                    meta: meta.length > 0
+                        ? {
+                            titulo: meta[0].descricao,
+                            atual: meta[0].valor_atual,
+                            alvo: meta[0].valor_alvo,
+                            unidade: meta[0].unidade, 
+                            prazo: meta[0].prazo,
+                        }
+                        : null,
                     relatorios: [],
                 });
             } catch (error) {
@@ -311,63 +311,12 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="flex min-h-screen w-full" style={{ fontFamily: "Inter, sans-serif", background: "#F7F8F5" }}>
-            {/* Sidebar */}
-            <aside className="w-60 flex flex-col py-6 px-4 shrink-0" style={{ background: "#0D5006" }}>
-                <div className="flex items-center px-2 mb-8">
-                    <img src={logo} alt="Agro.in" className="w-14" />
-                </div>
-
-                <div
-                    className="flex items-center gap-2 rounded-lg px-3 py-2 mb-6"
-                    style={{ background: "rgba(255,255,255,0.08)" }}
-                >
-                    <Search size={15} style={{ color: "rgba(255,255,255,0.5)" }} />
-                        <input type="text" placeholder="Pesquisar" className="flex-1 bg-transparent outline-none text-sm placeholder:text-white/50 text-white" />
-                </div>
-
-                <nav className="flex flex-col gap-1 flex-1">
-                                    
-                    {NAV.map(({ key, label }) => {
-                        
-                        const path = `/${key}`;
-                        const isActive = location.pathname === path;
-                        const isHovered = hoveredKey === key;
-
-                        return (
-                            <button
-                                key={key}
-                                onClick={() => navigate(path)}
-                                onMouseEnter={() => setHoveredKey(key)}
-                                onMouseLeave={() => setHoveredKey(null)}
-                                className="px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left"
-                                style={{
-                                    background: isActive
-                                        ? "#4FF47B"
-                                        : isHovered
-                                        ? "rgba(255,255,255,0.08)"
-                                        : "transparent",
-                                    color: isActive ? "#0D5006" : "rgba(255,255,255,0.85)",
-                                }}
-                            >
-                                {label}
-                            </button>
-                        );
-                    })}
-                </nav>
-
-                <button
-                    onClick={() => navigate("/assistente")}
-                    className="flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-sm font-semibold mt-4"
-                    style={{ background: "rgba(79,244,123,0.15)", color: "#4FF47B", border: "1px solid rgba(79,244,123,0.35)" }}
-                >
-                    <Bot size={17} />
-                    Assistente de IA
-                </button>
-            </aside>
+        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{background: "#F7F8F5" }}>
+            <Sidebar />
 
             {/* Main */}
             <div className="flex-1 flex flex-col">
+
                 <header className="px-10 pt-8 pb-6" style={{ background: "#0D5006" }}>
                     <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Montserrat, sans-serif" }}>
                         Dashboard
@@ -481,7 +430,7 @@ export default function Dashboard() {
                                 <div>
                                     <p className="text-sm font-semibold" style={{ color: "#1A2E1A" }}>{data.meta.titulo}</p>
                                     <p className="text-xs mt-1" style={{ color: "#8B978A" }}>
-                                        {data.meta.atual} / {data.meta.alvo} {data.meta.unidade} · prazo {data.meta.prazo}
+                                        {data.meta.atual} / {data.meta.alvo} {data.meta.unidade} · Prazo - {formatPrazo(data.meta.prazo)}
                                     </p>
                                 </div>
                             </div>
