@@ -401,10 +401,12 @@ export default function Metas() {
                         <X size={20} style={{ color: "rgba(255,255,255,0.8)" }} />
                     </button>
                 </div>
+                
                 <div className="flex items-center gap-2 rounded-lg px-3 py-2 mb-6" style={{ background: "rgba(255,255,255,0.08)" }}>
                     <Search size={15} style={{ color: "rgba(255,255,255,0.5)" }} />
-                    <span className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>Pesquisar</span>
+                    <input type="text" placeholder="Pesquisar" className="flex-1 bg-transparent outline-none text-sm placeholder:text-white/50 text-white" />
                 </div>
+                
                 <nav className="flex flex-col gap-1 flex-1">
                     {NAV.map(({ key, label }) => {
                         const path = `/${key}`;

@@ -323,7 +323,7 @@ export default function Dashboard() {
                     style={{ background: "rgba(255,255,255,0.08)" }}
                 >
                     <Search size={15} style={{ color: "rgba(255,255,255,0.5)" }} />
-                    <span className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>Pesquisar</span>
+                        <input type="text" placeholder="Pesquisar" className="flex-1 bg-transparent outline-none text-sm placeholder:text-white/50 text-white" />
                 </div>
 
                 <nav className="flex flex-col gap-1 flex-1">
@@ -446,7 +446,7 @@ export default function Dashboard() {
                                 <MiniBarChart data={data.producao.historico} color="#C9A227" />
                             </div>
                         ) : (
-                            <EmptyState label="Nenhum registro de produção" cta="Registrar produção" onClick={() => navigate("/producao/novo")} />
+                            <EmptyState label="Nenhum registro de produção" cta="Registrar produção" onClick={() => navigate("/producao/")} />
                         )}
                     </Card>
 
@@ -486,7 +486,7 @@ export default function Dashboard() {
                                 </div>
                             </div>
                         ) : (
-                            <EmptyState label="Nenhuma meta definida" cta="Criar meta" onClick={() => navigate("/meta/novo")} />
+                            <EmptyState label="Nenhuma meta definida" cta="Criar meta" onClick={() => navigate("/meta")} />
                         )}
                     </Card>
 
@@ -512,7 +512,7 @@ export default function Dashboard() {
                                 ))}
                             </div>
                         ) : (
-                            <EmptyState label="Nenhum relatório gerado" cta="Gerar relatório" onClick={() => navigate("/relatorios/novo")} />
+                            <EmptyState label="Nenhum relatório gerado" cta="Gerar relatório" onClick={() => navigate("/relatorios/")} />
                         )}
                     </Card>
                 </main>
