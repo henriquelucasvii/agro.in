@@ -17,9 +17,9 @@
 
 ## Changelog
 
-### [09/07/2026]
+### [17/07/2026]
 
-**Commit:** `feat(MVC): implements MVC architecture at financeiro api`
+**Commit:** `feat(MVC): implements MVC architecture at propriedades api`
 
 **Autor:** `@henriquelucasvii`
 
@@ -108,8 +108,27 @@ src/
 │   ├── financeiro.routes.ts
 │   ├── producoes.routes.ts
 │   ├── estoque.routes.ts
-|   |── meta.routes.ts
+│   ├── meta.routes.ts
 │   └── relatorios.routes.ts
+│
+├── controllers/
+│   ├── propriedades.controller.ts
+│   ├── financeiro.controller.ts
+│   ├── producoes.controller.ts
+│   ├── estoque.controller.ts
+│   ├── meta.controller.ts
+│   └── relatorios.controller.ts
+│
+├── service/
+│   ├── propriedades.service.ts
+│   ├── financeiro.service.ts
+│   ├── producoes.service.ts
+│   ├── estoque.service.ts
+│   ├── meta.service.ts
+│   └── relatorios.service.ts
+│
+├── types/
+│   └── api.types.ts
 │
 ├── middlewares/
 │   └── auth.middleware.ts
