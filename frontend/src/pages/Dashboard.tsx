@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, ChevronRight, Leaf} from "lucide-react";
+import { Plus, ChevronRight, Leaf } from "lucide-react";
 import { api } from "../lib/api.ts";
 import Sidebar from "../components/Sidebar.tsx";
 
@@ -102,7 +102,7 @@ function Card({
 
 
     return (
-        
+
         <div
             className="rounded-2xl bg-white flex flex-col overflow-hidden transition-shadow hover:shadow-md"
             style={{ border: "1px solid #E7E9E4", minHeight: 230 }}
@@ -225,7 +225,6 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-
         const carregarDashboard = async () => {
             try {
                 const [propriedadesRes, estoqueRes, financeiroRes, metasRes] = await Promise.all([
@@ -238,7 +237,7 @@ export default function Dashboard() {
                 const propriedades = propriedadesRes.data;
                 const estoque = estoqueRes.data;
                 const financeiro = financeiroRes.data;
-                const meta = metasRes.data;
+                const metas = metasRes.data;
 
                 const entradas = financeiro
                     .filter((item: any) => item.tipo === "entrada")
@@ -253,13 +252,14 @@ export default function Dashboard() {
                 const historicoFinanceiro: number[] = [...financeiro]
                     .sort((a: any, b: any) => new Date(a.data).getTime() - new Date(b.data).getTime())
                     .reduce((acc: number[], item: any) => {
-                        const ultimo = acc.length ? acc[acc.length - 1] : 0;
+                        const ultimo = acc.length ? acc[acc.length - 1]! : 0;
                         const valor = item.tipo === "entrada" ? Number(item.valor) : -Number(item.valor);
                         acc.push(ultimo + valor);
                         return acc;
                     }, []);
 
                 const primeiraPropriedade = propriedades[0] ?? null;
+                const metaAtiva = metas.find((m: any) => m.status !== "concluida") ?? metas[0] ?? null;
 
                 setData({
                     propriedade: primeiraPropriedade
@@ -280,13 +280,13 @@ export default function Dashboard() {
                             ? Math.min(Math.round((item.quantidade / item.quantidade_minima) * 100), 100)
                             : 100,
                     })),
-                    meta: meta.length > 0
+                    meta: metaAtiva
                         ? {
-                            titulo: meta[0].descricao,
-                            atual: meta[0].valor_atual,
-                            alvo: meta[0].valor_alvo,
-                            unidade: meta[0].unidade, 
-                            prazo: meta[0].prazo,
+                            titulo: metaAtiva.descricao,
+                            atual: metaAtiva.valor_atual,
+                            alvo: metaAtiva.valor_alvo,
+                            unidade: metaAtiva.unidade,
+                            prazo: metaAtiva.prazo,
                         }
                         : null,
                     relatorios: [],
@@ -299,7 +299,7 @@ export default function Dashboard() {
             }
         };
 
-        carregarDashboard();
+        carregarDashboard(); // ← chama aqui dentro, sem return
     }, []);
 
     if (loading || !data) {
@@ -311,7 +311,7 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{background: "#F7F8F5" }}>
+        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{ background: "#F7F8F5" }}>
             <Sidebar />
 
             {/* Main */}
