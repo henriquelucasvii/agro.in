@@ -227,17 +227,19 @@ export default function Dashboard() {
     useEffect(() => {
         const carregarDashboard = async () => {
             try {
-                const [propriedadesRes, estoqueRes, financeiroRes, metasRes] = await Promise.all([
+                const [propriedadesRes, estoqueRes, financeiroRes, metasRes, producaoRes] = await Promise.all([
                     api.get("/propriedades"),
                     api.get("/estoque"),
                     api.get("/financeiro"),
-                    api.get("/metas")
+                    api.get("/metas"),
+                    api.get("/producao")
                 ]);
 
                 const propriedades = propriedadesRes.data;
                 const estoque = estoqueRes.data;
                 const financeiro = financeiroRes.data;
                 const metas = metasRes.data;
+                const producao = producaoRes.data;
 
                 const entradas = financeiro
                     .filter((item: any) => item.tipo === "entrada")
@@ -273,7 +275,15 @@ export default function Dashboard() {
                     financeiro: financeiro.length
                         ? { saldoMes, historico: historicoFinanceiro }
                         : null,
-                    producao: null,
+                    producao: producao.length
+                        ? {
+                            colhendoTon: producao
+                                .reduce((s: number, p: any) => s + (p.area_utilizada ?? 0), 0),
+                            historico: producao
+                                .slice(-5)
+                                .map((p: any) => p.area_utilizada ?? p.quantidade ?? 0),
+                        }
+                        : null,
                     estoque: estoque.map((item: any) => ({
                         nome: item.item,
                         percentual: item.quantidade_minima && item.quantidade_minima > 0
@@ -390,8 +400,8 @@ export default function Dashboard() {
                     >
                         {data.producao ? (
                             <div className="pt-1">
-                                <p className="text-xs" style={{ color: "#8B978A" }}>Colhendo este mês</p>
-                                <p className="text-xl font-bold mb-2" style={{ color: "#1A2E1A" }}>{data.producao.colhendoTon} ton</p>
+                                <p className="text-xs" style={{ color: "#8B978A" }}>Área total utilizada (ha)</p>
+                                <p className="text-xl font-bold mb-2" style={{ color: "#1A2E1A" }}>{data.producao.colhendoTon} ha</p>
                                 <MiniBarChart data={data.producao.historico} color="#C9A227" />
                             </div>
                         ) : (

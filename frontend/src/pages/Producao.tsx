@@ -196,23 +196,35 @@ export default function Producao() {
         setSalvando(true);
         setErro("");
 
-        const payload = {
-            tipo: form.tipo,
-            categoria: form.categoria,
-            area_utilizada: form.area_utilizada ? Number(form.area_utilizada) : null,
-            quantidade: form.quantidade ? Number(form.quantidade) : null,
-            unidade: form.unidade || null,
-            data_inicio: form.data_inicio || null,
-            data_fim: form.data_fim || null,
-            status: form.status,
-        };
-
         try {
+            // Busca a propriedade direto do banco
+            const { data: props } = await api.get("/propriedades");
+            const propriedadeId = props[0]?.id;
+
+            if (!propriedadeId) {
+                setErro("Cadastre uma propriedade antes de registrar produções.");
+                setSalvando(false);
+                return;
+            }
+
+            const payload = {
+                tipo: form.tipo,
+                area_utilizada: form.area_utilizada ? Number(form.area_utilizada) : null,
+                quantidade: form.quantidade ? Number(form.quantidade) : null,
+                data_inicio: form.data_inicio || null,
+                data_fim: form.data_fim || null,
+                status: form.status,
+            };
+
             if (editando) {
                 await api.put(`/producao/${editando.id}`, payload);
             } else {
-                await api.post("/producao", { propriedade_id: Number(form.propriedade_id), ...payload });
+                await api.post("/producao", {
+                    propriedade_id: propriedadeId,
+                    ...payload,
+                });
             }
+
             await carregar();
             fecharModal();
         } catch {
@@ -243,9 +255,9 @@ export default function Producao() {
     }, [producoes, abaCategoria, busca]);
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{background: "#F7F8F5" }}>
+        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{ background: "#F7F8F5" }}>
             <Sidebar />
-            
+
             {/* Main */}
             <div className="flex-1 flex flex-col min-w-0">
 
@@ -271,10 +283,10 @@ export default function Producao() {
                                     {erroConexao
                                         ? "Sem conexão com o servidor"
                                         : sincronizando
-                                        ? "Sincronizando..."
-                                        : ultimaSincronia
-                                        ? `Atualizado em tempo real · há ${segundosDesde}s`
-                                        : "Conectando..."}
+                                            ? "Sincronizando..."
+                                            : ultimaSincronia
+                                                ? `Atualizado em tempo real · há ${segundosDesde}s`
+                                                : "Conectando..."}
                                 </p>
                             </div>
                         </div>
@@ -507,17 +519,19 @@ export default function Producao() {
                                 </div>
                             </div>
 
-                            <div>
-                                <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Unidade da quantidade</label>
-                                <input
-                                    type="text"
-                                    placeholder="Ex: cabeças de gado, litros/dia"
-                                    value={form.unidade}
-                                    onChange={(e) => setForm((f) => ({ ...f, unidade: e.target.value }))}
-                                    className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                    style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
-                                />
-                            </div>
+                            {/* ver se vai manter a unidade
+                                    <div>
+                                        <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Unidade da quantidade</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Ex: cabeças de gado, litros/dia"
+                                            value={form.unidade}
+                                            onChange={(e) => setForm((f) => ({ ...f, unidade: e.target.value }))}
+                                            className="w-full h-10 rounded-lg px-3 text-sm outline-none"
+                                            style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                        />
+                                    </div>
+                                    */}
 
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
