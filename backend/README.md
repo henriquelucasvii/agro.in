@@ -17,9 +17,9 @@
 
 ## Changelog
 
-### [17/07/2026]
+### [21/07/2026]
 
-**Commit:** `feat(MVC): implements MVC architecture at propriedades api`
+**Commit:** `chore: add MVC at metas.routes and push a new migration for the database`
 
 **Autor:** `@henriquelucasvii`
 
@@ -27,9 +27,13 @@
 
 ## Novidades
 
+- Novas colunas para a tabela de Metas no banco de dados
+- Cada alteração que se faz no schema.prisma, precisa de uma migration. Migration realizada!!
+
+
 ### Organização de Pasta e Arquivos
 
-- Criação do diretório **service** para a implementação das regras de negócios das api, com a nomenclatura padrão de `rota.service.ts`
+- Criação do diretório **service**, **controller** e **types** para a implementação das regras de negócios das api, com a nomenclatura padrão de `rota.service.ts`
 - Adoção de Classes e Objetos para o desenvolvimento
 
 ```ts
