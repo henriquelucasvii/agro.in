@@ -29,14 +29,14 @@ interface FormData {
     data: string;
 }
 
-const FORM_VAZIO: FormData = {
-    propriedade_id: "1",
+const formVazio = (propriedadeId: string): FormData => ({
+    propriedade_id: propriedadeId,
     tipo: "entrada",
     categoria: "",
     descricao: "",
     valor: "",
     data: new Date().toISOString().split("T")[0],
-};
+});
 
 const formatBRL = (valor: number) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -53,7 +53,8 @@ export default function Financeiro() {
     const [busca, setBusca] = useState("");
     const [modalAberto, setModalAberto] = useState(false);
     const [editando, setEditando] = useState<Lancamento | null>(null);
-    const [form, setForm] = useState<FormData>(FORM_VAZIO);
+    const [propriedadeId, setPropriedadeId] = useState<string>("");
+    const [form, setForm] = useState<FormData>(formVazio(""));
     const [salvando, setSalvando] = useState(false);
     const [erro, setErro] = useState("");
 
@@ -68,11 +69,25 @@ export default function Financeiro() {
         }
     };
 
-    useEffect(() => { carregar(); }, []);
+    const carregarPropriedade = async () => {
+        try {
+            const { data } = await api.get<{ id: number }[]>("/propriedades");
+            if (data.length > 0) {
+                setPropriedadeId(String(data[0].id));
+            }
+        } catch {
+            setPropriedadeId("");
+        }
+    };
+
+    useEffect(() => {
+        carregar();
+        carregarPropriedade();
+    }, []);
 
     const abrirNovo = () => {
         setEditando(null);
-        setForm({ ...FORM_VAZIO, tipo: aba === "fluxo" ? "entrada" : aba });
+        setForm({ ...formVazio(propriedadeId), tipo: aba === "fluxo" ? "entrada" : aba });
         setErro("");
         setModalAberto(true);
     };
@@ -94,13 +109,18 @@ export default function Financeiro() {
     const fecharModal = () => {
         setModalAberto(false);
         setEditando(null);
-        setForm(FORM_VAZIO);
+        setForm(formVazio(propriedadeId));
         setErro("");
     };
 
     const salvar = async () => {
         if (!form.categoria || !form.descricao || !form.valor || !form.data) {
             setErro("Preencha todos os campos obrigatórios.");
+            return;
+        }
+
+        if (!editando && !form.propriedade_id) {
+            setErro("Não foi possível identificar sua propriedade. Recarregue a página.");
             return;
         }
 
