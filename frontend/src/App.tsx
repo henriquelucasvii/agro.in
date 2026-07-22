@@ -8,6 +8,7 @@ import Financeiro from "./pages/Financeiro";
 import Metas from "./pages/Metas";
 import Producao from "./pages/Producao";
 import Relatorios from "./pages/Relatorios";
+import Perfil from "./pages/Perfil";
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/meta" element={<Metas />} />
                 <Route path="/producao" element={<Producao />} />
                 <Route path="/relatorios" element={<Relatorios />} />
+                <Route path="/perfil" element={<Perfil />} />
             </Routes>
         </BrowserRouter>
     );

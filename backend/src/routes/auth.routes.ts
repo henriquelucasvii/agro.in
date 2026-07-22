@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { prisma } from "../lib/prisma.js"
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 import "dotenv/config";
 
 // Tipos 
@@ -87,4 +88,61 @@ export async function authRoutes(app: FastifyInstance) {
             return reply.status(500).send({ error: "Erro ao fazer login" });
         }
     });
+
+    // GET /auth/me — retorna dados do usuário logado
+    app.get("/me", { preHandler: [authMiddleware] }, async (request, reply) => {
+        const user = await prisma.usuario.findUnique({
+            where: { id: request.user.id }
+        });
+
+        if (!user) return reply.status(404).send({ error: "Usuário não encontrado" });
+
+        return reply.send({
+            id: user.id,
+            nome: user.nome,
+            email: user.email,
+            criado_em: user.criado_em,
+        });
+    });
+
+    // PUT /auth/me — atualiza nome e email
+    app.put<{ Body: { nome?: string; email?: string } }>(
+        "/me",
+        { preHandler: [authMiddleware] },
+        async (request, reply) => {
+            const user = await prisma.usuario.update({
+                where: { id: request.user.id },
+                data: request.body,
+            });
+
+            return reply.send({
+                id: user.id,
+                nome: user.nome,
+                email: user.email,
+            });
+        }
+    );
+
+    app.put<{ Body: { senhaAtual: string; novaSenha: string } }>(
+    "/senha",
+    { preHandler: [authMiddleware] },
+    async (request, reply) => {
+        const { senhaAtual, novaSenha } = request.body;
+
+        const user = await prisma.usuario.findUnique({ where: { id: request.user.id } });
+        if (!user) return reply.status(404).send({ error: "Usuário não encontrado." });
+
+        const senhaValida = await bcrypt.compare(senhaAtual, user.senha_hash);
+        if (!senhaValida) return reply.status(401).send({ error: "Senha atual incorreta." });
+
+        const novaHash = await bcrypt.hash(novaSenha, 10);
+        await prisma.usuario.update({
+            where: { id: request.user.id },
+            data: { senha_hash: novaHash }
+        });
+
+        return reply.send({ message: "Senha alterada com sucesso." });
+    }
+);
+
 }
