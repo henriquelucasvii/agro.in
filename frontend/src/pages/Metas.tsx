@@ -180,6 +180,7 @@ function BarraProgresso({ percentual, cor }: { percentual: number; cor: string }
 // ============================================================
 
 export default function Metas() {
+    const [propriedades, setPropriedades] = useState<{ id: number; nome: string }[]>([]);
     const [metas, setMetas] = useState<Meta[]>([]);
     const [loading, setLoading] = useState(true);
     const [sincronizando, setSincronizando] = useState(false);
@@ -219,6 +220,13 @@ export default function Metas() {
     }, [carregar]);
 
     useEffect(() => {
+        carregar();
+        api.get("/propriedades").then(({ data }) => setPropriedades(data));
+        const intervalo = setInterval(() => carregar(true), INTERVALO_SINCRONIA_MS);
+        return () => clearInterval(intervalo);
+    }, [carregar]);
+
+    useEffect(() => {
         const t = setInterval(() => {
             if (ultimaSincronia) setSegundosDesde(Math.floor((Date.now() - ultimaSincronia.getTime()) / 1000));
         }, 1000);
@@ -231,7 +239,11 @@ export default function Metas() {
 
     const abrirNovo = () => {
         setEditando(null);
-        setForm({ ...FORM_VAZIO, categoria: abaCategoria === "todas" ? "geral" : abaCategoria });
+        setForm({
+            ...FORM_VAZIO,
+            categoria: abaCategoria === "todas" ? "geral" : abaCategoria,
+            propriedade_id: propriedades.length === 1 ? String(propriedades[0]!.id) : "",
+        });
         setErro("");
         setModalAberto(true);
     };
@@ -261,7 +273,7 @@ export default function Metas() {
     };
 
     const salvar = async () => {
-        if (!form.descricao || !form.prazo) {
+        if (!form.descricao.trim() || !form.prazo) {
             setErro("Preencha ao menos a descrição e o prazo.");
             return;
         }
@@ -269,23 +281,35 @@ export default function Metas() {
         setSalvando(true);
         setErro("");
 
-        const payload = {
-            descricao: form.descricao,
-            categoria: form.categoria,
-            valor_alvo: form.valor_alvo ? Number(form.valor_alvo) : null,
-            valor_atual: form.valor_atual ? Number(form.valor_atual) : 0,
-            unidade: form.unidade || null,
-            responsavel: form.responsavel || null,
-            prazo: form.prazo,
-            status: form.status,
-        };
-
         try {
+            // Busca a propriedade direto do banco, ignora o form
+            const { data: props } = await api.get("/propriedades");
+            const propriedadeId = props[0]?.id;
+
+            if (!propriedadeId) {
+                setErro("Cadastre uma propriedade antes de criar metas.");
+                setSalvando(false);
+                return;
+            }
+
+            const payload = {
+                propriedade_id: propriedadeId,
+                descricao: form.descricao.trim(),
+                categoria: form.categoria,
+                valor_alvo: form.valor_alvo ? Number(form.valor_alvo) : null,
+                valor_atual: form.valor_atual ? Number(form.valor_atual) : 0,
+                unidade: form.unidade || null,
+                responsavel: form.responsavel || null,
+                prazo: form.prazo,
+                status: form.status,
+            };
+
             if (editando) {
                 await api.put(`/metas/${editando.id}`, payload);
             } else {
-                await api.post("/metas", { propriedade_id: Number(form.propriedade_id), ...payload });
+                await api.post("/metas", payload);
             }
+
             await carregar();
             fecharModal();
         } catch {
@@ -351,7 +375,7 @@ export default function Metas() {
     return (
         <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{ fontFamily: "Inter, sans-serif", background: "#F7F8F5" }}>
             <Sidebar />
-            
+
             {/* Main */}
             <div className="flex-1 flex flex-col min-w-0">
 
@@ -374,10 +398,10 @@ export default function Metas() {
                                     {erroConexao
                                         ? "Sem conexão com o servidor"
                                         : sincronizando
-                                        ? "Sincronizando..."
-                                        : ultimaSincronia
-                                        ? `Atualizado em tempo real · há ${segundosDesde}s`
-                                        : "Conectando..."}
+                                            ? "Sincronizando..."
+                                            : ultimaSincronia
+                                                ? `Atualizado em tempo real · há ${segundosDesde}s`
+                                                : "Conectando..."}
                                 </p>
                             </div>
                         </div>
@@ -661,6 +685,21 @@ export default function Metas() {
                                 {editando ? "Editar meta" : "Nova meta"}
                             </h2>
                             <button onClick={fecharModal}><X size={18} style={{ color: "#8B978A" }} /></button>
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Propriedade *</label>
+                            <select
+                                value={form.propriedade_id}
+                                onChange={(e) => setForm((f) => ({ ...f, propriedade_id: e.target.value }))}
+                                className="w-full h-10 rounded-lg px-3 text-sm outline-none"
+                                style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                            >
+                                <option value="">Selecione uma propriedade</option>
+                                {propriedades.map((p) => (
+                                    <option key={p.id} value={p.id}>{p.nome}</option>
+                                ))}
+                            </select>
                         </div>
 
                         <div className="flex flex-col gap-3">

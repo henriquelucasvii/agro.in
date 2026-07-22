@@ -72,13 +72,16 @@ model Estoque {
 }
 
 model Meta {
-  id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   propriedade_id Int
   descricao      String
+  categoria      String?   @default("geral")
   valor_alvo     Float?
-  valor_atual    Float?   @default(0)
+  valor_atual    Float?    @default(0)
+  unidade        String?
+  responsavel    String?
   prazo          DateTime?
-  status         String?  @default("pendente")
+  status         String?   @default("pendente")
 
   propriedade Propriedade @relation(fields: [propriedade_id], references: [id])
 }

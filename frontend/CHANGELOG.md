@@ -12,11 +12,10 @@
 
 ## Changelog
 
-### [20/07/2026]
+### [21/07/2026]
 
 **Commit:** `feat: add SideBar container, Producao and Relatorios pages`
-
-**Autor:** `@henriquelucasvii`
+**Autor:** `@ruanmartinsq`
 
 ---
 
@@ -42,7 +41,27 @@ src/
 
 ---
 
+### [21/07/2026]
+
+**Commit:** `fix: fix save on producao and way that shows on dashboard`
+**Autor:** `@ruanmartinsq`
+
+---
+
+## Novidades
+
+Correções de bugs nas páginas de Produção e Dashboard.
+
+- Corrigido o salvamento de novas produções — o `propriedade_id` agora é buscado automaticamente do banco, resolvendo o erro de foreign key constraint que impedia o cadastro.
+- Removido `categoria` e `unidade` do payload enviado ao backend, pois esses campos não existiam no schema do Prisma.
+- Adicionada a função `deletar` que havia sido removida acidentalmente durante as atualizações.
+- Corrigida a exibição do card de **Produção** no Dashboard — em vez de mostrar "1 ton" (fallback incorreto do `length`), agora exibe a **área total utilizada em hectares**, somando todas as produções cadastradas.
+- O gráfico de barras do card agora reflete a `area_utilizada` de cada produção.
+
+---
+
 ## Próximos Passos
 
 - Exibir dados de Perfil e o Agente de IA no Dashboard
+- Arrumar página do relatorio
 - Implementar proteção de rotas utilizando JWT
