@@ -1,11 +1,12 @@
 import { FastifyInstance } from "fastify";
-import { CreatePropertyBody, UpdatePropertyBody } from "../types/propriedades.types.js"
-import { propriedadeController } from "../controllers/propriedades.controller.js"
+import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { propriedadesController } from "../controllers/propriedades.controller.js";
+import { CreatePropertyBody, UpdatePropertyBody } from "../types/propriedades.types.js";
 
-export const propriedadesRoutes = async (app: FastifyInstance) => {
-    app.post<{ Body: CreatePropertyBody} >("/", propriedadeController.create)
-    app.get("/", propriedadeController.findAll)
-    app.get<{ Params: {id: string} }>("/:id", propriedadeController.findById)
-    app.put<{ Body: UpdatePropertyBody, Params: {id: string} }>("/id", propriedadeController.update)
-    app.delete<{ Params: {id: string} }>(":/id", propriedadeController.remove)
+export async function propriedadesRoutes(app: FastifyInstance) {
+    app.post<{ Body: CreatePropertyBody }>("/", { preHandler: [authMiddleware] }, propriedadesController.create)
+    app.get("/", { preHandler: [authMiddleware] }, propriedadesController.findAll)
+    app.get<{ Params: { id: string } }>("/:id", { preHandler: [authMiddleware] }, propriedadesController.findById)
+    app.put<{ Params: { id: string }; Body: UpdatePropertyBody }>("/:id", { preHandler: [authMiddleware] }, propriedadesController.update)
+    app.delete<{ Params: { id: string } }>("/:id", { preHandler: [authMiddleware] }, propriedadesController.delete)
 }

@@ -17,9 +17,9 @@
 
 ## Changelog
 
-### [21/07/2026]
+### [22/07/2026]
 
-**Commit:** `chore: add MVC at metas.routes and push a new migration for the database`
+**Commit:** `feat: add MVC and middlewares at routes`
 
 **Autor:** `@henriquelucasvii`
 

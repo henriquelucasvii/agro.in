@@ -1,37 +1,88 @@
-import { prisma } from "../lib/prisma.js"
-import { CreateFinanceiroBody, UpdateFinanceiroBody } from "../types/financeiro.types.js"
+import { prisma } from "../lib/prisma.js";
+import { CreateFinanceiroBody, UpdateFinanceiroBody } from "../types/financeiro.types.js";
 
-class FinanceiroService {
-    
-    async create(data: CreateFinanceiroBody){
-        return await prisma.financeiro.create({
-            data: {
-                ...data,
-                data: new Date(data.data)
-            }
-        })
-    }
+// Erro de domínio simples, com statusCode para o controller mapear a resposta HTTP
+export class FinanceiroError extends Error {
+    statusCode: number;
 
-    async findAll(){
-        return await prisma.financeiro.findMany()
-    }
-
-    async findById(id: number){
-        return await prisma.financeiro.findUnique({ where: { id }})
-    }
-
-    async update(id: number, data: UpdateFinanceiroBody){
-        const update: any = {...data}
-
-        if (data) {
-            update.data = new Date()
-        }
-        return await prisma.financeiro.update({ where: {id}, data: update})
-    }
-
-    async remove(id: number){
-        return await prisma.financeiro.delete({ where: {id} })
+    constructor(message: string, statusCode: number) {
+        super(message);
+        this.statusCode = statusCode;
+        this.name = "FinanceiroError";
     }
 }
 
-export const financeiroService = new FinanceiroService()
+class FinanceiroService {
+    
+    // Garante que a propriedade existe e pertence ao usuário
+    private assertPropriedadePertenceAoUsuario = async (propriedadeId: number, usuarioId: number) => {
+        const propriedade = await prisma.propriedade.findFirst({
+            where: { id: propriedadeId, usuario_id: usuarioId },
+        });
+
+        if (!propriedade) {
+            throw new FinanceiroError("Propriedade não encontrada.", 403);
+        }
+    };
+
+    // Busca o lançamento e garante que ele pertence a uma propriedade do usuário
+    private findOwnedOrFail = async (id: number, usuarioId: number) => {
+        const financeiro = await prisma.financeiro.findUnique({ where: { id } });
+
+        if (!financeiro) {
+            throw new FinanceiroError("Lançamento não encontrado.", 404);
+        }
+
+        const propriedade = await prisma.propriedade.findFirst({
+            where: { id: financeiro.propriedade_id, usuario_id: usuarioId },
+        });
+
+        if (!propriedade) {
+            throw new FinanceiroError("Acesso negado.", 403);
+        }
+
+        return financeiro;
+    };
+
+    create = async (usuarioId: number, data: CreateFinanceiroBody) => {
+        await this.assertPropriedadePertenceAoUsuario(data.propriedade_id, usuarioId);
+
+        return prisma.financeiro.create({
+            data: {...data},
+        });
+    };
+
+    findAll = async (usuarioId: number) => {
+        const propriedades = await prisma.propriedade.findMany({
+            where: { usuario_id: usuarioId },
+            select: { id: true },
+        });
+
+        const ids = propriedades.map((p) => p.id);
+
+        return prisma.financeiro.findMany({
+            where: { propriedade_id: { in: ids } },
+        });
+    };
+
+    findById = async (usuarioId: number, id: number) => {
+        return this.findOwnedOrFail(id, usuarioId);
+    };
+
+    update = async (usuarioId: number, id: number, data: UpdateFinanceiroBody) => {
+        await this.findOwnedOrFail(id, usuarioId);
+
+        return prisma.financeiro.update({
+            where: { id },
+            data,
+        });
+    };
+
+    delete = async (usuarioId: number, id: number): Promise<void> => {
+        await this.findOwnedOrFail(id, usuarioId);
+
+        await prisma.financeiro.delete({ where: { id } });
+    };
+}
+
+export const financeiroService = new FinanceiroService();
