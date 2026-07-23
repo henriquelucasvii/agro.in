@@ -1,81 +1,92 @@
-import { FastifyRequest, FastifyReply } from "fastify"
-import { CreateFinanceiroBody, UpdateFinanceiroBody } from "../types/financeiro.types.js"
-import { financeiroService } from "../service/financeiro.service.js"
+import { FastifyReply, FastifyRequest } from "fastify";
+import { financeiroService, FinanceiroError } from "../service/financeiro.service.js";
+import { CreateFinanceiroBody, UpdateFinanceiroBody} from "../types/financeiro.types.js";
 
 class FinanceiroController {
-
-    // Post
-    async create(request: FastifyRequest< {Body: CreateFinanceiroBody}>, reply: FastifyReply) {
+    create = async (
+        request: FastifyRequest<{ Body: CreateFinanceiroBody }>,
+        reply: FastifyReply
+    ) => {
         try {
-            const financeiro = await financeiroService.create(request.body)
-
-            if (!financeiro) return reply.status(400).send({error: "Não foi possível criar a produção"})
-
-            return reply.status(201).send(financeiro)
+            const financeiro = await financeiroService.create(request.user.id, request.body);
+            return reply.status(201).send(financeiro);
         } catch (error) {
+            if (error instanceof FinanceiroError) {
+                return reply.status(error.statusCode).send({ error: error.message });
+            }
 
-            request.log.error(error)
-            return reply.status(500).send({error: "Erro ao cadastrar lançamento financeiro de propriedade"})
+            request.log.error(error);
+            return reply.status(500).send({ error: "Erro ao cadastrar lançamento financeiro." });
         }
-    }
-    
-    // Get all
-    async findAll(request: FastifyRequest, reply: FastifyReply) {
+    };
+
+    findAll = async (request: FastifyRequest, reply: FastifyReply) => {
         try {
-            const financeiro = await financeiroService.findAll()
-
-            return reply.status(200).send(financeiro)
+            const financeiros = await financeiroService.findAll(request.user.id);
+            return reply.send(financeiros);
         } catch (error) {
-            
-            request.log.error(error)
-            return reply.status(500).send({error: "Erro ao listar financeiro"})
+            request.log.error(error);
+            return reply.status(500).send({ error: "Erro ao buscar lançamentos financeiros." });
         }
-    }
+    };
 
-    // Get by Id
-    async findById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+    findById = async (
+        request: FastifyRequest<{ Params: { id: string } }>,
+        reply: FastifyReply
+    ) => {
         try {
-            const { id } = request.params
-            const financeiro = await financeiroService.findById(Number(id))
-
-            if (!financeiro) return reply.status(404).send({ error: "Finanças não encontrado"})
-
-            reply.status(200).send(financeiro)
+            const financeiro = await financeiroService.findById(
+                request.user.id,
+                Number(request.params.id)
+            );
+            return reply.send(financeiro);
         } catch (error) {
-            request.log.error(error)
-            return reply.status(500).send({error: "Erro ao obter finanças"})
-        }
-    }
+            if (error instanceof FinanceiroError) {
+                return reply.status(error.statusCode).send({ error: error.message });
+            }
 
-    // Put 
-    async update(request: FastifyRequest<{ Params: { id: string }, Body: UpdateFinanceiroBody }>, reply: FastifyReply){
+            request.log.error(error);
+            return reply.status(500).send({ error: "Erro ao buscar lançamento financeiro." });
+        }
+    };
+
+    update = async (
+        request: FastifyRequest<{ Params:  { id: string }; Body: UpdateFinanceiroBody }>,
+        reply: FastifyReply
+    ) => {
         try {
-            const { id } = request.params
-
-            const financeiro = await financeiroService.update(Number(id), request.body)
-
-            return reply.status(200).send(financeiro)
+            const atualizado = await financeiroService.update(
+                request.user.id,
+                Number(request.params.id),
+                request.body
+            );
+            return reply.send(atualizado);
         } catch (error) {
-            
-            request.log.error(error)
-            return reply.status(500).send({ error: "Erro ao atualizar finanças" })
-        }
-    }
+            if (error instanceof FinanceiroError) {
+                return reply.status(error.statusCode).send({ error: error.message });
+            }
 
-    // Delete
-    async remove(request: FastifyRequest<{ Params: { id: string} }>, reply: FastifyReply) {
+            request.log.error(error);
+            return reply.status(500).send({ error: "Erro ao atualizar lançamento financeiro." });
+        }
+    };
+
+    remove = async (
+        request: FastifyRequest<{ Params: { id: string } }>,
+        reply: FastifyReply
+    ) => {
         try {
-            const { id } = request.params
-
-            await financeiroService.remove(Number(id))
-
-            return reply.status(204).send()
+            await financeiroService.delete(request.user.id, Number(request.params.id));
+            return reply.status(204).send();
         } catch (error) {
-            
-            request.log.error(error)
-            return reply.status(500).send({ error: "Erro ao deletar finanças" })
+            if (error instanceof FinanceiroError) {
+                return reply.status(error.statusCode).send({ error: error.message });
+            }
+
+            request.log.error(error);
+            return reply.status(500).send({ error: "Erro ao deletar lançamento financeiro." });
         }
-    }
+    };
 }
 
-export const financeiroController = new FinanceiroController() 
+export const financeiroController = new FinanceiroController();

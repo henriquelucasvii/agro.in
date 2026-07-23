@@ -1,76 +1,83 @@
-import { FastifyRequest, FastifyReply } from "fastify"
+import { FastifyReply, FastifyRequest } from "fastify"
+import { estoqueService, EstoqueError } from "../service/estoque.service.js"
 import { CreateEstoqueBody, UpdateEstoqueBody } from "../types/estoque.types.js"
-import { estoqueService } from "../service/estoque.service.js"
 
 class EstoqueController {
-        async create(request: FastifyRequest< {Body: CreateEstoqueBody} >, reply: FastifyReply) {
-            try {
-                const estoque = await estoqueService.create(request.body)
-    
-                if (!estoque) return reply.send(404).send({ error: "Não foi possível criar a estoque" })
-                
-                return reply.status(201).send(estoque)
-            } catch (error) {
-    
-                request.log.error(error)
-                return reply.status(500).send({ error: "Erro ao cadastrar estoque "})
+    create = async (request: FastifyRequest<{ Body: CreateEstoqueBody }>, reply: FastifyReply) => {
+        try {
+            const estoque = await estoqueService.create(request.user.id, request.body)
+
+            return reply.status(201).send(estoque)
+        } catch (error) {
+
+            if (error instanceof EstoqueError) {
+                return reply.status(error.statusCode).send({ error: error.message })
             }
+
+            request.log.error(error)
+            return reply.status(500).send({ error: "Erro ao cadastrar o estoque" })
         }
-    
-        async findAll(request: FastifyRequest, reply: FastifyReply) {
-            try {
-                const estoques = await estoqueService.findAll();
-    
-                return reply.status(200).send(estoques);
-            } catch (error) {
-    
-                request.log.error(error)
-                return reply.status(500).send({ error: "Erro ao listar estoques" })
+    }
+
+    findAll = async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+            const estoques = await estoqueService.findAll(request.user.id)
+
+            return reply.status(200).send(estoques)
+        } catch (error) {
+
+            request.log.error(error)
+            return reply.status(500).send({ error: "Erro ao listar estoque" })
+        }
+    };
+
+    findById = async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+        try {
+            const estoque = await estoqueService.findById(request.user.id, Number(request.params.id))
+
+            return reply.send(estoque)
+        } catch (error) {
+
+            if (error instanceof EstoqueError) {
+                return reply.status(error.statusCode).send({ error: error.message })
             }
+
+            request.log.error(error)
+            return reply.status(500).send({ error: "Erro ao obter estoque" })
         }
-    
-        async findById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-            try {
-                const { id } = request.body as {id: string}
-                const estoque = await estoqueService.findById(Number(id))
-    
-                if (!estoque) return reply.status(404).send({ error: "Estoque não encontrada"} )
-    
-                return reply.status(200).send(estoque)
-            } catch (error) {
-    
-                request.log.error(error)
-                return reply.status(500).send({ error: "Erro ao obter estoque"})
+    };
+
+    update = async (request: FastifyRequest<{ Params: { id: string }; Body: UpdateEstoqueBody }>, reply: FastifyReply) => {
+        try {
+            const atualizado = await estoqueService.update(request.user.id, Number(request.params.id), request.body)
+
+            return reply.send(atualizado)
+        } catch (error) {
+
+            if (error instanceof EstoqueError) {
+                return reply.status(error.statusCode).send({ error: error.message })
             }
+
+            request.log.error(error)
+            return reply.status(500).send({ error: "Erro ao atualizar o estoque" })
         }
-    
-        async update(request: FastifyRequest<{ Params: { id: string }, Body: UpdateEstoqueBody}>, reply: FastifyReply) {
-            try {
-                const { id } = request.params
-    
-                const estoque = await estoqueService.update(Number(id), request.body)
-    
-                return reply.status(200).send(estoque)
-            } catch (error) {
-    
-                request.log.error(error)
-                return reply.status(500).send({ error: "Erro ao atualizar estoque" })
+    }
+
+    remove = async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+        try {
+            await estoqueService.delete(request.user.id, Number(request.params.id))
+
+            return reply.status(204).send()
+        } catch (error) {
+
+            if (error instanceof EstoqueError) {
+                return reply.status(error.statusCode).send({ error: error.message })
             }
+
+            request.log.error(error)
+            return reply.status(500).send({ error: "Erro ao deletar o estoque" })
         }
-    
-        async remove(request: FastifyRequest<{ Params: { id: string} }>, reply: FastifyReply) {
-            try {
-                const { id } = request.params
-    
-                await estoqueService.remove(Number(id))
-    
-                return reply.status(204).send()
-            } catch (error) {
-    
-                request.log.error(error)
-                return reply.status(500).send({ error: "Erro ao deletar estoque" })
-            }
-        }
+    }
 }
 
 export const estoqueController = new EstoqueController()

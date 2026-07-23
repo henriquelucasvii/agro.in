@@ -1,118 +1,89 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { prisma } from "../lib/prisma.js";
-import "dotenv/config";
+import { authService, AuthError } from "../service/auth.service.js"
+import { RegisterBody, LoginBody, UpdateMeBody, UpdateSenhaBody } from "../types/auth.types.js"
 
-interface RegisterBody {
-    nome: string;
-    email: string;
-    senha: string;
-}
+class AuthController {
 
-interface LoginBody {
-    email: string;
-    senha: string;
-}
+    register = async (request: FastifyRequest<{ Body: RegisterBody }>, reply: FastifyReply) => {
+        try {
+            
+            const user = await authService.register(request.body);
+            
+            return reply.status(201).send(user);
+        } catch (error) {
 
-export async function register(
-    request: FastifyRequest<{ Body: RegisterBody }>,
-    reply: FastifyReply
-) {
-    try {
-        const { nome, email, senha } = request.body;
-
-        const userExists = await prisma.usuario.findUnique({
-            where: { email }
-        });
-
-        if (userExists) {
-            return reply.status(400).send({
-                error: "Usuário já existe"
-            });
-        }
-
-        const senhaHash = await bcrypt.hash(senha, 10);
-
-        const user = await prisma.usuario.create({
-            data: {
-                nome,
-                email,
-                senha_hash: senhaHash
+            if (error instanceof AuthError) {
+                return reply.status(error.statusCode).send({ error: error.message });
             }
-        });
 
-        return reply.status(201).send({
-            id: user.id,
-            nome: user.nome,
-            email: user.email
-        });
+            request.log.error(error);
+            return reply.status(500).send({ error: "Erro ao registrar usuário" });
+        }
+    };
 
-    } catch (error) {
-        request.log.error(error);
+    login = async (request: FastifyRequest<{ Body: LoginBody }>, reply: FastifyReply) => {
+        try {
+            const result = await authService.login(request.body);
+            
+            return reply.send(result);
+        } catch (error) {
 
-        return reply.status(500).send({
-            error: "Erro ao registrar usuário"
-        });
-    }
+            if (error instanceof AuthError) {
+                return reply.status(error.statusCode).send({ error: error.message });
+            }
+
+            request.log.error(error);
+            return reply.status(500).send({ error: "Erro ao fazer login" });
+        }
+    };
+
+    getMe = async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+            const user = await authService.getMe(request.user.id);
+            
+            return reply.send(user);
+        } catch (error) {
+
+            if (error instanceof AuthError) {
+                return reply.status(error.statusCode).send({ error: error.message });
+            }
+
+            request.log.error(error);
+            return reply.status(500).send({ error: "Erro ao buscar usuário" });
+        }
+    };
+
+    updateMe = async (request: FastifyRequest<{ Body: UpdateMeBody }>, reply: FastifyReply) => {
+        try {
+            const user = await authService.updateMe(request.user.id, request.body);
+            
+            return reply.send(user);
+        } catch (error) {
+
+            if (error instanceof AuthError) {
+                return reply.status(error.statusCode).send({ error: error.message });
+            }
+
+            request.log.error(error);
+            return reply.status(500).send({ error: "Erro ao atualizar usuário" });
+        }
+    };
+
+    updateSenha = async (request: FastifyRequest<{ Body: UpdateSenhaBody }>, reply: FastifyReply) => {
+        try {
+            await authService.updateSenha(request.user.id, request.body);
+
+            return reply.send({ message: "Senha alterada com sucesso." });
+        } catch (error) {
+
+            if (error instanceof AuthError) {
+                return reply.status(error.statusCode).send({ error: error.message });
+            }
+
+            request.log.error(error);
+            return reply.status(500).send({ error: "Erro ao alterar senha" });
+        }
+    };
 }
 
-export async function login(
-    request: FastifyRequest<{ Body: LoginBody }>,
-    reply: FastifyReply
-) {
-    try {
-        const { email, senha } = request.body;
-
-        const user = await prisma.usuario.findUnique({
-            where: { email }
-        });
-
-        if (!user) {
-            return reply.status(401).send({
-                error: "Usuário não encontrado"
-            });
-        }
-
-        const senhaValida = await bcrypt.compare(
-            senha,
-            user.senha_hash
-        );
-
-        if (!senhaValida) {
-            return reply.status(401).send({
-                error: "Senha inválida"
-            });
-        }
-
-        const expiresIn =
-            (process.env.JWT_EXPIRES_IN ?? "1d") as jwt.SignOptions["expiresIn"] & string;
-
-        const token = jwt.sign(
-            {
-                id: user.id,
-                email: user.email
-            },
-            process.env.JWT_SECRET as string,
-            {
-                expiresIn
-            }
-        );
-
-        return reply.send({
-            token,
-            user: {
-                id: user.id,
-                nome: user.nome,
-                email: user.email
-            }
-        });
-
-    } catch (error) {
-        request.log.error(error);
-
-        return reply.status(500).send({
-            error: "Erro ao fazer login"
-        });
-    }
-}
+export const authController = new AuthController();

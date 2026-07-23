@@ -1,27 +1,76 @@
 import { prisma } from "../lib/prisma.js"
+import { AppError } from "../errors/AppError.js"
 import { CreateEstoqueBody, UpdateEstoqueBody } from "../types/estoque.types.js"
 
+export class EstoqueError extends AppError {}
+
 class EstoqueService {
-    async create(data: CreateEstoqueBody) {
-        return await prisma.estoque.create({ data: {...data} })
+    
+    private assertPropriedadePertenceAoUsuario = async (propriedadeId: number, usuarioId: number) => {
+        const propriedade = await prisma.propriedade.findFirst({
+            where: { id: propriedadeId, usuario_id: usuarioId },
+        })
+
+        if (!propriedade) {
+            throw new EstoqueError("Propriedade não encontrada.", 403)
+        }
     }
 
-    async findAll(){
-        return await prisma.estoque.findMany()
+    
+    private findOwnedOrFail = async (id: number, usuarioId: number) => {
+        const estoque = await prisma.estoque.findUnique({ where: { id } })
+
+        if (!estoque) {
+            throw new EstoqueError("Estoque não encontrado", 404)
+        }
+
+        const propriedade = await prisma.propriedade.findFirst({
+            where: { id: estoque.propriedade_id, usuario_id: usuarioId },
+        })
+
+        if (!propriedade) {
+            throw new EstoqueError("Acesso negado.", 403)
+        }
+
+        return estoque
     }
 
-    async findById(id: number){
-        return await prisma.estoque.findUnique({ where: { id }})
+    create = async (usuarioId: number, data: CreateEstoqueBody) => {
+        await this.assertPropriedadePertenceAoUsuario(data.propriedade_id, usuarioId)
+
+        return prisma.estoque.create({ data })
     }
 
-    async update(id: number, data: UpdateEstoqueBody) {
-        const update: any = {...data}
+    findAll = async (usuarioId: number) => {
+        const propriedades = await prisma.propriedade.findMany({
+            where: { usuario_id: usuarioId },
+            select: { id: true },
+        })
 
-        return await prisma.estoque.update({ where: {id}, data: update})
+        const ids = propriedades.map((p) => p.id)
+
+        return prisma.estoque.findMany({
+            where: { propriedade_id: { in: ids } },
+        })
     }
 
-    async remove(id: number) {
-        return await prisma.estoque.delete({ where: {id}})
+    findById = async (usuarioId: number, id: number) => {
+        return this.findOwnedOrFail(id, usuarioId)
+    }
+
+    update = async (usuarioId: number, id: number, data: UpdateEstoqueBody) => {
+        await this.findOwnedOrFail(id, usuarioId)
+
+        return prisma.estoque.update({
+            where: { id },
+            data,
+        })
+    }
+
+    delete = async (usuarioId: number, id: number): Promise<void> => {
+        await this.findOwnedOrFail(id, usuarioId)
+
+        await prisma.estoque.delete({ where: { id } })
     }
 }
 

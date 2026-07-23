@@ -1,33 +1,52 @@
-import { prisma } from "../lib/prisma.js"
-import { CreatePropertyBody, UpdatePropertyBody } from "../types/propriedades.types.js"
+import { prisma } from "../lib/prisma.js";
+import { CreatePropertyBody, UpdatePropertyBody } from "../types/propriedades.types.js";
+import { AppError } from "../errors/AppError.js";
+
+// Erro de domínio simples
+export class PropriedadeError extends AppError {}
 
 class PropriedadesService {
-
-    async create(data: CreatePropertyBody) {
-        return await prisma.propriedade.create({
+    create = async (usuarioId: number, data: CreatePropertyBody) => {
+        return prisma.propriedade.create({
             data: {
-                ...data
-            }
-        })
-    }
+                ...data,
+                usuario_id: usuarioId,
+            },
+        });
+    };
 
-    async findAll() {
-        return await prisma.propriedade.findMany()
-    }
+    findAll = async (usuarioId: number) => {
+        return prisma.propriedade.findMany({
+            where: { usuario_id: usuarioId },
+        });
+    };
 
-    async findById(id: number) {
-        return await prisma.propriedade.findUnique({ where: { id }})
-    }
+    findById = async (usuarioId: number, id: number) => {
+        const propriedade = await prisma.propriedade.findFirst({
+            where: { id, usuario_id: usuarioId },
+        });
 
-    async update(id: number, data: UpdatePropertyBody) {
-        const update: any = {...data}
+        if (!propriedade) {
+            throw new PropriedadeError("Propriedade não encontrada.", 404);
+        }
 
-        return await prisma.propriedade.update({ where: {id}, data: update})
-    }
+        return propriedade;
+    };
 
-    async remove(id: number) {
-        return await prisma.propriedade.delete({ where: {id} })
-    }
+    update = async (usuarioId: number, id: number, data: UpdatePropertyBody) => {
+        await this.findById(usuarioId, id);
+
+        return prisma.propriedade.update({
+            where: { id },
+            data,
+        });
+    };
+
+    delete = async (usuarioId: number, id: number): Promise<void> => {
+        await this.findById(usuarioId, id)
+
+        await prisma.propriedade.delete({ where: { id } })
+    };
 }
 
 export const propriedadesService = new PropriedadesService()
