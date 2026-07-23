@@ -1,16 +1,8 @@
 import { prisma } from "../lib/prisma.js";
 import { CreateFinanceiroBody, UpdateFinanceiroBody } from "../types/financeiro.types.js";
+import { AppError } from "../errors/AppError.js"
 
-// Erro de domínio simples, com statusCode para o controller mapear a resposta HTTP
-export class FinanceiroError extends Error {
-    statusCode: number;
-
-    constructor(message: string, statusCode: number) {
-        super(message);
-        this.statusCode = statusCode;
-        this.name = "FinanceiroError";
-    }
-}
+export class FinanceiroError extends AppError {}
 
 class FinanceiroService {
     

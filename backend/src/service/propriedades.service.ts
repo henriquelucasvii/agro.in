@@ -1,16 +1,9 @@
 import { prisma } from "../lib/prisma.js";
 import { CreatePropertyBody, UpdatePropertyBody } from "../types/propriedades.types.js";
+import { AppError } from "../errors/AppError.js";
 
 // Erro de domínio simples
-export class PropriedadeError extends Error {
-    statusCode: number;
-
-    constructor(message: string, statusCode: number) {
-        super(message);
-        this.statusCode = statusCode;
-        this.name = "PropriedadeError";
-    }
-}
+export class PropriedadeError extends AppError {}
 
 class PropriedadesService {
     create = async (usuarioId: number, data: CreatePropertyBody) => {

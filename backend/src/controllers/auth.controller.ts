@@ -3,6 +3,7 @@ import { authService, AuthError } from "../service/auth.service.js"
 import { RegisterBody, LoginBody, UpdateMeBody, UpdateSenhaBody } from "../types/auth.types.js"
 
 class AuthController {
+
     register = async (request: FastifyRequest<{ Body: RegisterBody }>, reply: FastifyReply) => {
         try {
             
@@ -10,6 +11,7 @@ class AuthController {
             
             return reply.status(201).send(user);
         } catch (error) {
+
             if (error instanceof AuthError) {
                 return reply.status(error.statusCode).send({ error: error.message });
             }
@@ -19,14 +21,13 @@ class AuthController {
         }
     };
 
-    login = async (
-        request: FastifyRequest<{ Body: LoginBody }>,
-        reply: FastifyReply
-    ) => {
+    login = async (request: FastifyRequest<{ Body: LoginBody }>, reply: FastifyReply) => {
         try {
             const result = await authService.login(request.body);
+            
             return reply.send(result);
         } catch (error) {
+
             if (error instanceof AuthError) {
                 return reply.status(error.statusCode).send({ error: error.message });
             }
@@ -39,8 +40,10 @@ class AuthController {
     getMe = async (request: FastifyRequest, reply: FastifyReply) => {
         try {
             const user = await authService.getMe(request.user.id);
+            
             return reply.send(user);
         } catch (error) {
+
             if (error instanceof AuthError) {
                 return reply.status(error.statusCode).send({ error: error.message });
             }
@@ -50,14 +53,13 @@ class AuthController {
         }
     };
 
-    updateMe = async (
-        request: FastifyRequest<{ Body: UpdateMeBody }>,
-        reply: FastifyReply
-    ) => {
+    updateMe = async (request: FastifyRequest<{ Body: UpdateMeBody }>, reply: FastifyReply) => {
         try {
             const user = await authService.updateMe(request.user.id, request.body);
+            
             return reply.send(user);
         } catch (error) {
+
             if (error instanceof AuthError) {
                 return reply.status(error.statusCode).send({ error: error.message });
             }
@@ -67,14 +69,13 @@ class AuthController {
         }
     };
 
-    updateSenha = async (
-        request: FastifyRequest<{ Body: UpdateSenhaBody }>,
-        reply: FastifyReply
-    ) => {
+    updateSenha = async (request: FastifyRequest<{ Body: UpdateSenhaBody }>, reply: FastifyReply) => {
         try {
             await authService.updateSenha(request.user.id, request.body);
+
             return reply.send({ message: "Senha alterada com sucesso." });
         } catch (error) {
+
             if (error instanceof AuthError) {
                 return reply.status(error.statusCode).send({ error: error.message });
             }

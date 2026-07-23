@@ -3,17 +3,10 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { prisma } from "../lib/prisma.js";
 import { RegisterBody, LoginBody, UpdateMeBody, UpdateSenhaBody, UsuarioPublico, UsuarioMe, LoginResponse } from "../types/auth.types.js";
+import { AppError } from "../errors/AppError.js";
 
 // Erro de domínio simples
-export class AuthError extends Error {
-    statusCode: number;
-
-    constructor(message: string, statusCode: number) {
-        super(message);
-        this.statusCode = statusCode;
-        this.name = "AuthError";
-    }
-}
+export class AuthError extends AppError {}
 
 class AuthService {
     register = async ({ nome, email, senha }: RegisterBody): Promise<UsuarioPublico> => {
