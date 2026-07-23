@@ -17,31 +17,22 @@ import {
 
 import { api } from "../lib/api";
 import Sidebar from "../components/Sidebar";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import {
+    type CategoriaRelatorio,
+    type StatusRelatorio,
+    type RelatorioPropriedadeAPI,
+    type RelatorioGerado,
+    CHAVE_HISTORICO_RELATORIOS,
+    reviveHistoricoRelatorios,
+    tempoRelativo,
+} from "../hooks/relatorios";
 
-type CategoriaRelatorio = "financeiro" | "producao" | "estoque" | "geral";
 type AbaRelatorio = "todas" | "producao" | "financeiro" | "estoque";
-type StatusRelatorio = "pronto" | "agendado";
 
 interface Propriedade {
     id: number;
     nome: string;
-}
-
-interface RelatorioPropriedadeAPI {
-    propriedade: string;
-    financeiro: { entradas: number; saidas: number; saldo: number };
-    producao: { total: number };
-    estoque: { totalItens: number };
-}
-
-interface RelatorioGerado {
-    id: string;
-    categoria: CategoriaRelatorio;
-    titulo: string;
-    geradoEm: Date;
-    status: StatusRelatorio;
-    compartilhado: boolean;
-    dados: RelatorioPropriedadeAPI | null;
 }
 
 const ABAS: { key: AbaRelatorio; label: string }[] = [
@@ -81,33 +72,13 @@ const CORES_STATUS: Record<StatusRelatorio, { bg: string; texto: string }> = {
 
 const NOMES_MES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
+// Evita que o localStorage cresça sem limite: guarda só os relatórios mais recentes.
+const MAX_HISTORICO_PERSISTIDO = 100;
+
 const mesAno = (d: Date) => `${NOMES_MES[d.getMonth()]}/${d.getFullYear()}`;
 
 const formatBRL = (valor: number) =>
     valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
-const tempoRelativo = (data: Date) => {
-    const diffMs = data.getTime() - Date.now();
-
-    if (diffMs > 0) {
-        const dia = String(data.getDate()).padStart(2, "0");
-        const mes = String(data.getMonth() + 1).padStart(2, "0");
-        return `agendado para ${dia}/${mes}`;
-    }
-
-    const passadoMs = -diffMs;
-    const min = Math.floor(passadoMs / 60000);
-    if (min < 1) return "agora mesmo";
-    if (min < 60) return `há ${min} min`;
-    const horas = Math.floor(min / 60);
-    if (horas < 24) return `há ${horas}h`;
-    const dias = Math.floor(horas / 24);
-    if (dias < 7) return `há ${dias} ${dias === 1 ? "dia" : "dias"}`;
-    const semanas = Math.floor(dias / 7);
-    if (semanas < 5) return `há ${semanas} ${semanas === 1 ? "semana" : "semanas"}`;
-    const meses = Math.floor(dias / 30);
-    return `há ${meses} ${meses === 1 ? "mês" : "meses"}`;
-};
 
 const tituloRelatorio = (categoria: CategoriaRelatorio, data: Date) => {
     const ref = mesAno(data);
@@ -124,13 +95,30 @@ const tituloRelatorio = (categoria: CategoriaRelatorio, data: Date) => {
 };
 
 export default function Relatorios() {
-    const [abaCategoria, setAbaCategoria] = useState<AbaRelatorio>("todas");
+    // Aba selecionada: persistida para o usuário voltar de onde parou.
+    const [abaCategoria, setAbaCategoria] = useLocalStorage<AbaRelatorio>(
+        "agroin:relatorios:aba",
+        "todas"
+    );
 
     const [propriedades, setPropriedades] = useState<Propriedade[]>([]);
-    const [propriedadeId, setPropriedadeId] = useState<number | null>(null);
+    // Última propriedade selecionada: persistida entre sessões.
+    const [propriedadeId, setPropriedadeId] = useLocalStorage<number | null>(
+        "agroin:relatorios:propriedadeId",
+        null
+    );
     const [carregandoPropriedades, setCarregandoPropriedades] = useState(true);
 
-    const [historico, setHistorico] = useState<RelatorioGerado[]>([]);
+    // Histórico de relatórios gerados: persistido no localStorage.
+    // `fromJSON` reconstrói `geradoEm` como Date (o JSON só guarda string).
+    const [historico, setHistorico, limparHistorico] = useLocalStorage<RelatorioGerado[]>(
+        CHAVE_HISTORICO_RELATORIOS,
+        [],
+        {
+            version: 1,
+            fromJSON: reviveHistoricoRelatorios,
+        }
+    );
     const [gerando, setGerando] = useState(false);
     const [erroGeracao, setErroGeracao] = useState("");
     const [detalhe, setDetalhe] = useState<RelatorioGerado | null>(null);
@@ -178,7 +166,7 @@ export default function Relatorios() {
                 compartilhado: false,
                 dados: data,
             };
-            setHistorico((h) => [novo, ...h]);
+            setHistorico((h) => [novo, ...h].slice(0, MAX_HISTORICO_PERSISTIDO));
         } catch {
             setErroGeracao("Não foi possível gerar o relatório. Tente novamente.");
         } finally {
@@ -435,10 +423,26 @@ export default function Relatorios() {
 
                     {/* Histórico */}
                     <div className="bg-white rounded-2xl overflow-hidden" style={{ border: "1px solid #E7E9E4" }}>
-                        <div className="px-5 sm:px-6 py-4" style={{ borderBottom: "1px solid #E7E9E4", background: "#F7F8F5" }}>
+                        <div
+                            className="flex items-center justify-between px-5 sm:px-6 py-4"
+                            style={{ borderBottom: "1px solid #E7E9E4", background: "#F7F8F5" }}
+                        >
                             <h3 className="font-bold" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
                                 Histórico de relatórios
                             </h3>
+                            {historico.length > 0 && (
+                                <button
+                                    onClick={() => {
+                                        if (window.confirm("Limpar todo o histórico de relatórios salvo neste navegador?")) {
+                                            limparHistorico();
+                                        }
+                                    }}
+                                    className="text-xs font-medium transition hover:opacity-70"
+                                    style={{ color: "#8B978A" }}
+                                >
+                                    Limpar histórico
+                                </button>
+                            )}
                         </div>
 
                         {historicoFiltrado.length === 0 ? (

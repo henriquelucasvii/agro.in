@@ -60,8 +60,23 @@ Correções de bugs nas páginas de Produção e Dashboard.
 
 ---
 
+### [23/07/2026]
+
+**Commit:** `fix: fix relatorio pages`
+**Autor:** `@henriquelucasvii`
+
+---
+
+## Novidades
+
+Correções de bugs nas páginas de Relatórios e Dashboard.
+
+- Dados do relatórios agora são armazenados no localStorage
+- Adicionado os diretórios de hooks, responsáveis pelo codigo do localStorage e outros
+
+---
+
 ## Próximos Passos
 
-- Exibir dados de Perfil e o Agente de IA no Dashboard
-- Arrumar página do relatorio
+- Exibir o Agente de IA no Dashboard
 - Implementar proteção de rotas utilizando JWT

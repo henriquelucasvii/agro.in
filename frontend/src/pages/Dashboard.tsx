@@ -1,8 +1,10 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, ChevronRight, Leaf } from "lucide-react";
 import { api } from "../lib/api.ts";
 import Sidebar from "../components/Sidebar.tsx";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { type RelatorioGerado, CHAVE_HISTORICO_RELATORIOS, reviveHistoricoRelatorios, tempoRelativo, } from "../hooks/relatorios";
 
 // ============================================================
 // Tipos
@@ -17,17 +19,17 @@ interface PropriedadeResumo {
 
 interface FinanceiroResumo {
     saldoMes: number;
-    historico: number[]; // pontos usados no mini-gráfico
+    historico: number[];
 }
 
 interface ProducaoResumo {
     colhendoTon: number;
-    historico: number[]; // últimos registros p/ mini-gráfico de barras
+    historico: number[]; 
 }
 
 interface EstoqueItem {
     nome: string;
-    percentual: number; // 0-100
+    percentual: number; 
 }
 
 interface MetaResumo {
@@ -38,18 +40,12 @@ interface MetaResumo {
     prazo: string;
 }
 
-interface RelatorioItem {
-    titulo: string;
-    atualizadoEm: string;
-}
-
 interface DashboardData {
     propriedade: PropriedadeResumo | null;
     financeiro: FinanceiroResumo | null;
     producao: ProducaoResumo | null;
     estoque: EstoqueItem[];
     meta: MetaResumo | null;
-    relatorios: RelatorioItem[];
 }
 
 const DASHBOARD_VAZIO: DashboardData = {
@@ -58,15 +54,10 @@ const DASHBOARD_VAZIO: DashboardData = {
     producao: null,
     estoque: [],
     meta: null,
-    relatorios: [],
 };
 
-const formatBRL = (valor: number) =>
-    valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const formatBRL = (valor: number) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-// ============================================================
-// Componentes de apoio
-// ============================================================
 
 function EmptyState({ label, cta, onClick }: { label: string; cta: string; onClick: () => void }) {
     return (
@@ -224,6 +215,21 @@ export default function Dashboard() {
     const [data, setData] = useState<DashboardData | null>(null);
     const [loading, setLoading] = useState(true);
 
+    const [historicoRelatorios] = useLocalStorage<RelatorioGerado[]>(
+        CHAVE_HISTORICO_RELATORIOS,
+        [],
+        { version: 1, fromJSON: reviveHistoricoRelatorios }
+    );
+
+    const relatoriosRecentes = useMemo(
+        () =>
+            historicoRelatorios
+                .filter((r) => r.status === "pronto")
+                .sort((a, b) => b.geradoEm.getTime() - a.geradoEm.getTime())
+                .slice(0, 4),
+        [historicoRelatorios]
+    );
+
     useEffect(() => {
         const carregarDashboard = async () => {
             try {
@@ -299,7 +305,6 @@ export default function Dashboard() {
                             prazo: metaAtiva.prazo,
                         }
                         : null,
-                    relatorios: [],
                 });
             } catch (error) {
                 console.error("Erro ao carregar dashboard:", error);
@@ -309,7 +314,7 @@ export default function Dashboard() {
             }
         };
 
-        carregarDashboard(); // ← chama aqui dentro, sem return
+        carregarDashboard();
     }, []);
 
     if (loading || !data) {
@@ -449,24 +454,23 @@ export default function Dashboard() {
                         )}
                     </Card>
 
-                    {/* Relatórios */}
                     <Card
                         accent="#5A6E57"
                         title="Relatórios"
-                        footer={data.relatorios.length ? "Ver todos os relatórios" : undefined}
+                        footer={relatoriosRecentes.length ? "Ver todos os relatórios" : undefined}
                         onFooterClick={() => navigate("/relatorios")}
                     >
-                        {data.relatorios.length ? (
+                        {relatoriosRecentes.length ? (
                             <div className="flex flex-col gap-2 pt-1">
-                                {data.relatorios.map((relatorio) => (
+                                {relatoriosRecentes.map((relatorio) => (
                                     <button
-                                        key={relatorio.titulo}
+                                        key={relatorio.id}
                                         onClick={() => navigate("/relatorios")}
                                         className="text-left rounded-lg px-3 py-2 transition-colors hover:brightness-95"
                                         style={{ background: "#F3F4F1" }}
                                     >
                                         <p className="text-sm font-medium" style={{ color: "#1A2E1A" }}>{relatorio.titulo}</p>
-                                        <p className="text-[11px]" style={{ color: "#8B978A" }}>{relatorio.atualizadoEm}</p>
+                                        <p className="text-[11px]" style={{ color: "#8B978A" }}>{tempoRelativo(relatorio.geradoEm)}</p>
                                     </button>
                                 ))}
                             </div>
