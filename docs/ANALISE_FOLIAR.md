@@ -13,6 +13,8 @@ histórico e feedback. A foto passa pelas seguintes etapas:
 6. geração de hipóteses, perguntas de confirmação e recomendações;
 7. armazenamento privado da miniatura e do resultado;
 8. feedback do usuário e registro de eventual diagnóstico confirmado.
+9. quarentena com plano de tratamento, próxima revisão e comparação temporal;
+10. vistoria de área por pontos com posição, precisão GPS e repetição da captura.
 
 A implementação local nunca afirma identificar fungo, bactéria, vírus ou espécie.
 Ela informa apenas padrões visuais. Quando a variável
@@ -38,6 +40,48 @@ solo, histórico, cultura e condições da lavoura:
 Por isso, o produto usa o termo **hipótese visual de estresse nutricional** e não
 “estimativa do solo”. Dose de fertilizante ou defensivo não deve ser gerada
 automaticamente.
+
+## Quarentena e comparação temporal
+
+Uma análise individual pode iniciar uma quarentena. O caso preserva a foto
+inicial, cultura, propriedade, tratamento informado e data da próxima revisão.
+Cada nova foto fica na mesma linha do tempo e é comparada à anterior por variação
+dos tecidos verde, amarelado, marrom e escuro.
+
+O resultado da comparação é um dos estados `melhora_visual`, `estavel`,
+`piora_visual` ou `inconclusivo`. Ele não representa confirmação de cura. Para
+reduzir variações artificiais, o app orienta repetir a mesma planta ou folhas de
+idade semelhante, enquadramento e iluminação.
+
+O encerramento mantém o histórico e a quarentena pode ser reaberta.
+
+## Vistoria orientativa de área
+
+A vistoria cria inicialmente cinco pontos: frente, lateral esquerda, centro,
+lateral direita e fundo. Pontos adicionais podem ser incluídos. Em cada ponto o
+usuário pode:
+
+- salvar latitude, longitude e precisão fornecida pelo aparelho;
+- tirar uma foto vinculada ao ponto;
+- repetir fotos e comparar com o registro anterior;
+- pedir a distância aproximada até o ponto salvo;
+- concluir ou reabrir a vistoria.
+
+O indicador de cobertura significa **pontos fotografados / pontos previstos**.
+Ele não estima diretamente a porcentagem do talhão doente. A interface recomenda
+um percurso em zigue-zague e distribuição em zonas homogêneas porque a
+representatividade depende do plano de amostragem:
+
+- [Monitoramento de doenças — Embrapa](https://www.embrapa.br/agencia-de-informacao-tecnologica/cultivos/manga/producao/sistemas-diferenciados/producao-integrada/monitoramento/doencas)
+- [Monitoramento da lavoura de soja — Embrapa](https://www.embrapa.br/en/web/agencia-de-informacao-tecnologica/cultivos/soja/producao/manejo-integrado-de-pragas/monitoramento-da-lavoura)
+- [Como amostrar o solo — Embrapa](https://www.embrapa.br/web/agencia-de-informacao-tecnologica/cultivos/soja/producao/manejo-da-fertilidade-do-solo/analise-do-solo/como-amostrar)
+- [Agricultura de precisão e GPS — Embrapa](https://www.embrapa.br/en/web/agencia-de-informacao-tecnologica/cultivos/cana-de-acucar/producao/avanco-tecnologico/agricultura-de-precisao)
+
+A geolocalização do navegador exige HTTPS e autorização explícita. A precisão
+varia conforme aparelho e ambiente. O GPS ajuda a retornar ao ponto sem exigir
+um mapa, mas análise e sincronização continuam dependendo de internet:
+
+- [Geolocation API — MDN](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API)
 
 ## Fontes brasileiras encontradas
 

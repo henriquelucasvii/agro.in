@@ -55,7 +55,10 @@ export default function Sidebar() {
                 <nav className="flex flex-col gap-1 flex-1">
                     {NAV.map(({ key, label }) => {
                         const path = `/${key}`;
-                        const isActive = location.pathname === path;
+                        const isActive =
+                            location.pathname === path ||
+                            (key === "analise-foliar" &&
+                                location.pathname.startsWith(`${path}/`));
                         const isHovered = hoveredKey === key;
 
                         return (

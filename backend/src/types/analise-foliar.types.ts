@@ -4,13 +4,47 @@ export interface CriarAnaliseFoliarBody {
     propriedade_id?: number;
     latitude?: number;
     longitude?: number;
+    precisao_metros?: number;
     observacoes?: string;
     consentimento: boolean;
+    caso_id?: number;
+    ponto_vistoria_id?: number;
 }
 
 export interface FeedbackAnaliseFoliarBody {
     util: boolean;
     diagnostico_confirmado?: string;
+}
+
+export interface CriarCasoFoliarBody {
+    analise_id: number;
+    titulo?: string;
+    tratamento?: string;
+    proxima_revisao_em?: string;
+}
+
+export interface AtualizarCasoFoliarBody {
+    titulo?: string;
+    tratamento?: string;
+    proxima_revisao_em?: string | null;
+}
+
+export interface CriarVistoriaAreaBody {
+    nome: string;
+    propriedade_id?: number;
+    cultura?: string;
+    objetivo?: string;
+}
+
+export interface CriarPontoVistoriaBody {
+    nome: string;
+    setor?: string;
+}
+
+export interface AtualizarLocalizacaoPontoBody {
+    latitude: number;
+    longitude: number;
+    precisao_metros?: number;
 }
 
 export interface MetricasVisuais {

@@ -12,6 +12,8 @@ import Producao from "./pages/Producao";
 import Relatorios from "./pages/Relatorios";
 import Perfil from "./pages/Perfil";
 import AnaliseFoliar from "./pages/AnaliseFoliar";
+import QuarentenasFoliares from "./pages/QuarentenasFoliares";
+import VistoriasFoliares from "./pages/VistoriasFoliares";
 
 function App() {
     return (
@@ -30,6 +32,8 @@ function App() {
                 <Route path="/relatorios" element={<Relatorios />} />
                 <Route path="/perfil" element={<Perfil />} />
                 <Route path="/analise-foliar" element={<AnaliseFoliar />} />
+                <Route path="/analise-foliar/quarentenas" element={<QuarentenasFoliares />} />
+                <Route path="/analise-foliar/vistorias" element={<VistoriasFoliares />} />
             </Routes>
         </BrowserRouter>
     );

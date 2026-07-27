@@ -1,5 +1,6 @@
 import {
     AlertTriangle,
+    ArrowLeftRight,
     Camera,
     Check,
     ChevronRight,
@@ -33,8 +34,9 @@ import {
     useState,
     type ChangeEvent,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
+import AnaliseFoliarNav from "../components/AnaliseFoliarNav";
 import Sidebar from "../components/Sidebar";
 import { api } from "../lib/api";
 
@@ -73,6 +75,17 @@ interface MetricasVisuais {
 
 interface Analise {
     id: number;
+    caso_id?: number | null;
+    ponto_vistoria_id?: number | null;
+    etapa_acompanhamento?: number;
+    comparacao_anterior?: {
+        referencia_id: number;
+        dias_desde: number;
+        estado: "melhora_visual" | "estavel" | "piora_visual" | "inconclusivo";
+        variacao_indice: number;
+        resumo: string;
+        aviso: string;
+    } | null;
     propriedade_id?: number | null;
     propriedade?: Propriedade | null;
     cultura_informada?: string | null;
@@ -92,6 +105,30 @@ interface Analise {
     feedback_util?: boolean | null;
     diagnostico_confirmado?: string | null;
     criado_em: string;
+}
+
+interface ContextoAnalise {
+    tipo: "caso" | "ponto";
+    id: number;
+    titulo: string;
+    retorno: string;
+}
+
+interface CasoContexto {
+    id: number;
+    titulo: string;
+    cultura?: string | null;
+    status: string;
+    propriedade?: Propriedade | null;
+}
+
+interface VistoriaContexto {
+    id: number;
+    nome: string;
+    cultura?: string | null;
+    status: string;
+    propriedade?: Propriedade | null;
+    pontos: Array<{ id: number; nome: string }>;
 }
 
 interface Capacidades {
@@ -116,6 +153,13 @@ const STATUS: Record<string, { titulo: string; cor: string; fundo: string }> = {
     possivel_necrose_ou_ressecamento: { titulo: "Possível necrose ou ressecamento", cor: "#8D4B2A", fundo: "#F7E8DD" },
     possivel_doenca_ou_estresse: { titulo: "Possível doença ou estresse", cor: "#9C4E12", fundo: "#FFF0DE" },
     inconclusivo: { titulo: "Resultado inconclusivo", cor: "#5D675D", fundo: "#EEF1EC" },
+};
+
+const COMPARACAO = {
+    melhora_visual: { titulo: "Melhora visual", cor: "#176B35", fundo: "#E4F5E7" },
+    estavel: { titulo: "Estável", cor: "#526052", fundo: "#EEF1EC" },
+    piora_visual: { titulo: "Piora visual", cor: "#A0482C", fundo: "#FBECE5" },
+    inconclusivo: { titulo: "Comparação inconclusiva", cor: "#756320", fundo: "#FFF7D8" },
 };
 
 const etapaMeta: Record<Recomendacao["etapa"], { rotulo: string; icone: typeof Leaf }> = {
@@ -184,6 +228,10 @@ function QualidadeItem({ icone: Icone, label, valor }: { icone: typeof Focus; la
 
 export default function AnaliseFoliar() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const casoParam = Number(searchParams.get("caso")) || undefined;
+    const pontoParam = Number(searchParams.get("ponto")) || undefined;
+    const vistoriaParam = Number(searchParams.get("vistoria")) || undefined;
     const inputRef = useRef<HTMLInputElement>(null);
     const [propriedades, setPropriedades] = useState<Propriedade[]>([]);
     const [historico, setHistorico] = useState<Analise[]>([]);
@@ -194,7 +242,13 @@ export default function AnaliseFoliar() {
     const [propriedadeId, setPropriedadeId] = useState("");
     const [observacoes, setObservacoes] = useState("");
     const [consentimento, setConsentimento] = useState(false);
-    const [coordenadas, setCoordenadas] = useState<{ latitude: number; longitude: number } | null>(null);
+    const [coordenadas, setCoordenadas] = useState<{
+        latitude: number;
+        longitude: number;
+        precisao: number;
+    } | null>(null);
+    const [contexto, setContexto] = useState<ContextoAnalise | null>(null);
+    const [criandoQuarentena, setCriandoQuarentena] = useState(false);
     const [localizando, setLocalizando] = useState(false);
     const [processando, setProcessando] = useState(false);
     const [processoAtual, setProcessoAtual] = useState(0);
@@ -223,12 +277,40 @@ export default function AnaliseFoliar() {
             setPropriedades(resPropriedades.data);
             setHistorico(resHistorico.data);
             setCapacidades(resCapacidades.data);
+
+            if (casoParam) {
+                const { data } = await api.get<CasoContexto>(
+                    `/analise-foliar/quarentenas/${casoParam}`,
+                );
+                setContexto({
+                    tipo: "caso",
+                    id: data.id,
+                    titulo: data.titulo,
+                    retorno: `/analise-foliar/quarentenas?id=${data.id}`,
+                });
+                setCultura(data.cultura ?? "");
+                setPropriedadeId(data.propriedade?.id ? String(data.propriedade.id) : "");
+            } else if (pontoParam && vistoriaParam) {
+                const { data } = await api.get<VistoriaContexto>(
+                    `/analise-foliar/vistorias/${vistoriaParam}`,
+                );
+                const ponto = data.pontos.find((item) => item.id === pontoParam);
+                if (!ponto) throw new Error("Ponto de vistoria não encontrado.");
+                setContexto({
+                    tipo: "ponto",
+                    id: ponto.id,
+                    titulo: `${data.nome} · ${ponto.nome}`,
+                    retorno: `/analise-foliar/vistorias?id=${data.id}`,
+                });
+                setCultura(data.cultura ?? "");
+                setPropriedadeId(data.propriedade?.id ? String(data.propriedade.id) : "");
+            }
         } catch (error) {
             setErro(tratarErro(error, "Não foi possível carregar o módulo."));
         } finally {
             setCarregandoPagina(false);
         }
-    }, [tratarErro]);
+    }, [casoParam, pontoParam, tratarErro, vistoriaParam]);
 
     useEffect(() => {
         const inicio = window.setTimeout(() => {
@@ -275,14 +357,18 @@ export default function AnaliseFoliar() {
         setErro("");
         navigator.geolocation.getCurrentPosition(
             (posicao) => {
-                setCoordenadas({ latitude: posicao.coords.latitude, longitude: posicao.coords.longitude });
+                setCoordenadas({
+                    latitude: posicao.coords.latitude,
+                    longitude: posicao.coords.longitude,
+                    precisao: posicao.coords.accuracy,
+                });
                 setLocalizando(false);
             },
             () => {
                 setErro("Não foi possível obter a localização. Você pode continuar sem ela.");
                 setLocalizando(false);
             },
-            { enableHighAccuracy: false, timeout: 10_000 },
+            { enableHighAccuracy: true, timeout: 15_000, maximumAge: 0 },
         );
     };
 
@@ -300,8 +386,12 @@ export default function AnaliseFoliar() {
                 propriedade_id: propriedadeId ? Number(propriedadeId) : undefined,
                 latitude: coordenadas?.latitude,
                 longitude: coordenadas?.longitude,
+                precisao_metros: coordenadas?.precisao,
                 observacoes: observacoes.trim() || undefined,
                 consentimento,
+                caso_id: contexto?.tipo === "caso" ? contexto.id : undefined,
+                ponto_vistoria_id:
+                    contexto?.tipo === "ponto" ? contexto.id : undefined,
             });
             setResultado(data);
             setHistorico((atual) => [data, ...atual.filter((item) => item.id !== data.id)]);
@@ -332,13 +422,30 @@ export default function AnaliseFoliar() {
         if (imagem.startsWith("blob:")) URL.revokeObjectURL(imagem);
         setImagem("");
         setResultado(null);
-        setCultura("");
+        if (!contexto) setCultura("");
         setObservacoes("");
         setConsentimento(false);
         setPerguntasMarcadas(new Set());
         setDiagnosticoReal("");
         setErro("");
         inputRef.current?.click();
+    };
+
+    const iniciarQuarentena = async () => {
+        if (!resultado || resultado.caso_id || resultado.ponto_vistoria_id) return;
+        setCriandoQuarentena(true);
+        setErro("");
+        try {
+            const { data } = await api.post<{ id: number }>(
+                "/analise-foliar/quarentenas",
+                { analise_id: resultado.id },
+            );
+            navigate(`/analise-foliar/quarentenas?id=${data.id}`);
+        } catch (error) {
+            setErro(tratarErro(error, "Não foi possível iniciar o acompanhamento."));
+        } finally {
+            setCriandoQuarentena(false);
+        }
     };
 
     const enviarFeedback = async (util: boolean) => {
@@ -406,6 +513,34 @@ export default function AnaliseFoliar() {
                 </header>
 
                 <div className="mx-auto max-w-[1380px] px-4 py-5 md:px-8 md:py-8 lg:px-10">
+                    <AnaliseFoliarNav />
+                    {contexto && (
+                        <div className="mb-5 flex flex-col justify-between gap-3 rounded-xl border border-[#C9DEC8] bg-[#EDF6EA] px-4 py-3 sm:flex-row sm:items-center">
+                            <div className="flex items-start gap-3">
+                                {contexto.tipo === "caso" ? (
+                                    <ShieldCheck size={18} className="mt-0.5 text-[#2D713D]" />
+                                ) : (
+                                    <MapPin size={18} className="mt-0.5 text-[#2D713D]" />
+                                )}
+                                <div>
+                                    <p className="text-xs font-bold text-[#285B34]">
+                                        {contexto.tipo === "caso"
+                                            ? "Nova revisão da quarentena"
+                                            : "Foto vinculada ao ponto da vistoria"}
+                                    </p>
+                                    <p className="mt-1 text-[11px] text-[#5E735F]">
+                                        {contexto.titulo}
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => navigate(contexto.retorno)}
+                                className="text-left text-xs font-bold text-[#2C6638] sm:text-right"
+                            >
+                                Voltar ao acompanhamento
+                            </button>
+                        </div>
+                    )}
                     {erro && (
                         <div className="foliar-enter mb-5 flex items-start justify-between gap-3 rounded-xl border border-[#E9C1A8] bg-[#FFF4EC] px-4 py-3 text-sm text-[#8A431F]">
                             <div className="flex items-start gap-2.5">
@@ -555,6 +690,22 @@ export default function AnaliseFoliar() {
                                             <div className="mt-4 flex items-start gap-2 rounded-lg bg-[#F4F6F1] p-3 text-[10px] leading-4 text-[#697369]"><FlaskConical size={14} className="mt-0.5 shrink-0" /> Cor foliar pode sugerir estresse, mas não estima NPK, pH ou fertilidade do solo.</div>
                                         </div>
 
+                                        {resultado.comparacao_anterior && (() => {
+                                            const meta = COMPARACAO[resultado.comparacao_anterior.estado];
+                                            return (
+                                                <div className="border-b border-[#E3E8DF] p-5 md:p-7">
+                                                    <div className="flex items-start gap-3 rounded-xl p-4" style={{ color: meta.cor, background: meta.fundo }}>
+                                                        <ArrowLeftRight size={19} className="mt-0.5 shrink-0" />
+                                                        <div>
+                                                            <p className="text-xs font-bold">{meta.titulo} · {resultado.comparacao_anterior.dias_desde} dias</p>
+                                                            <p className="mt-1 text-[11px] leading-5">{resultado.comparacao_anterior.resumo}</p>
+                                                            <p className="mt-2 text-[10px] leading-4 opacity-80">{resultado.comparacao_anterior.aviso}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })()}
+
                                         <div className="border-b border-[#E3E8DF] p-5 md:p-7">
                                             <h3 className="text-sm font-bold">Hipóteses e diferenciais</h3>
                                             <div className="mt-4 divide-y divide-[#E6EAE2]">
@@ -619,6 +770,28 @@ export default function AnaliseFoliar() {
                                                 <button onClick={() => enviarFeedback(false)} disabled={salvandoFeedback} className="flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold" style={{ borderColor: resultado.feedback_util === false ? "#A4674C" : "#DDE3D9", background: resultado.feedback_util === false ? "#FAEEE9" : "white" }}><ThumbsDown size={14} /> Não</button>
                                             </div>
                                             <input value={diagnosticoReal} onChange={(e) => setDiagnosticoReal(e.target.value)} placeholder="Diagnóstico confirmado depois (opcional)" maxLength={160} className="mt-3 h-10 w-full rounded-lg border border-[#DDE3D9] bg-white px-3 text-xs outline-none focus:border-[#5D8C63]" />
+                                            {!resultado.caso_id && !resultado.ponto_vistoria_id && (
+                                                <button
+                                                    onClick={iniciarQuarentena}
+                                                    disabled={criandoQuarentena}
+                                                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#174D27] px-4 py-3 text-xs font-bold text-white disabled:opacity-50"
+                                                >
+                                                    {criandoQuarentena ? (
+                                                        <LoaderCircle size={16} className="animate-spin" />
+                                                    ) : (
+                                                        <ShieldCheck size={16} />
+                                                    )}
+                                                    Acompanhar tratamento
+                                                </button>
+                                            )}
+                                            {contexto && (
+                                                <button
+                                                    onClick={() => navigate(contexto.retorno)}
+                                                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-[#C8D5C6] bg-white px-4 py-3 text-xs font-bold text-[#31533A]"
+                                                >
+                                                    Ver histórico e comparação
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -658,7 +831,9 @@ export default function AnaliseFoliar() {
                                                 <span className="hidden rounded-full px-2.5 py-1 text-[10px] font-bold md:block" style={{ color: meta.cor, background: meta.fundo }}>{percentual(analise.confianca)}</span>
                                                 <ChevronRight size={17} className="shrink-0 text-[#A1AAA0]" />
                                             </button>
-                                            <button onClick={() => removerAnalise(analise)} className="rounded-lg p-2 text-[#9AA39A] opacity-100 transition hover:bg-[#F9EDE8] hover:text-[#A14D37] md:opacity-0 md:group-hover:opacity-100" aria-label="Excluir análise"><Trash2 size={15} /></button>
+                                            {!analise.caso_id && !analise.ponto_vistoria_id && (
+                                                <button onClick={() => removerAnalise(analise)} className="rounded-lg p-2 text-[#9AA39A] opacity-100 transition hover:bg-[#F9EDE8] hover:text-[#A14D37] md:opacity-0 md:group-hover:opacity-100" aria-label="Excluir análise"><Trash2 size={15} /></button>
+                                            )}
                                         </div>
                                     );
                                 })}

@@ -17,6 +17,8 @@ model Usuario {
   propriedades       Propriedade[]
   tokens_redefinicao SenhaResetToken[]
   analises_foliares  AnaliseFoliar[]
+  casos_foliares     CasoFoliar[]
+  vistorias_foliares VistoriaArea[]
 }
 
 model SenhaResetToken {
@@ -42,12 +44,14 @@ model Propriedade {
   localizacao   String?
   criado_em     DateTime @default(now())
 
-  usuario           Usuario         @relation(fields: [usuario_id], references: [id])
-  financeiro        Financeiro[]
-  producoes         Producao[]
-  estoque           Estoque[]
-  metas             Meta[]
-  analises_foliares AnaliseFoliar[]
+  usuario            Usuario         @relation(fields: [usuario_id], references: [id])
+  financeiro         Financeiro[]
+  producoes          Producao[]
+  estoque            Estoque[]
+  metas              Meta[]
+  analises_foliares  AnaliseFoliar[]
+  casos_foliares     CasoFoliar[]
+  vistorias_foliares VistoriaArea[]
 }
 
 model AnaliseFoliar {
@@ -75,16 +79,83 @@ model AnaliseFoliar {
   observacoes            String?
   feedback_util          Boolean?
   diagnostico_confirmado String?
+  caso_id                Int?
+  ponto_vistoria_id      Int?
+  etapa_acompanhamento   Int      @default(0)
+  comparacao_anterior    Json?
   imagem_preview         Bytes
   imagem_mime            String   @default("image/jpeg")
   criado_em              DateTime @default(now())
   atualizado_em          DateTime @updatedAt
 
-  usuario     Usuario      @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
-  propriedade Propriedade? @relation(fields: [propriedade_id], references: [id], onDelete: SetNull)
+  usuario        Usuario        @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  propriedade    Propriedade?   @relation(fields: [propriedade_id], references: [id], onDelete: SetNull)
+  caso           CasoFoliar?    @relation(fields: [caso_id], references: [id], onDelete: SetNull)
+  ponto_vistoria PontoVistoria? @relation(fields: [ponto_vistoria_id], references: [id], onDelete: SetNull)
 
   @@index([usuario_id, criado_em])
   @@index([propriedade_id])
+  @@index([caso_id, criado_em])
+  @@index([ponto_vistoria_id, criado_em])
+}
+
+model CasoFoliar {
+  id                 Int       @id @default(autoincrement())
+  usuario_id         Int
+  propriedade_id     Int?
+  titulo             String
+  cultura            String?
+  tratamento         String?
+  status             String    @default("em_quarentena")
+  proxima_revisao_em DateTime?
+  encerrado_em       DateTime?
+  criado_em          DateTime  @default(now())
+  atualizado_em      DateTime  @updatedAt
+
+  usuario     Usuario         @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  propriedade Propriedade?    @relation(fields: [propriedade_id], references: [id], onDelete: SetNull)
+  analises    AnaliseFoliar[]
+
+  @@index([usuario_id, status, criado_em])
+  @@index([propriedade_id])
+}
+
+model VistoriaArea {
+  id             Int       @id @default(autoincrement())
+  usuario_id     Int
+  propriedade_id Int?
+  nome           String
+  cultura        String?
+  objetivo       String?
+  status         String    @default("em_andamento")
+  concluido_em   DateTime?
+  criado_em      DateTime  @default(now())
+  atualizado_em  DateTime  @updatedAt
+
+  usuario     Usuario         @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  propriedade Propriedade?    @relation(fields: [propriedade_id], references: [id], onDelete: SetNull)
+  pontos      PontoVistoria[]
+
+  @@index([usuario_id, status, criado_em])
+  @@index([propriedade_id])
+}
+
+model PontoVistoria {
+  id              Int      @id @default(autoincrement())
+  vistoria_id     Int
+  nome            String
+  setor           String?
+  ordem           Int
+  latitude        Float?
+  longitude       Float?
+  precisao_metros Float?
+  criado_em       DateTime @default(now())
+  atualizado_em   DateTime @updatedAt
+
+  vistoria VistoriaArea    @relation(fields: [vistoria_id], references: [id], onDelete: Cascade)
+  analises AnaliseFoliar[]
+
+  @@index([vistoria_id, ordem])
 }
 
 model Financeiro {
