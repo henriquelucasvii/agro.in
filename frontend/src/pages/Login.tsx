@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 import logo from "../assets/logo.png";
 import notebook from "../assets/notebook.png";
 import { api } from "../lib/api.ts";
@@ -24,8 +25,11 @@ export default function Login() {
             const { data } = await api.post("/auth/login", { email, senha });
             localStorage.setItem("token", data.token);
             navigate("/dashboard");
-        } catch (error: any) {
-            setErro(error.response?.data?.error ?? "Erro ao fazer login.");
+        } catch (error: unknown) {
+            const apiError = isAxiosError<{ error?: string }>(error)
+                ? error.response?.data?.error
+                : undefined;
+            setErro(apiError ?? "Erro ao fazer login.");
         } finally {
             setLoading(false);
         }
@@ -75,6 +79,14 @@ export default function Login() {
                         className="mt-8 w-full h-12 rounded-xl bg-[#0D5006] text-white text-base font-semibold hover:brightness-110 transition disabled:opacity-60"
                     >
                         {loading ? "Entrando..." : "Login"}
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => navigate("/esqueci-senha")}
+                        className="mt-4 w-full text-center text-sm text-[#0D5006] font-semibold hover:underline"
+                    >
+                        Esqueceu sua senha?
                     </button>
 
                     <p className="text-center mt-6 text-sm">

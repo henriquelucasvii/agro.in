@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 import logo from "../assets/logo.png";
 import notebook from "../assets/notebook.png";
 import { api } from "../lib/api.ts";
@@ -24,8 +25,11 @@ export default function Register() {
         try {
             await api.post("/auth/register", { nome, email, senha });
             navigate("/login");
-        } catch (error: any) {
-            setErro(error.response?.data?.error ?? "Erro ao registrar.");
+        } catch (error: unknown) {
+            const apiError = isAxiosError<{ error?: string }>(error)
+                ? error.response?.data?.error
+                : undefined;
+            setErro(apiError ?? "Erro ao registrar.");
         } finally {
             setLoading(false);
         }

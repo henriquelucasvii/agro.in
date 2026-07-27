@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Estoque from "./pages/Estoque";
 import Propriedade from "./pages/Propriedade";
@@ -16,6 +18,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<Register />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/esqueci-senha" element={<ForgotPassword />} />
+                <Route path="/redefinir-senha" element={<ResetPassword />} />
                 <Route path="/dashboard" element= {<Dashboard />} />
                 <Route path="/estoque" element={<Estoque />} />
                 <Route path="/propriedade" element={<Propriedade />} />

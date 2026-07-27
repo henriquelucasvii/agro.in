@@ -16,6 +16,21 @@ model Usuario {
   criado_em  DateTime     @default(now())
 
   propriedades Propriedade[]
+  tokens_redefinicao SenhaResetToken[]
+}
+
+model SenhaResetToken {
+  id         Int       @id @default(autoincrement())
+  usuario_id Int
+  token_hash String    @unique
+  expira_em  DateTime
+  usado_em   DateTime?
+  criado_em  DateTime  @default(now())
+
+  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+
+  @@index([usuario_id])
+  @@index([expira_em])
 }
 
 model Propriedade {

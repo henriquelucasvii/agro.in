@@ -26,6 +26,15 @@ export interface UpdateSenhaBody {
     novaSenha: string;
 }
 
+export interface ForgotPasswordBody {
+    email: string;
+}
+
+export interface ResetPasswordBody {
+    token: string;
+    novaSenha: string;
+}
+
 export interface UsuarioPublico {
     id: number;
     nome: string;

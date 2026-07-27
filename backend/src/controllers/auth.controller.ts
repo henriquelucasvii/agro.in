@@ -1,6 +1,13 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { authService, AuthError } from "../service/auth.service.js"
-import { RegisterBody, LoginBody, UpdateMeBody, UpdateSenhaBody } from "../types/auth.types.js"
+import {
+    RegisterBody,
+    LoginBody,
+    UpdateMeBody,
+    UpdateSenhaBody,
+    ForgotPasswordBody,
+    ResetPasswordBody,
+} from "../types/auth.types.js"
 
 class AuthController {
 
@@ -82,6 +89,35 @@ class AuthController {
 
             request.log.error(error);
             return reply.status(500).send({ error: "Erro ao alterar senha" });
+        }
+    };
+
+    requestPasswordReset = async (
+        request: FastifyRequest<{ Body: ForgotPasswordBody }>,
+        reply: FastifyReply,
+    ) => {
+        await authService.requestPasswordReset(request.body);
+
+        return reply.send({
+            message: "Se o e-mail estiver cadastrado, você receberá um link de redefinição.",
+        });
+    };
+
+    resetPassword = async (
+        request: FastifyRequest<{ Body: ResetPasswordBody }>,
+        reply: FastifyReply,
+    ) => {
+        try {
+            await authService.resetPassword(request.body);
+
+            return reply.send({ message: "Senha redefinida com sucesso." });
+        } catch (error) {
+            if (error instanceof AuthError) {
+                return reply.status(error.statusCode).send({ error: error.message });
+            }
+
+            request.log.error(error);
+            return reply.status(500).send({ error: "Erro ao redefinir senha" });
         }
     };
 }
