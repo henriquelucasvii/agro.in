@@ -10,11 +10,13 @@ import { producaoRoutes } from "./routes/producao.routes.js";
 import { estoqueRoutes } from "./routes/estoque.routes.js";
 import { metaRoutes } from "./routes/meta.routes.js";
 import { relatoriosRoutes } from "./routes/relatorios.routes.js";
+import { analiseFoliarRoutes } from "./routes/analise-foliar.routes.js";
 
 
 
 const app = Fastify({
     logger: true,
+    bodyLimit: 9 * 1024 * 1024,
 });
 
 const port = 3333;
@@ -73,6 +75,11 @@ const start = async () => {
     // Rotas de relatórios
     await app.register(relatoriosRoutes, {
         prefix: "/relatorios",
+    });
+
+    // Triagem e histórico de análise foliar
+    await app.register(analiseFoliarRoutes, {
+        prefix: "/analise-foliar",
     });
 
     await app.listen({

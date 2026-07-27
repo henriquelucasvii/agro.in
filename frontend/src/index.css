@@ -7,3 +7,56 @@
 button:hover {
     cursor: pointer;
 }
+
+@keyframes foliar-scan {
+    0%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.35;
+    }
+    50% {
+        transform: translateY(320px);
+        opacity: 0.9;
+    }
+}
+
+@keyframes foliar-enter {
+    from {
+        transform: translateY(8px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes foliar-pulse {
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(185, 255, 158, 0);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(185, 255, 158, 0.12);
+    }
+}
+
+.foliar-scan {
+    animation: foliar-scan 3.6s ease-in-out infinite;
+}
+
+.foliar-enter {
+    animation: foliar-enter 320ms ease-out both;
+}
+
+.foliar-processing-dot {
+    animation: foliar-pulse 1.25s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .foliar-scan,
+    .foliar-enter,
+    .foliar-processing-dot {
+        animation: none;
+    }
+}

@@ -10,6 +10,7 @@ const NAV = [
     { key: "producao", label: "Produção" },
     { key: "estoque", label: "Estoque" },
     { key: "meta", label: "Meta" },
+    { key: "analise-foliar", label: "Análise foliar" },
     { key: "relatorios", label: "Relatórios" },
     { key: "perfil", label: "Perfil" },
 ];

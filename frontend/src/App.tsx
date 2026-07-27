@@ -11,6 +11,7 @@ import Metas from "./pages/Metas";
 import Producao from "./pages/Producao";
 import Relatorios from "./pages/Relatorios";
 import Perfil from "./pages/Perfil";
+import AnaliseFoliar from "./pages/AnaliseFoliar";
 
 function App() {
     return (
@@ -28,6 +29,7 @@ function App() {
                 <Route path="/producao" element={<Producao />} />
                 <Route path="/relatorios" element={<Relatorios />} />
                 <Route path="/perfil" element={<Perfil />} />
+                <Route path="/analise-foliar" element={<AnaliseFoliar />} />
             </Routes>
         </BrowserRouter>
     );

@@ -1,22 +1,22 @@
 generator client {
   provider = "prisma-client-js"
-
 }
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model Usuario {
-  id         Int          @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   nome       String
-  email      String       @unique
+  email      String   @unique
   senha_hash String
-  criado_em  DateTime     @default(now())
+  criado_em  DateTime @default(now())
 
-  propriedades Propriedade[]
+  propriedades       Propriedade[]
   tokens_redefinicao SenhaResetToken[]
+  analises_foliares  AnaliseFoliar[]
 }
 
 model SenhaResetToken {
@@ -34,35 +34,73 @@ model SenhaResetToken {
 }
 
 model Propriedade {
-  id             Int      @id @default(autoincrement())
-  usuario_id     Int
-  nome           String
-  area_total     Float?
-  tipo_producao  String?
-  localizacao    String?
-  criado_em      DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  usuario_id    Int
+  nome          String
+  area_total    Float?
+  tipo_producao String?
+  localizacao   String?
+  criado_em     DateTime @default(now())
 
-  usuario    Usuario      @relation(fields: [usuario_id], references: [id])
-  financeiro Financeiro[]
-  producoes  Producao[]
-  estoque    Estoque[]
-  metas      Meta[]
+  usuario           Usuario         @relation(fields: [usuario_id], references: [id])
+  financeiro        Financeiro[]
+  producoes         Producao[]
+  estoque           Estoque[]
+  metas             Meta[]
+  analises_foliares AnaliseFoliar[]
+}
+
+model AnaliseFoliar {
+  id                     Int      @id @default(autoincrement())
+  usuario_id             Int
+  propriedade_id         Int?
+  cultura_informada      String?
+  cultura_detectada      String?
+  cultura_cientifica     String?
+  cultura_confianca      Float?
+  status_geral           String
+  confianca              Float?
+  origem_diagnostico     String
+  referencia_provedor    String?
+  versao_modelo          String?
+  qualidade_foto         String
+  is_planta              Float?
+  hipoteses              Json
+  recomendacoes          Json
+  perguntas_confirmacao  Json
+  metricas_visuais       Json
+  avisos                 Json
+  latitude               Float?
+  longitude              Float?
+  observacoes            String?
+  feedback_util          Boolean?
+  diagnostico_confirmado String?
+  imagem_preview         Bytes
+  imagem_mime            String   @default("image/jpeg")
+  criado_em              DateTime @default(now())
+  atualizado_em          DateTime @updatedAt
+
+  usuario     Usuario      @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  propriedade Propriedade? @relation(fields: [propriedade_id], references: [id], onDelete: SetNull)
+
+  @@index([usuario_id, criado_em])
+  @@index([propriedade_id])
 }
 
 model Financeiro {
-  id             Int         @id @default(autoincrement())
+  id             Int            @id @default(autoincrement())
   propriedade_id Int
   tipo           TipoFinanceiro
   categoria      String?
   descricao      String?
   valor          Float
-  data           DateTime    @default(now())
+  data           DateTime       @default(now())
 
   propriedade Propriedade @relation(fields: [propriedade_id], references: [id])
 }
 
 model Producao {
-  id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   propriedade_id Int
   tipo           String
   area_utilizada Float?
@@ -75,7 +113,7 @@ model Producao {
 }
 
 model Estoque {
-  id                Int      @id @default(autoincrement())
+  id                Int     @id @default(autoincrement())
   propriedade_id    Int
   item              String
   categoria         String?
