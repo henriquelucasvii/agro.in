@@ -315,14 +315,13 @@ export default function Perfil() {
                                 </h3>
                                 <div className="flex flex-col gap-4">
                                     {[
-                                        {
-                                            icon: <Bell size={16} />,
-                                            label: "Notificações por e-mail",
-                                            desc: "Resumo semanal da propriedade",
-                                            value: notificacoes,
-                                            // ← toggle normal
-                                            onClick: () => setNotificacoes(!notificacoes),
-                                        },
+                                        // {
+                                        //     icon: <Bell size={16} />,
+                                        //     label: "Notificações por e-mail",
+                                        //     desc: "Resumo semanal da propriedade",
+                                        //     value: notificacoes,
+                                        //     onClick: () => setNotificacoes(!notificacoes),
+                                        // },
                                         {
                                             icon: <Package size={16} />,
                                             label: "Alertas de estoque baixo",
@@ -331,13 +330,13 @@ export default function Perfil() {
                                             // ← toggle com verificação de estoque
                                             onClick: toggleAlertaEstoque,
                                         },
-                                        {
-                                            icon: <KeyRound size={16} />,
-                                            label: "Modo escuro",
-                                            desc: "Aplica tema escuro ao painel",
-                                            value: modoEscuro,
-                                            onClick: () => setModoEscuro(!modoEscuro),
-                                        },
+                                        // {
+                                        //     icon: <KeyRound size={16} />,
+                                        //     label: "Modo escuro",
+                                        //     desc: "Aplica tema escuro ao painel",
+                                        //     value: modoEscuro,
+                                        //     onClick: () => setModoEscuro(!modoEscuro),
+                                        // },
                                     ].map(({ icon, label, desc, value, onClick }) => (
                                         <div key={label} className="flex items-center justify-between gap-3">
                                             <div className="flex items-start gap-3">
