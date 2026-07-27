@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import "dotenv/config";
 
+import { prisma } from "./lib/prisma.js";
 import { authRoutes } from "./routes/auth.routes.js";
 import { propriedadesRoutes } from "./routes/propriedades.routes.js";
 import { financeiroRoutes } from "./routes/financeiro.routes.js";
@@ -21,6 +22,15 @@ const port = 3333;
 app.get("/", async () => {
     return {
         msg: "AGRO.IN API"
+    };
+});
+
+app.get("/health", async () => {
+    await prisma.$queryRaw`SELECT 1`;
+
+    return {
+        status: "ok",
+        database: "connected",
     };
 });
 
