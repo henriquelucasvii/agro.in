@@ -293,7 +293,206 @@ const normalizarHipotese = (sugestao: unknown): HipoteseFoliar | null => {
     };
 };
 
+const categoriaDaDoencaPlantNet = (descricao: string) => {
+    const texto = descricao
+        .normalize("NFD")
+        .replace(/\p{Diacritic}/gu, "")
+        .toLowerCase();
+
+    if (
+        [
+            "aphid",
+            "aphis",
+            "pulg",
+            "whitefly",
+            "thrips",
+            "mite",
+            "acari",
+            "coccid",
+            "insect",
+            "beetle",
+            "weevil",
+            "caterpillar",
+            "borer",
+            "nematod",
+        ].some((termo) => texto.includes(termo))
+    ) {
+        return "praga";
+    }
+    if (
+        [
+            "virus",
+            "viral",
+            "mosaic",
+            "mosaico",
+            "begomovirus",
+            "potyvirus",
+            "tospovirus",
+        ].some((termo) => texto.includes(termo))
+    ) {
+        return "virus";
+    }
+    if (
+        [
+            "bacter",
+            "xanthomonas",
+            "pseudomonas",
+            "ralstonia",
+            "erwinia",
+            "agrobacterium",
+        ].some((termo) => texto.includes(termo))
+    ) {
+        return "bacteria";
+    }
+    if (
+        [
+            "fung",
+            "oomyc",
+            "mildew",
+            "mildi",
+            "oidio",
+            "rust",
+            "ferrug",
+            "anthrac",
+            "antrac",
+            "fusarium",
+            "alternaria",
+            "botrytis",
+            "phytophthora",
+            "pythium",
+            "rhizoctonia",
+            "sclerot",
+            "cercospora",
+            "colletotrichum",
+            "elsinoe",
+            "tranzschelia",
+            "septoria",
+        ].some((termo) => texto.includes(termo))
+    ) {
+        return "fungo_ou_oomiceto";
+    }
+
+    return "doenca_ou_estresse";
+};
+
+const normalizarHipotesePlantNet = (resultado: unknown): HipoteseFoliar | null => {
+    const item = comoRegistro(resultado);
+    const codigoEppo = comoTexto(item.name);
+    const descricaoOriginal = comoTexto(item.description);
+    const probabilidade = comoNumero(item.score);
+
+    if (!codigoEppo || !descricaoOriginal || probabilidade === undefined) return null;
+
+    const categoria = categoriaDaDoencaPlantNet(descricaoOriginal);
+    const prefixos: Record<string, string> = {
+        praga: "Possível praga",
+        virus: "Possível doença viral",
+        bacteria: "Possível doença bacteriana",
+        fungo_ou_oomiceto: "Possível doença fúngica",
+        doenca_ou_estresse: "Possível doença ou agente associado",
+    };
+
+    return {
+        nome: `${prefixos[categoria] ?? prefixos.doenca_ou_estresse}: ${descricaoOriginal}`,
+        categoria,
+        probabilidade,
+        descricao:
+            `Correspondência visual sugerida pelo Pl@ntNet Diseases. Código EPPO: ${codigoEppo}. ` +
+            "Confirme a cultura, a distribuição dos sintomas e os sinais observados antes de qualquer manejo.",
+        sintomas: [],
+    };
+};
+
 class DiagnosticoFoliarService {
+    private analisarComPlantNet = async (
+        entrada: EntradaDiagnostico,
+        apiKey: string,
+    ): Promise<ResultadoDiagnostico> => {
+        const parametros = new URLSearchParams({
+            "api-key": apiKey,
+            "include-related-images": "false",
+            "nb-results": "3",
+            lang: "en",
+        });
+        const corpo = new FormData();
+        corpo.append("organs", "leaf");
+        corpo.append(
+            "images",
+            new Blob([new Uint8Array(entrada.imagem)], { type: "image/jpeg" }),
+            "folha.jpg",
+        );
+
+        const resposta = await fetch(
+            `https://my-api.plantnet.org/v2/diseases/identify?${parametros.toString()}`,
+            {
+                method: "POST",
+                body: corpo,
+                signal: AbortSignal.timeout(20_000),
+            },
+        );
+
+        if (!resposta.ok) {
+            const detalhe = (await resposta.text()).slice(0, 180);
+            const motivo =
+                resposta.status === 429
+                    ? "cota diária esgotada"
+                    : `resposta ${resposta.status}${detalhe ? `: ${detalhe}` : ""}`;
+            throw new Error(`Pl@ntNet Diseases indisponível (${motivo})`);
+        }
+
+        const bruto = comoRegistro(await resposta.json());
+        const resultados = comoArray(bruto.results);
+        const hipoteses = resultados
+            .map(normalizarHipotesePlantNet)
+            .filter((item): item is HipoteseFoliar => item !== null)
+            .slice(0, 3);
+        const primeira = hipoteses[0];
+
+        if (!primeira) {
+            throw new Error("Pl@ntNet Diseases não retornou uma hipótese compatível");
+        }
+
+        const limiteConfigurado = Number(process.env.PLANTNET_MIN_SCORE ?? "0.35");
+        const limiteConfianca =
+            Number.isFinite(limiteConfigurado) &&
+            limiteConfigurado >= 0.1 &&
+            limiteConfigurado <= 0.95
+                ? limiteConfigurado
+                : 0.35;
+
+        if (primeira.probabilidade < limiteConfianca) {
+            throw new Error(
+                `Pl@ntNet Diseases retornou baixa confiança (${Math.round(primeira.probabilidade * 100)}%)`,
+            );
+        }
+
+        const versao = comoTexto(bruto.version);
+        const restante = comoNumero(bruto.remainingIdentificationRequests);
+        const codigoEppo = comoTexto(comoRegistro(resultados[0]).name);
+        const avisos = [
+            ...entrada.alertasQualidade,
+            "O Pl@ntNet Diseases cobre uma lista ainda limitada de culturas e patologias; ausência de resultado não comprova que a folha está saudável.",
+            "As hipóteses são probabilísticas. Compare as alternativas e confirme os sintomas no campo.",
+            "Recomendações químicas exigem registro para cultura/alvo e receituário de profissional habilitado.",
+            "A foto não mede N, P, K, pH ou fertilidade do solo; confirme nutrição com análises de solo e tecido.",
+            ...(restante !== undefined
+                ? [`Cota Pl@ntNet disponível nesta chave hoje: ${restante} identificações.`]
+                : []),
+        ];
+
+        return {
+            status_geral: statusDaCategoria(primeira.categoria),
+            confianca: primeira.probabilidade,
+            origem: "plantnet",
+            ...(codigoEppo ? { referencia_provedor: `EPPO:${codigoEppo}` } : {}),
+            ...(versao ? { versao_modelo: versao } : {}),
+            hipoteses,
+            recomendacoes: recomendacoesPorCategoria(primeira.categoria),
+            perguntas: perguntasPorCategoria(primeira.categoria),
+            avisos,
+        };
+    };
+
     private analisarComCropHealth = async (
         entrada: EntradaDiagnostico,
         apiKey: string,
@@ -380,20 +579,42 @@ class DiagnosticoFoliarService {
     };
 
     analisar = async (entrada: EntradaDiagnostico): Promise<ResultadoDiagnostico> => {
-        const apiKey = process.env.KINDWISE_CROP_HEALTH_API_KEY?.trim();
+        const plantNetApiKey = process.env.PLANTNET_API_KEY?.trim();
+        const cropHealthApiKey = process.env.KINDWISE_CROP_HEALTH_API_KEY?.trim();
 
-        if (!apiKey || entrada.qualidade === "refazer") {
+        if (entrada.qualidade === "refazer") {
             return triagemVisual(entrada);
         }
 
-        try {
-            return await this.analisarComCropHealth(entrada, apiKey);
-        } catch (error) {
-            const mensagem = error instanceof Error ? error.message : "falha desconhecida";
-            return triagemVisual(entrada, [
-                `A análise especializada ficou indisponível nesta tentativa (${mensagem}). A triagem local foi preservada.`,
-            ]);
+        const avisosFallback: string[] = [];
+
+        if (plantNetApiKey) {
+            try {
+                return await this.analisarComPlantNet(entrada, plantNetApiKey);
+            } catch (error) {
+                const mensagem = error instanceof Error ? error.message : "falha desconhecida";
+                avisosFallback.push(`O Pl@ntNet não concluiu esta tentativa (${mensagem}).`);
+            }
         }
+
+        if (cropHealthApiKey) {
+            try {
+                return await this.analisarComCropHealth(entrada, cropHealthApiKey);
+            } catch (error) {
+                const mensagem = error instanceof Error ? error.message : "falha desconhecida";
+                avisosFallback.push(`O crop.health não concluiu esta tentativa (${mensagem}).`);
+            }
+        }
+
+        return triagemVisual(
+            entrada,
+            avisosFallback.length
+                ? [
+                    ...avisosFallback,
+                    "A triagem visual local foi preservada nesta análise.",
+                ]
+                : [],
+        );
     };
 }
 

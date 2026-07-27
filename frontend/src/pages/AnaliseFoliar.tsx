@@ -94,7 +94,7 @@ interface Analise {
     cultura_confianca?: number | null;
     status_geral: string;
     confianca?: number | null;
-    origem_diagnostico: "triagem_visual" | "crop_health";
+    origem_diagnostico: "triagem_visual" | "plantnet" | "crop_health";
     qualidade_foto: "boa" | "aceitavel" | "refazer";
     hipoteses: Hipotese[];
     recomendacoes: Recomendacao[];
@@ -134,6 +134,7 @@ interface VistoriaContexto {
 interface Capacidades {
     diagnostico_especializado: boolean;
     provedor_especializado: string | null;
+    limite_gratuito_diario?: number | null;
 }
 
 const PROCESSOS = [
@@ -505,9 +506,23 @@ export default function AnaliseFoliar() {
                                 Transforme uma boa captura em hipóteses verificáveis e próximos passos seguros.
                             </p>
                         </div>
-                        <div className="flex items-center gap-2 self-start rounded-full border border-[#D7DED2] bg-white px-3 py-2 text-xs font-semibold text-[#36533C] md:self-auto">
-                            <span className={`h-2 w-2 rounded-full ${capacidades?.diagnostico_especializado ? "bg-[#30B85D]" : "bg-[#D79A28]"}`} />
-                            {capacidades?.diagnostico_especializado ? "Diagnóstico ampliado ativo" : "Triagem visual ativa"}
+                        <div className="self-start text-right md:self-auto">
+                            <div className="flex items-center gap-2 rounded-full border border-[#D7DED2] bg-white px-3 py-2 text-xs font-semibold text-[#36533C]">
+                                <span className={`h-2 w-2 rounded-full ${capacidades?.diagnostico_especializado ? "bg-[#30B85D]" : "bg-[#D79A28]"}`} />
+                                {capacidades?.diagnostico_especializado
+                                    ? `${capacidades.provedor_especializado ?? "Diagnóstico ampliado"} ativo`
+                                    : "Triagem visual ativa"}
+                            </div>
+                            {capacidades?.provedor_especializado === "Pl@ntNet Diseases" && (
+                                <a
+                                    href="https://my.plantnet.org/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="mt-1.5 inline-block text-[10px] font-semibold text-[#617263] underline decoration-[#AFC0B0] underline-offset-2"
+                                >
+                                    Identificação baseada na API Pl@ntNet
+                                </a>
+                            )}
                         </div>
                     </div>
                 </header>
@@ -653,7 +668,13 @@ export default function AnaliseFoliar() {
 
                                     <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-xl bg-[#F3F6F0] p-3.5">
                                         <input type="checkbox" checked={consentimento} onChange={(e) => setConsentimento(e.target.checked)} className="mt-0.5 h-4 w-4 accent-[#175F2D]" />
-                                        <span className="text-[11px] leading-5 text-[#617063]">Autorizo o processamento e armazenamento desta foto no meu histórico. Posso excluí-la a qualquer momento.</span>
+                                        <span className="text-[11px] leading-5 text-[#617063]">
+                                            Autorizo o processamento e armazenamento desta foto no meu histórico
+                                            {capacidades?.provedor_especializado
+                                                ? ` e seu envio ao ${capacidades.provedor_especializado} para identificação visual`
+                                                : ""}
+                                            . Posso excluí-la a qualquer momento.
+                                        </span>
                                     </label>
                                     <div className="mt-auto pt-6">
                                         <button onClick={analisar} disabled={!imagem || processando} className="flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#174D27] px-5 text-sm font-bold text-white transition hover:bg-[#0E3D1D] disabled:cursor-not-allowed disabled:opacity-45"><Microscope size={18} /> Processar análise</button>

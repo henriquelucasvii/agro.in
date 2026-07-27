@@ -395,19 +395,27 @@ class AnaliseFoliarService {
         await prisma.analiseFoliar.delete({ where: { id } });
     };
 
-    capacidades = () => ({
-        pre_analise_local: true,
-        diagnostico_especializado: Boolean(process.env.KINDWISE_CROP_HEALTH_API_KEY?.trim()),
-        provedor_especializado: process.env.KINDWISE_CROP_HEALTH_API_KEY?.trim()
-            ? "crop.health"
-            : null,
-        analise_solo_por_foto: false,
-        acompanhamento_temporal: true,
-        vistoria_area: true,
-        gps_pontos: true,
-        nota:
-            "A foto permite triagem visual. Nutrientes e fertilidade do solo exigem análises químicas de solo e tecido.",
-    });
+    capacidades = () => {
+        const plantNetAtivo = Boolean(process.env.PLANTNET_API_KEY?.trim());
+        const cropHealthAtivo = Boolean(process.env.KINDWISE_CROP_HEALTH_API_KEY?.trim());
+
+        return {
+            pre_analise_local: true,
+            diagnostico_especializado: plantNetAtivo || cropHealthAtivo,
+            provedor_especializado: plantNetAtivo
+                ? "Pl@ntNet Diseases"
+                : cropHealthAtivo
+                    ? "crop.health"
+                    : null,
+            limite_gratuito_diario: plantNetAtivo ? 500 : null,
+            analise_solo_por_foto: false,
+            acompanhamento_temporal: true,
+            vistoria_area: true,
+            gps_pontos: true,
+            nota:
+                "A foto permite triagem visual. Nutrientes e fertilidade do solo exigem análises químicas de solo e tecido.",
+        };
+    };
 }
 
 export const analiseFoliarService = new AnaliseFoliarService();

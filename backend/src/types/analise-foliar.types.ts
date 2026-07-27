@@ -83,7 +83,7 @@ export interface RecomendacaoFoliar {
 export interface ResultadoDiagnostico {
     status_geral: string;
     confianca: number;
-    origem: "triagem_visual" | "crop_health";
+    origem: "triagem_visual" | "plantnet" | "crop_health";
     referencia_provedor?: string;
     versao_modelo?: string;
     is_planta?: number;

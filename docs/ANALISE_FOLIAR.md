@@ -17,10 +17,14 @@ histórico e feedback. A foto passa pelas seguintes etapas:
 10. vistoria de área por pontos com posição, precisão GPS e repetição da captura.
 
 A implementação local nunca afirma identificar fungo, bactéria, vírus ou espécie.
-Ela informa apenas padrões visuais. Quando a variável
-`KINDWISE_CROP_HEALTH_API_KEY` está configurada, o backend envia a imagem
-comprimida ao `crop.health` e normaliza as três hipóteses mais prováveis. A chave
-fica somente no servidor.
+Ela informa apenas padrões visuais. Quando a variável `PLANTNET_API_KEY` está
+configurada, o backend envia a imagem comprimida ao Pl@ntNet Diseases e normaliza
+as três hipóteses mais prováveis. A chave fica somente no servidor.
+
+O Pl@ntNet é o provedor primário. O `crop.health` continua disponível como
+contingência quando sua chave também estiver configurada. Se os provedores
+falharem, esgotarem a cota ou retornarem confiança abaixo do limiar conservador,
+a análise continua com a triagem visual local e informa o fallback ao usuário.
 
 ## Limite agronômico essencial
 
@@ -136,26 +140,48 @@ e fotos reais:
 - [Generalização entre PlantVillage, PlantDoc, Digipathos e campo](https://doaj.org/article/e81741e8485f44b0b4f4ef55b92c95d0)
 - [Viés de fundo em PlantVillage](https://arxiv.org/abs/2206.04374)
 
-## Provedor pronto para o MVP
+## Provedor escolhido para o MVP
 
-O adaptador implementado usa o `crop.health` da Kindwise. Segundo a documentação
-do fornecedor, ele cobre cerca de 300 problemas em 23 culturas, retorna
-alternativas, probabilidades, sintomas e tratamentos. A integração é opcional e
-o sistema continua operando em modo de triagem visual sem a chave.
+O provedor primário implementado é o **Pl@ntNet Diseases**. O plano gratuito
+oficial oferece 500 identificações por dia. Cada requisição de doença consome um
+crédito e pode receber até cinco fotos da mesma planta. O Agro.in envia uma foto
+JPEG com o órgão `leaf`, solicita apenas três resultados e não pede imagens
+relacionadas, evitando a complexidade de licenciamento dessas ilustrações.
 
-- [Descrição do crop.health](https://www.kindwise.com/crop-health)
-- [Demonstração](https://crop.kindwise.com/demo/)
-- [Documentação da API](https://crop.kindwise.com/docs)
-- [Segurança e uso via backend](https://www.kindwise.com/faq)
+O endpoint devolve doenças e pragas por código EPPO, descrição e confiança. A
+funcionalidade foi lançada em dezembro de 2025 e ainda cobre uma lista limitada
+de espécies e patologias. Por segurança, o Agro.in rejeita respostas abaixo de
+35% de confiança e preserva a triagem local. Esse limiar pode ser ajustado após
+validação de campo.
+
+- [Documentação do Pl@ntNet Diseases](https://my.plantnet.org/doc/api/diseases)
+- [Plano gratuito e preços](https://my.plantnet.org/pricing)
+- [Criação da conta e chave](https://my.plantnet.org/doc/getting-started/introduction)
+- [Termos, privacidade e atribuição](https://my.plantnet.org/terms_of_use)
+- [Consórcio Pl@ntNet](https://plantnet.org/en/plntnet-consortium/)
+- [Histórico de lançamento do endpoint](https://my.plantnet.org/doc/references/changelog)
 
 Configuração:
+
+```env
+PLANTNET_API_KEY="sua_chave_privada_plantnet"
+PLANTNET_MIN_SCORE="0.35"
+```
+
+O `crop.health` da Kindwise permanece como fallback opcional:
 
 ```env
 KINDWISE_CROP_HEALTH_API_KEY="sua_chave_crop_health"
 ```
 
-Não use uma chave de `plant.id`: o fornecedor exige uma chave separada para
-`crop.health`.
+- [Descrição do crop.health](https://www.kindwise.com/crop-health)
+- [Documentação da API](https://crop.kindwise.com/docs)
+
+Nunca exponha nenhuma dessas chaves no frontend. Elas devem ser configuradas
+somente no backend/Vercel. Quando o Pl@ntNet está ativo, a interface identifica o
+provedor no consentimento e exibe a atribuição. Segundo os termos oficiais, a
+imagem enviada permanece apenas na memória volátil do serviço durante a
+identificação; o Agro.in continua responsável por sua própria cópia no histórico.
 
 ## Arquitetura recomendada para modelo Agro.in
 
@@ -205,7 +231,7 @@ captura mobile
 
 ## Próximos passos para produção
 
-1. Configurar uma chave `crop.health` para habilitar doenças específicas agora.
+1. Criar a conta gratuita do Pl@ntNet e configurar `PLANTNET_API_KEY` no backend.
 2. Integrar Agrofit somente após confirmação e com regras de registro brasileiras.
 3. Criar o catálogo versionado de recomendações por cultura, fase e região.
 4. Montar a ingestão licenciada do Digipathos e das bases complementares.
