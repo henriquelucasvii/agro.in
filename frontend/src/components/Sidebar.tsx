@@ -82,9 +82,16 @@ export default function Sidebar() {
                     })}
                 </nav>
                 <button
-                    onClick={() => navigate("/assistente")}
+                    onClick={() => {
+                        navigate("/assistente");
+                        setSidebarAberto(false);
+                    }}
                     className="flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-sm font-semibold mt-4"
-                    style={{ background: "rgba(79,244,123,0.15)", color: "#4FF47B", border: "1px solid rgba(79,244,123,0.35)" }}
+                    style={{
+                        background: location.pathname === "/assistente" ? "#4FF47B" : "rgba(79,244,123,0.15)",
+                        color: location.pathname === "/assistente" ? "#0D5006" : "#4FF47B",
+                        border: "1px solid rgba(79,244,123,0.35)",
+                    }}
                 >
                     <Bot size={17} />
                     Assistente de IA

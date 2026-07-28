@@ -53,10 +53,34 @@ button:hover {
     animation: foliar-pulse 1.25s ease-in-out infinite;
 }
 
+@keyframes assistente-enter {
+    from {
+        transform: translateY(6px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.assistente-enter {
+    animation: assistente-enter 260ms ease-out both;
+}
+
+.assistente-scroll {
+    scrollbar-color: #cbd6c8 transparent;
+    scrollbar-width: thin;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .foliar-scan,
     .foliar-enter,
     .foliar-processing-dot {
+        animation: none;
+    }
+
+    .assistente-enter {
         animation: none;
     }
 }

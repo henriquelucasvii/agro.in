@@ -11,6 +11,7 @@ import { estoqueRoutes } from "./routes/estoque.routes.js";
 import { metaRoutes } from "./routes/meta.routes.js";
 import { relatoriosRoutes } from "./routes/relatorios.routes.js";
 import { analiseFoliarRoutes } from "./routes/analise-foliar.routes.js";
+import { assistenteRoutes } from "./routes/assistente.routes.js";
 
 
 
@@ -80,6 +81,11 @@ const start = async () => {
     // Triagem e histórico de análise foliar
     await app.register(analiseFoliarRoutes, {
         prefix: "/analise-foliar",
+    });
+
+    // Orientação agronômica com RAG e provedor gratuito
+    await app.register(assistenteRoutes, {
+        prefix: "/assistente",
     });
 
     await app.listen({
