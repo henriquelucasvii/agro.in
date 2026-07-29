@@ -52,7 +52,7 @@ export default function ForgotPassword() {
                     </p>
 
                     <form onSubmit={handleSubmit}>
-                        <label className="block text-[#0D5006] text-base mb-1" htmlFor="email">
+                        <label className="block text-[#1F5B3A] text-base mb-1" htmlFor="email">
                             E-mail
                         </label>
                         <input
@@ -60,7 +60,7 @@ export default function ForgotPassword() {
                             type="email"
                             value={email}
                             onChange={(event) => setEmail(event.target.value)}
-                            className="w-full h-12 rounded-md bg-[#E4E4E4] px-4 outline-none text-sm focus:ring-2 focus:ring-[#0D5006]/30"
+                            className="w-full h-12 rounded-md bg-[#EFF2EE] px-4 outline-none text-sm focus:ring-2 focus:ring-[#1F5B3A]/30"
                             placeholder="Insira seu e-mail"
                             autoComplete="email"
                         />
@@ -75,7 +75,7 @@ export default function ForgotPassword() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="mt-8 w-full h-12 rounded-xl bg-[#0D5006] text-white text-base font-semibold hover:brightness-110 transition disabled:opacity-60"
+                            className="mt-8 w-full h-12 rounded-xl bg-[#1F5B3A] text-white text-base font-semibold hover:brightness-110 transition disabled:opacity-60"
                         >
                             {loading ? "Enviando..." : "Enviar link"}
                         </button>
@@ -84,16 +84,16 @@ export default function ForgotPassword() {
                     <button
                         type="button"
                         onClick={() => navigate("/login")}
-                        className="mt-5 inline-flex min-h-11 w-full items-center justify-center text-center text-sm font-semibold text-[#0D5006] hover:underline"
+                        className="mt-5 inline-flex min-h-11 w-full items-center justify-center text-center text-sm font-semibold text-[#1F5B3A] hover:underline"
                     >
                         Voltar para o login
                     </button>
                 </div>
             </div>
 
-            <div className="flex-1 bg-[#0D5006] flex flex-col justify-between px-8 py-12 overflow-hidden">
+            <div className="flex-1 bg-[#1F5B3A] flex flex-col justify-between px-8 py-12 overflow-hidden">
                 <div className="max-w-md self-center-safe">
-                    <p className="text-[#48F36B] font-bold uppercase text-sm tracking-widest mb-4">
+                    <p className="text-[#A9E7AF] font-bold uppercase text-sm tracking-widest mb-4">
                         ACESSO SEGURO
                     </p>
                     <h2 className="text-white font-bold text-3xl lg:text-4xl xl:text-5xl leading-tight mb-6">

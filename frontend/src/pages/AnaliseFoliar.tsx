@@ -206,7 +206,7 @@ function BarraTecido({ label, valor, cor }: { label: string; valor: number; cor:
         <div>
             <div className="mb-1.5 flex items-center justify-between text-xs">
                 <span style={{ color: "#566156" }}>{label}</span>
-                <span className="font-semibold" style={{ color: "#1D2C20" }}>{percentual(valor)}</span>
+                <span className="font-semibold" style={{ color: "#25352B" }}>{percentual(valor)}</span>
             </div>
             <div className="h-2 overflow-hidden rounded-full" style={{ background: "#E8ECE5" }}>
                 <div className="h-full rounded-full transition-all duration-700" style={{ width: percentual(valor), background: cor }} />
@@ -482,17 +482,17 @@ export default function AnaliseFoliar() {
 
     if (carregandoPagina) {
         return (
-            <div className="flex min-h-screen" style={{ background: "#F3F5EF" }}>
+            <div className="flex min-h-screen" style={{ background: "#F5F6F2" }}>
                 <Sidebar />
                 <div className="flex flex-1 items-center justify-center">
-                    <LoaderCircle className="animate-spin text-[#0D5006]" size={28} />
+                    <LoaderCircle className="animate-spin text-[#1F5B3A]" size={28} />
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen lg:flex" style={{ background: "#F3F5EF", color: "#1D2C20" }}>
+        <div className="min-h-screen lg:flex" style={{ background: "#F5F6F2", color: "#25352B" }}>
             <Sidebar />
             <main className="min-w-0 flex-1 overflow-hidden">
                 <header className="border-b border-[#DDE2D8] bg-[#F8FAF5]/95 px-5 py-5 backdrop-blur md:px-8 lg:px-10">
@@ -566,7 +566,7 @@ export default function AnaliseFoliar() {
                     )}
 
                     <section className="grid overflow-hidden rounded-[26px] border border-[#D9E0D4] bg-white shadow-[0_24px_60px_rgba(31,61,35,0.07)] xl:grid-cols-[minmax(0,1.08fr)_minmax(430px,0.92fr)]">
-                        <div className="relative min-h-[520px] overflow-hidden bg-[#102C1A] md:min-h-[620px]">
+                        <div className="relative min-h-[520px] overflow-hidden bg-[#173A29] md:min-h-[620px]">
                             {imagem ? (
                                 <>
                                     <img src={imagem} alt="Folha selecionada para análise" className="absolute inset-0 h-full w-full object-cover" />
@@ -574,7 +574,7 @@ export default function AnaliseFoliar() {
                                     {!processando && <div className="foliar-scan pointer-events-none absolute inset-x-[8%] top-[18%] h-px bg-[#8AFF72] shadow-[0_0_18px_3px_rgba(138,255,114,0.75)]" />}
                                     <div className="absolute left-5 top-5 flex gap-2">
                                         <span className="rounded-full bg-black/45 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.13em] text-white backdrop-blur">Captura atual</span>
-                                        {resultado && <span className="rounded-full bg-[#B9FF9E] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.13em] text-[#12371B]">Processada</span>}
+                                        {resultado && <span className="rounded-full bg-[#B8E6A8] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.13em] text-[#12371B]">Processada</span>}
                                     </div>
                                 </>
                             ) : (
@@ -583,7 +583,7 @@ export default function AnaliseFoliar() {
                                     <div className="relative flex h-24 w-24 items-center justify-center rounded-full border border-white/15 bg-white/8"><Leaf size={42} className="text-[#B7F6A8]" strokeWidth={1.5} /></div>
                                     <h2 className="relative mt-6 text-2xl font-semibold tracking-[-0.025em] text-white md:text-3xl">Enquadre uma folha por vez</h2>
                                     <p className="relative mt-3 max-w-md text-sm leading-6 text-white/60">Use luz natural indireta, preencha o quadro e fotografe também o verso em uma nova análise quando houver manchas.</p>
-                                    <button onClick={() => inputRef.current?.click()} className="relative mt-7 flex items-center gap-2 rounded-full bg-[#B9FF9E] px-5 py-3 text-sm font-bold text-[#12371B] transition hover:-translate-y-0.5"><Camera size={18} /> Abrir câmera</button>
+                                    <button onClick={() => inputRef.current?.click()} className="relative mt-7 flex items-center gap-2 rounded-full bg-[#B8E6A8] px-5 py-3 text-sm font-bold text-[#12371B] transition hover:-translate-y-0.5"><Camera size={18} /> Abrir câmera</button>
                                 </div>
                             )}
 
@@ -593,13 +593,13 @@ export default function AnaliseFoliar() {
                                 <div className="absolute inset-0 z-20 flex flex-col justify-end bg-[#07150B]/82 p-6 backdrop-blur-sm md:p-8">
                                     <div className="mb-auto flex items-center justify-between text-white/70">
                                         <span className="text-xs font-bold uppercase tracking-[0.17em]">Multiprocessamento</span>
-                                        <LoaderCircle size={20} className="animate-spin text-[#B9FF9E]" />
+                                        <LoaderCircle size={20} className="animate-spin text-[#B8E6A8]" />
                                     </div>
                                     <h3 className="max-w-lg text-3xl font-semibold tracking-[-0.04em] text-white">Lendo os sinais da folha</h3>
                                     <div className="mt-7 grid gap-4 sm:grid-cols-2">
                                         {PROCESSOS.map((processo, indice) => (
                                             <div key={processo.titulo} className={`flex items-start gap-3 transition-all duration-500 ${indice <= processoAtual ? "opacity-100" : "opacity-30"}`}>
-                                                <div className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${indice < processoAtual ? "bg-[#B9FF9E] text-[#12371B]" : indice === processoAtual ? "foliar-processing-dot border border-[#B9FF9E] text-[#B9FF9E]" : "border border-white/30 text-white/40"}`}>
+                                                <div className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${indice < processoAtual ? "bg-[#B8E6A8] text-[#12371B]" : indice === processoAtual ? "foliar-processing-dot border border-[#B8E6A8] text-[#B8E6A8]" : "border border-white/30 text-white/40"}`}>
                                                     {indice < processoAtual ? <Check size={13} /> : <span className="text-[10px]">{indice + 1}</span>}
                                                 </div>
                                                 <div><p className="text-sm font-semibold text-white">{processo.titulo}</p><p className="mt-0.5 text-xs text-white/50">{processo.detalhe}</p></div>
@@ -677,7 +677,7 @@ export default function AnaliseFoliar() {
                                         </span>
                                     </label>
                                     <div className="mt-auto pt-6">
-                                        <button onClick={analisar} disabled={!imagem || processando} className="flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#174D27] px-5 text-sm font-bold text-white transition hover:bg-[#0E3D1D] disabled:cursor-not-allowed disabled:opacity-45"><Microscope size={18} /> Processar análise</button>
+                                        <button onClick={analisar} disabled={!imagem || processando} className="flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#1F5B3A] px-5 text-sm font-bold text-white transition hover:bg-[#17482F] disabled:cursor-not-allowed disabled:opacity-45"><Microscope size={18} /> Processar análise</button>
                                         <p className="mt-3 text-center text-[10px] leading-4 text-[#8A9588]">Resultado de triagem. Não substitui diagnóstico agronômico, fitopatológico ou análise laboratorial.</p>
                                     </div>
                                 </div>
@@ -795,7 +795,7 @@ export default function AnaliseFoliar() {
                                                 <button
                                                     onClick={iniciarQuarentena}
                                                     disabled={criandoQuarentena}
-                                                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#174D27] px-4 py-3 text-xs font-bold text-white disabled:opacity-50"
+                                                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1F5B3A] px-4 py-3 text-xs font-bold text-white disabled:opacity-50"
                                                 >
                                                     {criandoQuarentena ? (
                                                         <LoaderCircle size={16} className="animate-spin" />

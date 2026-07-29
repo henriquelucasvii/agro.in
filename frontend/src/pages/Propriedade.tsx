@@ -145,14 +145,14 @@ export default function Propriedade() {
     );
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{background: "#F7F8F5" }}>
+        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{background: "#F5F6F2" }}>
             <Sidebar />
 
             {/* Main */}
             <div className="flex-1 flex flex-col">
 
                 {/* Header */}
-                <header className="px-10 pt-8 pb-6" style={{ background: "#0D5006" }}>
+                <header className="px-10 pt-8 pb-6" style={{ background: "#1F5B3A" }}>
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Montserrat, sans-serif" }}>
@@ -165,7 +165,7 @@ export default function Propriedade() {
                         <button
                             onClick={abrirNovo}
                             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-90"
-                            style={{ background: "#4FF47B", color: "#0D5006" }}
+                            style={{ background: "#9AE6A6", color: "#1F5B3A" }}
                         >
                             <Plus size={16} />
                             Nova propriedade
@@ -176,31 +176,31 @@ export default function Propriedade() {
                 <main className="px-10 py-8 flex-1">
 
                     {/* Busca */}
-                    <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 mb-6 w-full max-w-sm" style={{ border: "1px solid #E7E9E4" }}>
-                        <Search size={16} style={{ color: "#8B978A" }} />
+                    <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 mb-6 w-full max-w-sm" style={{ border: "1px solid #E1E6DF" }}>
+                        <Search size={16} style={{ color: "#647269" }} />
                         <input
                             type="text"
                             placeholder="Buscar por nome ou local..."
                             value={busca}
                             onChange={(e) => setBusca(e.target.value)}
                             className="flex-1 text-sm outline-none bg-transparent"
-                            style={{ color: "#1A2E1A" }}
+                            style={{ color: "#25352B" }}
                         />
                     </div>
 
                     {/* Conteúdo */}
                     {loading ? (
-                        <p className="text-sm" style={{ color: "#7A8A78" }}>Carregando...</p>
+                        <p className="text-sm" style={{ color: "#647269" }}>Carregando...</p>
                     ) : filtradas.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-24 gap-3">
-                            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#EFF5EC" }}>
+                            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#E9F1E8" }}>
                                 <Leaf size={20} style={{ color: "#8CA88A" }} />
                             </div>
-                            <p className="text-sm" style={{ color: "#7A8A78" }}>Nenhuma propriedade cadastrada ainda</p>
+                            <p className="text-sm" style={{ color: "#647269" }}>Nenhuma propriedade cadastrada ainda</p>
                             <button
                                 onClick={abrirNovo}
                                 className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
-                                style={{ color: "#0D5006", background: "#EAF9EC" }}
+                                style={{ color: "#1F5B3A", background: "#E8F3EA" }}
                             >
                                 <Plus size={13} /> Cadastrar propriedade
                             </button>
@@ -211,35 +211,35 @@ export default function Propriedade() {
                                 <div
                                     key={p.id}
                                     className="bg-white rounded-2xl p-5 flex flex-col gap-4"
-                                    style={{ border: "1px solid #E7E9E4" }}
+                                    style={{ border: "1px solid #E1E6DF" }}
                                 >
                                     <div className="flex items-start justify-between">
                                         <div>
-                                            <p className="font-semibold text-base" style={{ color: "#1A2E1A" }}>{p.nome}</p>
+                                            <p className="font-semibold text-base" style={{ color: "#25352B" }}>{p.nome}</p>
                                             <div className="flex items-center gap-1 mt-1">
-                                                <MapPin size={11} style={{ color: "#8B978A" }} />
-                                                <p className="text-xs" style={{ color: "#8B978A" }}>{p.localizacao}</p>
+                                                <MapPin size={11} style={{ color: "#647269" }} />
+                                                <p className="text-xs" style={{ color: "#647269" }}>{p.localizacao}</p>
                                             </div>
                                         </div>
                                         <span
                                             className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                                            style={{ background: "#EAF9EC", color: "#0D5006" }}
+                                            style={{ background: "#E8F3EA", color: "#1F5B3A" }}
                                         >
                                             Ativa
                                         </span>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-2">
-                                        <div className="rounded-xl px-3 py-2.5" style={{ background: "#F3F7F1" }}>
-                                            <p className="text-[11px]" style={{ color: "#8B978A" }}>Área Total</p>
-                                            <p className="text-sm font-semibold mt-0.5" style={{ color: "#1A2E1A" }}>{p.area_total} ha</p>
+                                        <div className="rounded-xl px-3 py-2.5" style={{ background: "#F2F5F0" }}>
+                                            <p className="text-[11px]" style={{ color: "#647269" }}>Área Total</p>
+                                            <p className="text-sm font-semibold mt-0.5" style={{ color: "#25352B" }}>{p.area_total} ha</p>
                                         </div>
-                                        <div className="rounded-xl px-3 py-2.5" style={{ background: "#F3F7F1" }}>
+                                        <div className="rounded-xl px-3 py-2.5" style={{ background: "#F2F5F0" }}>
                                             <div className="flex items-center gap-1">
-                                                <Sprout size={11} style={{ color: "#8B978A" }} />
-                                                <p className="text-[11px]" style={{ color: "#8B978A" }}>Produção</p>
+                                                <Sprout size={11} style={{ color: "#647269" }} />
+                                                <p className="text-[11px]" style={{ color: "#647269" }}>Produção</p>
                                             </div>
-                                            <p className="text-sm font-semibold mt-0.5" style={{ color: "#1A2E1A" }}>{p.tipo_producao}</p>
+                                            <p className="text-sm font-semibold mt-0.5" style={{ color: "#25352B" }}>{p.tipo_producao}</p>
                                         </div>
                                     </div>
 
@@ -247,14 +247,14 @@ export default function Propriedade() {
                                         <button
                                             onClick={() => abrirEdicao(p)}
                                             className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition hover:brightness-95"
-                                            style={{ background: "#F3F7F1", color: "#0D5006" }}
+                                            style={{ background: "#F2F5F0", color: "#1F5B3A" }}
                                         >
                                             <Pencil size={12} /> Editar
                                         </button>
                                         <button
                                             onClick={() => deletar(p.id)}
                                             className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition hover:brightness-95"
-                                            style={{ background: "#FDECEA", color: "#B0472F" }}
+                                            style={{ background: "#F8ECE8", color: "#A8553E" }}
                                         >
                                             <Trash2 size={12} /> Excluir
                                         </button>
@@ -269,14 +269,14 @@ export default function Propriedade() {
             {/* Modal */}
             {modalAberto && (
                 <div className="fixed inset-0 z-50 flex overflow-y-auto p-4" style={{ background: "rgba(0,0,0,0.4)" }}>
-                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6" style={{ border: "1px solid #E7E9E4" }}>
+                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6" style={{ border: "1px solid #E1E6DF" }}>
 
                         <div className="flex items-center justify-between">
-                            <h2 className="font-bold text-lg" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                            <h2 className="font-bold text-lg" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {editando ? "Editar propriedade" : "Nova propriedade"}
                             </h2>
                             <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela">
-                                <X size={18} style={{ color: "#8B978A" }} />
+                                <X size={18} style={{ color: "#647269" }} />
                             </button>
                         </div>
 
@@ -288,14 +288,14 @@ export default function Propriedade() {
                                 { label: "Localização *", key: "localizacao", placeholder: "Ex: Mato Grosso, BR" },
                             ].map(({ label, key, placeholder, type }) => (
                                 <div key={key}>
-                                    <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>{label}</label>
+                                    <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>{label}</label>
                                     <input
                                         type={type ?? "text"}
                                         placeholder={placeholder}
                                         value={form[key as keyof FormData]}
                                         onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
                                         className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                        style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                        style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                     />
                                 </div>
                             ))}
@@ -307,7 +307,7 @@ export default function Propriedade() {
                             <button
                                 onClick={fecharModal}
                                 className="flex-1 py-2.5 rounded-xl text-sm font-medium"
-                                style={{ background: "#F3F7F1", color: "#3A4A38" }}
+                                style={{ background: "#F2F5F0", color: "#46564B" }}
                             >
                                 Cancelar
                             </button>
@@ -315,7 +315,7 @@ export default function Propriedade() {
                                 onClick={salvar}
                                 disabled={salvando}
                                 className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
-                                style={{ background: "#0D5006", color: "#fff" }}
+                                style={{ background: "#1F5B3A", color: "#fff" }}
                             >
                                 {salvando ? "Salvando..." : editando ? "Salvar alterações" : "Cadastrar"}
                             </button>

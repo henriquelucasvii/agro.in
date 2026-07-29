@@ -69,10 +69,10 @@ const CATEGORIA_LABEL: Record<CategoriaProducao, string> = {
 };
 
 const CORES_CATEGORIA: Record<CategoriaProducao, { bg: string; texto: string; borda: string }> = {
-    plantio: { bg: "#EAF9EC", texto: "#0D5006", borda: "#4FA84F" },
+    plantio: { bg: "#E8F3EA", texto: "#1F5B3A", borda: "#4E9462" },
     colheita: { bg: "#FDF3E6", texto: "#8A5A17", borda: "#E0A94C" },
     criacao_animal: { bg: "#F2ECE1", texto: "#6B5636", borda: "#8B6F47" },
-    geral: { bg: "#EAF9EC", texto: "#0D5006", borda: "#4FA84F" },
+    geral: { bg: "#E8F3EA", texto: "#1F5B3A", borda: "#4E9462" },
 };
 
 const STATUS_PRESETS = ["Plantio", "Crescimento", "Colheita", "Finalizado"];
@@ -255,14 +255,14 @@ export default function Producao() {
     }, [producoes, abaCategoria, busca]);
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{ background: "#F7F8F5" }}>
+        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{ background: "#F5F6F2" }}>
             <Sidebar />
 
             {/* Main */}
             <div className="flex-1 flex flex-col min-w-0">
 
                 {/* Header */}
-                <header className="px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 pb-6" style={{ background: "#0D5006" }}>
+                <header className="px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 pb-6" style={{ background: "#1F5B3A" }}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
                             <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Montserrat, sans-serif" }}>
@@ -275,7 +275,7 @@ export default function Producao() {
                                 <span
                                     className="w-1.5 h-1.5 rounded-full shrink-0"
                                     style={{
-                                        background: erroConexao ? "#FF6B6B" : "#4FF47B",
+                                        background: erroConexao ? "#E36C5C" : "#9AE6A6",
                                         boxShadow: erroConexao ? "none" : "0 0 0 3px rgba(79,244,123,0.25)",
                                     }}
                                 />
@@ -302,7 +302,7 @@ export default function Producao() {
                             <button
                                 onClick={abrirNovo}
                                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-90 whitespace-nowrap"
-                                style={{ background: "#4FF47B", color: "#0D5006" }}
+                                style={{ background: "#9AE6A6", color: "#1F5B3A" }}
                             >
                                 <Plus size={16} />
                                 Nova produção
@@ -321,9 +321,9 @@ export default function Producao() {
                                 onClick={() => setAbaCategoria(key)}
                                 className="px-4 py-2 rounded-full text-sm font-medium transition shrink-0"
                                 style={{
-                                    background: abaCategoria === key ? "#0D5006" : "white",
-                                    color: abaCategoria === key ? "white" : "#1A2E1A",
-                                    border: `1.5px solid ${abaCategoria === key ? "#0D5006" : "#4FA84F"}`,
+                                    background: abaCategoria === key ? "#1F5B3A" : "white",
+                                    color: abaCategoria === key ? "white" : "#25352B",
+                                    border: `1.5px solid ${abaCategoria === key ? "#1F5B3A" : "#4E9462"}`,
                                 }}
                             >
                                 {label}
@@ -332,49 +332,49 @@ export default function Producao() {
                     </div>
 
                     {/* Busca */}
-                    <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 mb-6 w-full sm:max-w-sm" style={{ border: "1px solid #E7E9E4" }}>
-                        <Search size={16} style={{ color: "#8B978A" }} />
+                    <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 mb-6 w-full sm:max-w-sm" style={{ border: "1px solid #E1E6DF" }}>
+                        <Search size={16} style={{ color: "#647269" }} />
                         <input
                             type="text"
                             placeholder="Buscar por tipo ou status..."
                             value={busca}
                             onChange={(e) => setBusca(e.target.value)}
                             className="flex-1 text-sm outline-none bg-transparent"
-                            style={{ color: "#1A2E1A" }}
+                            style={{ color: "#25352B" }}
                         />
                     </div>
 
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-24 gap-3">
                             <RefreshCw size={22} className="animate-spin" style={{ color: "#8CA88A" }} />
-                            <p className="text-sm" style={{ color: "#7A8A78" }}>Carregando produções...</p>
+                            <p className="text-sm" style={{ color: "#647269" }}>Carregando produções...</p>
                         </div>
                     ) : erroConexao && producoes.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-24 gap-3">
-                            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#FDECEA" }}>
-                                <AlertCircle size={20} style={{ color: "#B0472F" }} />
+                            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#F8ECE8" }}>
+                                <AlertCircle size={20} style={{ color: "#A8553E" }} />
                             </div>
-                            <p className="text-sm" style={{ color: "#7A8A78" }}>Não foi possível carregar as produções</p>
+                            <p className="text-sm" style={{ color: "#647269" }}>Não foi possível carregar as produções</p>
                             <button
                                 onClick={() => carregar()}
                                 className="text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
-                                style={{ color: "#0D5006", background: "#EAF9EC" }}
+                                style={{ color: "#1F5B3A", background: "#E8F3EA" }}
                             >
                                 Tentar novamente
                             </button>
                         </div>
                     ) : (
-                        <div className="bg-white rounded-2xl overflow-hidden" style={{ border: "2px solid #4FA84F" }}>
+                        <div className="bg-white rounded-2xl overflow-hidden" style={{ border: "2px solid #4E9462" }}>
                             {producoesFiltradas.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-20 gap-3">
-                                    <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#EAF9EC" }}>
-                                        <Sprout size={20} style={{ color: "#4FA84F" }} />
+                                    <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#E8F3EA" }}>
+                                        <Sprout size={20} style={{ color: "#4E9462" }} />
                                     </div>
-                                    <p className="text-sm" style={{ color: "#7A8A78" }}>Nenhuma produção encontrada</p>
+                                    <p className="text-sm" style={{ color: "#647269" }}>Nenhuma produção encontrada</p>
                                     <button
                                         onClick={abrirNovo}
                                         className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
-                                        style={{ color: "#0D5006", background: "#EAF9EC" }}
+                                        style={{ color: "#1F5B3A", background: "#E8F3EA" }}
                                     >
                                         <Plus size={13} /> Registrar produção
                                     </button>
@@ -387,32 +387,32 @@ export default function Producao() {
                                         style={{ borderBottom: i < producoesFiltradas.length - 1 ? "1px solid #E3E6DE" : "none" }}
                                     >
                                         <div className="min-w-0">
-                                            <p className="font-bold text-base sm:text-lg truncate" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                                            <p className="font-bold text-base sm:text-lg truncate" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                                 {p.tipo}
                                             </p>
-                                            <p className="text-sm mt-0.5" style={{ color: "#8B978A" }}>
+                                            <p className="text-sm mt-0.5" style={{ color: "#647269" }}>
                                                 {p.status || CATEGORIA_LABEL[inferCategoria(p)]}
                                             </p>
                                         </div>
 
                                         <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
-                                            <p className="font-bold text-base sm:text-lg whitespace-nowrap" style={{ color: "#1A2E1A" }}>
+                                            <p className="font-bold text-base sm:text-lg whitespace-nowrap" style={{ color: "#25352B" }}>
                                                 {formatValorProducao(p)}
                                             </p>
                                             <div className="flex items-center gap-2">
                                                 <button
                                                     onClick={() => abrirEdicao(p)}
                                                     className="p-1.5 rounded-lg transition hover:brightness-95"
-                                                    style={{ background: "#F3F7F1" }}
+                                                    style={{ background: "#F2F5F0" }}
                                                 >
-                                                    <Pencil size={13} style={{ color: "#0D5006" }} />
+                                                    <Pencil size={13} style={{ color: "#1F5B3A" }} />
                                                 </button>
                                                 <button
                                                     onClick={() => deletar(p.id)}
                                                     className="p-1.5 rounded-lg transition hover:brightness-95"
-                                                    style={{ background: "#FDECEA" }}
+                                                    style={{ background: "#F8ECE8" }}
                                                 >
-                                                    <Trash2 size={13} style={{ color: "#B0472F" }} />
+                                                    <Trash2 size={13} style={{ color: "#A8553E" }} />
                                                 </button>
                                             </div>
                                         </div>
@@ -432,30 +432,30 @@ export default function Producao() {
                 >
                     <div
                         className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6"
-                        style={{ border: "1px solid #E7E9E4" }}
+                        style={{ border: "1px solid #E1E6DF" }}
                     >
                         <div className="flex items-center justify-between">
-                            <h2 className="font-bold text-lg" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                            <h2 className="font-bold text-lg" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {editando ? "Editar produção" : "Nova produção"}
                             </h2>
-                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela"><X size={18} style={{ color: "#8B978A" }} /></button>
+                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela"><X size={18} style={{ color: "#647269" }} /></button>
                         </div>
 
                         <div className="flex flex-col gap-3">
                             <div>
-                                <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Tipo / nome *</label>
+                                <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Tipo / nome *</label>
                                 <input
                                     type="text"
                                     placeholder="Ex: Soja 2025/2026"
                                     value={form.tipo}
                                     onChange={(e) => setForm((f) => ({ ...f, tipo: e.target.value }))}
                                     className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                    style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                    style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Categoria</label>
+                                <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Categoria</label>
                                 <div className="flex gap-2 flex-wrap">
                                     {(["plantio", "colheita", "criacao_animal", "geral"] as CategoriaProducao[]).map((c) => (
                                         <button
@@ -463,9 +463,9 @@ export default function Producao() {
                                             onClick={() => setForm((f) => ({ ...f, categoria: c }))}
                                             className="px-3 py-1.5 rounded-lg text-xs font-medium transition"
                                             style={{
-                                                background: form.categoria === c ? CORES_CATEGORIA[c].bg : "#F3F7F1",
-                                                color: form.categoria === c ? CORES_CATEGORIA[c].texto : "#8B978A",
-                                                border: `1px solid ${form.categoria === c ? CORES_CATEGORIA[c].borda : "#E7E9E4"}`,
+                                                background: form.categoria === c ? CORES_CATEGORIA[c].bg : "#F2F5F0",
+                                                color: form.categoria === c ? CORES_CATEGORIA[c].texto : "#647269",
+                                                border: `1px solid ${form.categoria === c ? CORES_CATEGORIA[c].borda : "#E1E6DF"}`,
                                             }}
                                         >
                                             {CATEGORIA_LABEL[c]}
@@ -475,7 +475,7 @@ export default function Producao() {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Status</label>
+                                <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Status</label>
                                 <div className="flex gap-2 flex-wrap">
                                     {STATUS_PRESETS.map((s) => (
                                         <button
@@ -483,9 +483,9 @@ export default function Producao() {
                                             onClick={() => setForm((f) => ({ ...f, status: s }))}
                                             className="px-3 py-1.5 rounded-lg text-xs font-medium transition"
                                             style={{
-                                                background: form.status === s ? "#EAF9EC" : "#F3F7F1",
-                                                color: form.status === s ? "#0D5006" : "#8B978A",
-                                                border: `1px solid ${form.status === s ? "#0D5006" : "#E7E9E4"}`,
+                                                background: form.status === s ? "#E8F3EA" : "#F2F5F0",
+                                                color: form.status === s ? "#1F5B3A" : "#647269",
+                                                border: `1px solid ${form.status === s ? "#1F5B3A" : "#E1E6DF"}`,
                                             }}
                                         >
                                             {s}
@@ -496,62 +496,62 @@ export default function Producao() {
 
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Área utilizada (ha)</label>
+                                    <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Área utilizada (ha)</label>
                                     <input
                                         type="number"
                                         placeholder="Ex: 120"
                                         value={form.area_utilizada}
                                         onChange={(e) => setForm((f) => ({ ...f, area_utilizada: e.target.value }))}
                                         className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                        style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                        style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Quantidade</label>
+                                    <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Quantidade</label>
                                     <input
                                         type="number"
                                         placeholder="Ex: 150"
                                         value={form.quantidade}
                                         onChange={(e) => setForm((f) => ({ ...f, quantidade: e.target.value }))}
                                         className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                        style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                        style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                     />
                                 </div>
                             </div>
 
                             {/* ver se vai manter a unidade
                                     <div>
-                                        <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Unidade da quantidade</label>
+                                        <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Unidade da quantidade</label>
                                         <input
                                             type="text"
                                             placeholder="Ex: cabeças de gado, litros/dia"
                                             value={form.unidade}
                                             onChange={(e) => setForm((f) => ({ ...f, unidade: e.target.value }))}
                                             className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                            style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                            style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                         />
                                     </div>
                                     */}
 
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Início</label>
+                                    <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Início</label>
                                     <input
                                         type="date"
                                         value={form.data_inicio}
                                         onChange={(e) => setForm((f) => ({ ...f, data_inicio: e.target.value }))}
                                         className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                        style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                        style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Término previsto</label>
+                                    <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Término previsto</label>
                                     <input
                                         type="date"
                                         value={form.data_fim}
                                         onChange={(e) => setForm((f) => ({ ...f, data_fim: e.target.value }))}
                                         className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                        style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                        style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                     />
                                 </div>
                             </div>
@@ -563,7 +563,7 @@ export default function Producao() {
                             <button
                                 onClick={fecharModal}
                                 className="flex-1 py-2.5 rounded-xl text-sm font-medium"
-                                style={{ background: "#F3F7F1", color: "#3A4A38" }}
+                                style={{ background: "#F2F5F0", color: "#46564B" }}
                             >
                                 Cancelar
                             </button>
@@ -571,7 +571,7 @@ export default function Producao() {
                                 onClick={salvar}
                                 disabled={salvando}
                                 className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
-                                style={{ background: "#0D5006", color: "#fff" }}
+                                style={{ background: "#1F5B3A", color: "#fff" }}
                             >
                                 {salvando ? "Salvando..." : editando ? "Salvar alterações" : "Adicionar"}
                             </button>

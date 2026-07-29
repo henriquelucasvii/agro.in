@@ -181,14 +181,14 @@ export default function Financeiro() {
     const corAba = (a: AbaAtiva) => aba === a;
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{background: "#F7F8F5" }}>
+        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{background: "#F5F6F2" }}>
            <Sidebar />
 
             {/* Main */}
             <div className="flex-1 flex flex-col">
 
                 {/* Header */}
-                <header className="px-10 pt-8 pb-6" style={{ background: "#0D5006" }}>
+                <header className="px-10 pt-8 pb-6" style={{ background: "#1F5B3A" }}>
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Montserrat, sans-serif" }}>
@@ -201,7 +201,7 @@ export default function Financeiro() {
                         <button
                             onClick={abrirNovo}
                             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-90"
-                            style={{ background: "#4FF47B", color: "#0D5006" }}
+                            style={{ background: "#9AE6A6", color: "#1F5B3A" }}
                         >
                             <Plus size={16} />
                             Novo lançamento
@@ -211,9 +211,9 @@ export default function Financeiro() {
                     {/* Resumo cards */}
                     <div className="grid grid-cols-3 gap-4 mt-6">
                         {[
-                            { label: "Total Entradas", valor: totalEntradas, cor: "#4FF47B", icon: <TrendingUp size={16} /> },
-                            { label: "Total Saídas", valor: totalSaidas, cor: "#FF6B6B", icon: <TrendingDown size={16} /> },
-                            { label: "Saldo", valor: saldo, cor: saldo >= 0 ? "#4FF47B" : "#FF6B6B", icon: null },
+                            { label: "Total Entradas", valor: totalEntradas, cor: "#9AE6A6", icon: <TrendingUp size={16} /> },
+                            { label: "Total Saídas", valor: totalSaidas, cor: "#E36C5C", icon: <TrendingDown size={16} /> },
+                            { label: "Saldo", valor: saldo, cor: saldo >= 0 ? "#9AE6A6" : "#E36C5C", icon: null },
                         ].map(({ label, valor, cor, icon }) => (
                             <div key={label} className="rounded-xl px-4 py-3" style={{ background: "rgba(255,255,255,0.1)" }}>
                                 <div className="flex items-center gap-1.5 mb-1" style={{ color: cor }}>
@@ -240,9 +240,9 @@ export default function Financeiro() {
                                 onClick={() => setAba(key)}
                                 className="px-4 py-2 rounded-full text-sm font-medium transition"
                                 style={{
-                                    background: corAba(key) ? "#0D5006" : "white",
-                                    color: corAba(key) ? "white" : "#3A4A38",
-                                    border: "1px solid #E7E9E4",
+                                    background: corAba(key) ? "#1F5B3A" : "white",
+                                    color: corAba(key) ? "white" : "#46564B",
+                                    border: "1px solid #E1E6DF",
                                 }}
                             >
                                 {label}
@@ -251,42 +251,42 @@ export default function Financeiro() {
                     </div>
 
                     {/* Busca */}
-                    <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 mb-6 w-full max-w-sm" style={{ border: "1px solid #E7E9E4" }}>
-                        <Search size={16} style={{ color: "#8B978A" }} />
+                    <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 mb-6 w-full max-w-sm" style={{ border: "1px solid #E1E6DF" }}>
+                        <Search size={16} style={{ color: "#647269" }} />
                         <input
                             type="text"
                             placeholder="Buscar por descrição ou categoria..."
                             value={busca}
                             onChange={(e) => setBusca(e.target.value)}
                             className="flex-1 text-sm outline-none bg-transparent"
-                            style={{ color: "#1A2E1A" }}
+                            style={{ color: "#25352B" }}
                         />
                     </div>
 
                     {/* Tabela */}
                     {loading ? (
-                        <p className="text-sm" style={{ color: "#7A8A78" }}>Carregando...</p>
+                        <p className="text-sm" style={{ color: "#647269" }}>Carregando...</p>
                     ) : filtrados.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-24 gap-3">
-                            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#EFF5EC" }}>
+                            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#E9F1E8" }}>
                                 <Leaf size={20} style={{ color: "#8CA88A" }} />
                             </div>
-                            <p className="text-sm" style={{ color: "#7A8A78" }}>Nenhum lançamento encontrado</p>
+                            <p className="text-sm" style={{ color: "#647269" }}>Nenhum lançamento encontrado</p>
                             <button
                                 onClick={abrirNovo}
                                 className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
-                                style={{ color: "#0D5006", background: "#EAF9EC" }}
+                                style={{ color: "#1F5B3A", background: "#E8F3EA" }}
                             >
                                 <Plus size={13} /> Adicionar lançamento
                             </button>
                         </div>
                     ) : (
-                        <div className="bg-white rounded-2xl overflow-hidden" style={{ border: "1px solid #E7E9E4" }}>
+                        <div className="bg-white rounded-2xl overflow-hidden" style={{ border: "1px solid #E1E6DF" }}>
                             <table className="w-full">
                                 <thead>
-                                    <tr style={{ borderBottom: "1px solid #E7E9E4", background: "#F7F8F5" }}>
+                                    <tr style={{ borderBottom: "1px solid #E1E6DF", background: "#F5F6F2" }}>
                                         {["Data", "Descrição", "Categoria", "Tipo", "Valor", "Ações"].map((h) => (
-                                            <th key={h} className="text-left px-5 py-3 text-xs font-semibold" style={{ color: "#8B978A" }}>
+                                            <th key={h} className="text-left px-5 py-3 text-xs font-semibold" style={{ color: "#647269" }}>
                                                 {h}
                                             </th>
                                         ))}
@@ -296,12 +296,12 @@ export default function Financeiro() {
                                     {filtrados.map((l, i) => (
                                         <tr
                                             key={l.id}
-                                            style={{ borderBottom: i < filtrados.length - 1 ? "1px solid #F0F1EC" : "none" }}
+                                            style={{ borderBottom: i < filtrados.length - 1 ? "1px solid #EFF3ED" : "none" }}
                                         >
-                                            <td className="px-5 py-4 text-sm" style={{ color: "#3A4A38" }}>{formatData(l.data)}</td>
-                                            <td className="px-5 py-4 text-sm font-medium" style={{ color: "#1A2E1A" }}>{l.descricao}</td>
+                                            <td className="px-5 py-4 text-sm" style={{ color: "#46564B" }}>{formatData(l.data)}</td>
+                                            <td className="px-5 py-4 text-sm font-medium" style={{ color: "#25352B" }}>{l.descricao}</td>
                                             <td className="px-5 py-4">
-                                                <span className="text-xs font-semibold px-2 py-1 rounded-full" style={{ background: "#EAF9EC", color: "#0D5006" }}>
+                                                <span className="text-xs font-semibold px-2 py-1 rounded-full" style={{ background: "#E8F3EA", color: "#1F5B3A" }}>
                                                     {l.categoria}
                                                 </span>
                                             </td>
@@ -309,14 +309,14 @@ export default function Financeiro() {
                                                 <span
                                                     className="text-xs font-semibold px-2 py-1 rounded-full"
                                                     style={{
-                                                        background: l.tipo === "entrada" ? "#EAF9EC" : "#FDECEA",
-                                                        color: l.tipo === "entrada" ? "#0D5006" : "#B0472F",
+                                                        background: l.tipo === "entrada" ? "#E8F3EA" : "#F8ECE8",
+                                                        color: l.tipo === "entrada" ? "#1F5B3A" : "#A8553E",
                                                     }}
                                                 >
                                                     {l.tipo === "entrada" ? "Entrada" : "Saída"}
                                                 </span>
                                             </td>
-                                            <td className="px-5 py-4 text-sm font-semibold" style={{ color: l.tipo === "entrada" ? "#0D5006" : "#B0472F" }}>
+                                            <td className="px-5 py-4 text-sm font-semibold" style={{ color: l.tipo === "entrada" ? "#1F5B3A" : "#A8553E" }}>
                                                 {l.tipo === "saida" ? "- " : ""}{formatBRL(l.valor)}
                                             </td>
                                             <td className="px-5 py-4">
@@ -324,16 +324,16 @@ export default function Financeiro() {
                                                     <button
                                                         onClick={() => abrirEdicao(l)}
                                                         className="p-1.5 rounded-lg transition hover:brightness-95"
-                                                        style={{ background: "#F3F7F1" }}
+                                                        style={{ background: "#F2F5F0" }}
                                                     >
-                                                        <Pencil size={13} style={{ color: "#0D5006" }} />
+                                                        <Pencil size={13} style={{ color: "#1F5B3A" }} />
                                                     </button>
                                                     <button
                                                         onClick={() => deletar(l.id)}
                                                         className="p-1.5 rounded-lg transition hover:brightness-95"
-                                                        style={{ background: "#FDECEA" }}
+                                                        style={{ background: "#F8ECE8" }}
                                                     >
-                                                        <Trash2 size={13} style={{ color: "#B0472F" }} />
+                                                        <Trash2 size={13} style={{ color: "#A8553E" }} />
                                                     </button>
                                                 </div>
                                             </td>
@@ -341,9 +341,9 @@ export default function Financeiro() {
                                     ))}
                                 </tbody>
                                 <tfoot>
-                                    <tr style={{ borderTop: "2px solid #E7E9E4", background: "#F7F8F5" }}>
-                                        <td colSpan={4} className="px-5 py-3 text-sm font-semibold" style={{ color: "#1A2E1A" }}>Total</td>
-                                        <td className="px-5 py-3 text-sm font-bold" style={{ color: "#1A2E1A" }}>
+                                    <tr style={{ borderTop: "2px solid #E1E6DF", background: "#F5F6F2" }}>
+                                        <td colSpan={4} className="px-5 py-3 text-sm font-semibold" style={{ color: "#25352B" }}>Total</td>
+                                        <td className="px-5 py-3 text-sm font-bold" style={{ color: "#25352B" }}>
                                             {formatBRL(filtrados.reduce((s, l) => s + (l.tipo === "entrada" ? l.valor : -l.valor), 0))}
                                         </td>
                                         <td />
@@ -358,19 +358,19 @@ export default function Financeiro() {
             {/* Modal */}
             {modalAberto && (
                 <div className="fixed inset-0 z-50 flex overflow-y-auto p-4" style={{ background: "rgba(0,0,0,0.4)" }}>
-                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6" style={{ border: "1px solid #E7E9E4" }}>
+                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6" style={{ border: "1px solid #E1E6DF" }}>
                         <div className="flex items-center justify-between">
-                            <h2 className="font-bold text-lg" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                            <h2 className="font-bold text-lg" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {editando ? "Editar lançamento" : "Novo lançamento"}
                             </h2>
-                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela"><X size={18} style={{ color: "#8B978A" }} /></button>
+                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela"><X size={18} style={{ color: "#647269" }} /></button>
                         </div>
 
                         <div className="flex flex-col gap-3">
 
                             {/* Tipo */}
                             <div>
-                                <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Tipo *</label>
+                                <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Tipo *</label>
                                 <div className="flex gap-2">
                                     {(["entrada", "saida"] as TipoFinanceiro[]).map((t) => (
                                         <button
@@ -378,9 +378,9 @@ export default function Financeiro() {
                                             onClick={() => setForm((f) => ({ ...f, tipo: t }))}
                                             className="flex-1 py-2 rounded-lg text-sm font-medium transition"
                                             style={{
-                                                background: form.tipo === t ? (t === "entrada" ? "#EAF9EC" : "#FDECEA") : "#F3F7F1",
-                                                color: form.tipo === t ? (t === "entrada" ? "#0D5006" : "#B0472F") : "#8B978A",
-                                                border: `1px solid ${form.tipo === t ? (t === "entrada" ? "#0D5006" : "#B0472F") : "#E7E9E4"}`,
+                                                background: form.tipo === t ? (t === "entrada" ? "#E8F3EA" : "#F8ECE8") : "#F2F5F0",
+                                                color: form.tipo === t ? (t === "entrada" ? "#1F5B3A" : "#A8553E") : "#647269",
+                                                border: `1px solid ${form.tipo === t ? (t === "entrada" ? "#1F5B3A" : "#A8553E") : "#E1E6DF"}`,
                                             }}
                                         >
                                             {t === "entrada" ? "Entrada" : "Saída"}
@@ -396,14 +396,14 @@ export default function Financeiro() {
                                 { label: "Data *", key: "data", placeholder: "", type: "date" },
                             ].map(({ label, key, placeholder, type }) => (
                                 <div key={key}>
-                                    <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>{label}</label>
+                                    <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>{label}</label>
                                     <input
                                         type={type ?? "text"}
                                         placeholder={placeholder}
                                         value={form[key as keyof FormData]}
                                         onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
                                         className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                        style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                        style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                     />
                                 </div>
                             ))}
@@ -415,7 +415,7 @@ export default function Financeiro() {
                             <button
                                 onClick={fecharModal}
                                 className="flex-1 py-2.5 rounded-xl text-sm font-medium"
-                                style={{ background: "#F3F7F1", color: "#3A4A38" }}
+                                style={{ background: "#F2F5F0", color: "#46564B" }}
                             >
                                 Cancelar
                             </button>
@@ -423,7 +423,7 @@ export default function Financeiro() {
                                 onClick={salvar}
                                 disabled={salvando}
                                 className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
-                                style={{ background: "#0D5006", color: "#fff" }}
+                                style={{ background: "#1F5B3A", color: "#fff" }}
                             >
                                 {salvando ? "Salvando..." : editando ? "Salvar alterações" : "Adicionar"}
                             </button>

@@ -65,7 +65,7 @@ export default function Sidebar() {
             )}
 
             <aside
-                className={`fixed inset-y-0 left-0 z-50 flex w-[272px] shrink-0 flex-col border-r border-white/8 bg-[#0B3F1D] px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))] shadow-2xl transition-transform duration-300 ease-out lg:static lg:w-[248px] lg:translate-x-0 lg:shadow-none ${
+                className={`fixed inset-y-0 left-0 z-50 flex w-[272px] shrink-0 flex-col border-r border-white/8 bg-[#163B2A] px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))] shadow-2xl transition-transform duration-300 ease-out lg:static lg:w-[248px] lg:translate-x-0 lg:shadow-none ${
                     sidebarAberto ? "translate-x-0" : "-translate-x-full"
                 }`}
             >
@@ -126,7 +126,7 @@ export default function Sidebar() {
                                 onClick={() => irPara(path)}
                                 className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-semibold transition ${
                                     ativo
-                                        ? "bg-[#D9F6D8] text-[#103E1D]"
+                                        ? "bg-[#DCEFE1] text-[#17472F]"
                                         : "text-white/70 hover:bg-white/[0.07] hover:text-white"
                                 }`}
                             >
@@ -154,7 +154,7 @@ export default function Sidebar() {
                         onClick={() => irPara("/assistente")}
                         className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition ${
                             location.pathname === "/assistente"
-                                ? "bg-[#4BEA75] text-[#0B3818]"
+                                ? "bg-[#A0E4AD] text-[#153F29]"
                                 : "bg-white/[0.07] text-[#C6F7D0] hover:bg-white/[0.11]"
                         }`}
                     >
@@ -163,7 +163,7 @@ export default function Sidebar() {
                         </span>
                         <span className="min-w-0">
                             <span className="block text-xs font-bold">Assistente Agro.in</span>
-                            <span className={`mt-0.5 block text-[9px] ${location.pathname === "/assistente" ? "text-[#27683A]" : "text-white/40"}`}>
+                            <span className={`mt-0.5 block text-[9px] ${location.pathname === "/assistente" ? "text-[#356348]" : "text-white/40"}`}>
                                 Orientação para o campo
                             </span>
                         </span>
@@ -171,7 +171,7 @@ export default function Sidebar() {
                 </div>
             </aside>
 
-            <header className="mobile-app-header z-30 flex items-center justify-between border-b border-white/8 bg-[#0B3F1D] px-4 pb-3 shadow-[0_6px_22px_rgba(8,39,17,0.14)] lg:hidden">
+            <header className="mobile-app-header z-30 flex items-center justify-between border-b border-white/8 bg-[#1F5B3A] px-4 pb-3 shadow-[0_6px_20px_rgba(22,59,42,0.12)] lg:hidden">
                 <button
                     type="button"
                     onClick={() => setSidebarAberto(true)}

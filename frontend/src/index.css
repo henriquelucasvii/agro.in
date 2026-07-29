@@ -2,7 +2,16 @@
 
 :root {
     color-scheme: light;
-    background: #f4f5ef;
+    --agro-pine: #163b2a;
+    --agro-primary: #1f5b3a;
+    --agro-primary-hover: #17482f;
+    --agro-mint: #9ae6a6;
+    --agro-canvas: #f5f6f2;
+    --agro-surface-muted: #f2f5f0;
+    --agro-border: #e1e6df;
+    --agro-text: #25352b;
+    --agro-muted: #647269;
+    background: var(--agro-canvas);
     font-family: "Aptos", "Segoe UI", Arial, sans-serif;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -10,7 +19,7 @@
 
 html {
     min-width: 320px;
-    background: #f4f5ef;
+    background: var(--agro-canvas);
     -webkit-text-size-adjust: 100%;
 }
 
@@ -18,7 +27,8 @@ body {
     min-width: 320px;
     min-height: 100vh;
     margin: 0;
-    background: #f4f5ef;
+    background: var(--agro-canvas);
+    color: var(--agro-text);
 }
 
 button,

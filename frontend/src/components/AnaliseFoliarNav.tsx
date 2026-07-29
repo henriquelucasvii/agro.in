@@ -36,7 +36,7 @@ export default function AnaliseFoliarNav() {
                     className={({ isActive }) =>
                         `flex min-h-11 min-w-0 items-center justify-center gap-1 rounded-lg px-1 py-2.5 text-[10px] font-bold transition sm:gap-2 sm:px-3.5 sm:text-xs ${
                             isActive
-                                ? "bg-[#174D27] text-white"
+                                ? "bg-[#1F5B3A] text-white"
                                 : "text-[#607064] hover:bg-[#F1F5EE]"
                         }`
                     }

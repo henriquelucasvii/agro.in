@@ -57,16 +57,16 @@ const ICONE_CATEGORIA: Record<CategoriaRelatorio, typeof DollarSign> = {
 };
 
 const CORES_CATEGORIA: Record<CategoriaRelatorio, { bg: string; icone: string }> = {
-    financeiro: { bg: "#EAF9EC", icone: "#4FA84F" },
-    producao: { bg: "#FDECEA", icone: "#E2574C" },
+    financeiro: { bg: "#E8F3EA", icone: "#4E9462" },
+    producao: { bg: "#F8ECE8", icone: "#E2574C" },
     estoque: { bg: "#FFF3DC", icone: "#D9A62E" },
-    geral: { bg: "#EAF9EC", icone: "#0D5006" },
+    geral: { bg: "#E8F3EA", icone: "#1F5B3A" },
 };
 
-const COR_AGENDADO = { bg: "#EAF2FB", icone: "#3B82C4" };
+const COR_AGENDADO = { bg: "#EAF2FB", icone: "#4E829C" };
 
 const CORES_STATUS: Record<StatusRelatorio, { bg: string; texto: string }> = {
-    pronto: { bg: "#EAF9EC", texto: "#0D5006" },
+    pronto: { bg: "#E8F3EA", texto: "#1F5B3A" },
     agendado: { bg: "#EAF2FB", texto: "#2A5C93" },
 };
 
@@ -259,14 +259,14 @@ export default function Relatorios() {
     // ------------------------------------------------------------
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{ fontFamily: "Inter, sans-serif", background: "#F7F8F5" }}>
+        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{ fontFamily: "Inter, sans-serif", background: "#F5F6F2" }}>
             <Sidebar />
             
             {/* Main */}
             <div className="flex-1 flex flex-col min-w-0">
 
                 {/* Header */}
-                <header className="px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 pb-6" style={{ background: "#0D5006" }}>
+                <header className="px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 pb-6" style={{ background: "#1F5B3A" }}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
                             <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Montserrat, sans-serif" }}>
@@ -292,7 +292,7 @@ export default function Relatorios() {
                                         style={{ background: "rgba(255,255,255,0.1)", color: "white" }}
                                     >
                                         {propriedades.map((p) => (
-                                            <option key={p.id} value={p.id} style={{ color: "#1A2E1A" }}>
+                                            <option key={p.id} value={p.id} style={{ color: "#25352B" }}>
                                                 {p.nome}
                                             </option>
                                         ))}
@@ -325,9 +325,9 @@ export default function Relatorios() {
                                     onClick={() => setAbaCategoria(key)}
                                     className="px-4 py-2 rounded-full text-sm font-medium transition shrink-0"
                                     style={{
-                                        background: abaCategoria === key ? "#0D5006" : "white",
-                                        color: abaCategoria === key ? "white" : "#3A4A38",
-                                        border: "1px solid #E7E9E4",
+                                        background: abaCategoria === key ? "#1F5B3A" : "white",
+                                        color: abaCategoria === key ? "white" : "#46564B",
+                                        border: "1px solid #E1E6DF",
                                     }}
                                 >
                                     {label}
@@ -338,7 +338,7 @@ export default function Relatorios() {
                             onClick={gerarRelatorio}
                             disabled={gerando || !propriedadeId}
                             className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-90 disabled:opacity-60 shrink-0"
-                            style={{ background: "#4FF47B", color: "#0D5006" }}
+                            style={{ background: "#9AE6A6", color: "#1F5B3A" }}
                         >
                             {gerando ? <RefreshCw size={16} className="animate-spin" /> : <Plus size={16} />}
                             {gerando ? "Gerando..." : "Gerar relatório"}
@@ -346,22 +346,22 @@ export default function Relatorios() {
                     </div>
 
                     {erroGeracao && (
-                        <div className="flex items-center gap-2 mb-4 px-4 py-3 rounded-xl text-sm" style={{ background: "#FDECEA", color: "#B0472F" }}>
+                        <div className="flex items-center gap-2 mb-4 px-4 py-3 rounded-xl text-sm" style={{ background: "#F8ECE8", color: "#A8553E" }}>
                             <AlertCircle size={15} className="shrink-0" /> {erroGeracao}
                         </div>
                     )}
 
                     {/* Cards resumo */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                        <div className="rounded-2xl px-5 py-4" style={{ background: "#F0F2EC" }}>
-                            <p className="text-sm" style={{ color: "#7A8A78" }}>Gerados este mês</p>
-                            <p className="text-2xl font-bold mt-1" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                        <div className="rounded-2xl px-5 py-4" style={{ background: "#EFF3ED" }}>
+                            <p className="text-sm" style={{ color: "#647269" }}>Gerados este mês</p>
+                            <p className="text-2xl font-bold mt-1" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {geradosEsteMes}
                             </p>
                         </div>
-                        <div className="rounded-2xl px-5 py-4" style={{ background: "#F0F2EC" }}>
-                            <p className="text-sm" style={{ color: "#7A8A78" }}>Compartilhados</p>
-                            <p className="text-2xl font-bold mt-1" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                        <div className="rounded-2xl px-5 py-4" style={{ background: "#EFF3ED" }}>
+                            <p className="text-sm" style={{ color: "#647269" }}>Compartilhados</p>
+                            <p className="text-2xl font-bold mt-1" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {totalCompartilhados}
                             </p>
                         </div>
@@ -370,8 +370,8 @@ export default function Relatorios() {
                     {/* Gráfico + Exportar */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
 
-                        <div className="bg-white rounded-2xl p-6" style={{ border: "1px solid #E7E9E4", borderTop: "4px solid #0D5006" }}>
-                            <h3 className="font-bold text-lg mb-5" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                        <div className="bg-white rounded-2xl p-6" style={{ border: "1px solid #E1E6DF", borderTop: "4px solid #1F5B3A" }}>
+                            <h3 className="font-bold text-lg mb-5" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 Relatórios gerados por mês
                             </h3>
                             <div className="flex flex-col gap-2">
@@ -383,7 +383,7 @@ export default function Relatorios() {
                                             <div key={`${d.label}-${i}`} className="flex-1 flex justify-center" style={{ height: "100%" }}>
                                                 <div
                                                     className="w-full max-w-[7] rounded-t-md self-end transition-all"
-                                                    style={{ height: alturaPx, background: ehAtual ? "#0D5006" : "#AEC2A9" }}
+                                                    style={{ height: alturaPx, background: ehAtual ? "#1F5B3A" : "#AEC2A9" }}
                                                     title={`${d.total} relatório(s)`}
                                                 />
                                             </div>
@@ -392,7 +392,7 @@ export default function Relatorios() {
                                 </div>
                                 <div className="flex justify-between gap-2">
                                     {dadosGrafico.map((d, i) => (
-                                        <span key={`${d.label}-label-${i}`} className="flex-1 text-center text-xs" style={{ color: "#8B978A" }}>
+                                        <span key={`${d.label}-label-${i}`} className="flex-1 text-center text-xs" style={{ color: "#647269" }}>
                                             {d.label}
                                         </span>
                                     ))}
@@ -400,34 +400,34 @@ export default function Relatorios() {
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-2xl p-6" style={{ border: "1px solid #E7E9E4", borderTop: "4px solid #3B82C4" }}>
-                            <h3 className="font-bold text-lg mb-4" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                        <div className="bg-white rounded-2xl p-6" style={{ border: "1px solid #E1E6DF", borderTop: "4px solid #4E829C" }}>
+                            <h3 className="font-bold text-lg mb-4" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 Exportar
                             </h3>
                             <div className="flex flex-col">
-                                <button onClick={exportarPDF} className="flex items-center gap-3 py-3 text-left transition hover:opacity-70" style={{ borderBottom: "1px solid #F0F1EC" }}>
-                                    <FileText size={17} style={{ color: "#3B82C4" }} />
-                                    <span className="text-sm font-medium" style={{ color: "#1A2E1A" }}>Exportar em PDF</span>
+                                <button onClick={exportarPDF} className="flex items-center gap-3 py-3 text-left transition hover:opacity-70" style={{ borderBottom: "1px solid #EFF3ED" }}>
+                                    <FileText size={17} style={{ color: "#4E829C" }} />
+                                    <span className="text-sm font-medium" style={{ color: "#25352B" }}>Exportar em PDF</span>
                                 </button>
-                                <button onClick={exportarPlanilha} className="flex items-center gap-3 py-3 text-left transition hover:opacity-70" style={{ borderBottom: "1px solid #F0F1EC" }}>
-                                    <FileSpreadsheet size={17} style={{ color: "#3B82C4" }} />
-                                    <span className="text-sm font-medium" style={{ color: "#1A2E1A" }}>Exportar em planilha</span>
+                                <button onClick={exportarPlanilha} className="flex items-center gap-3 py-3 text-left transition hover:opacity-70" style={{ borderBottom: "1px solid #EFF3ED" }}>
+                                    <FileSpreadsheet size={17} style={{ color: "#4E829C" }} />
+                                    <span className="text-sm font-medium" style={{ color: "#25352B" }}>Exportar em planilha</span>
                                 </button>
                                 <button onClick={enviarPorEmail} className="flex items-center gap-3 py-3 text-left transition hover:opacity-70">
-                                    <Mail size={17} style={{ color: "#3B82C4" }} />
-                                    <span className="text-sm font-medium" style={{ color: "#1A2E1A" }}>Enviar por e-mail</span>
+                                    <Mail size={17} style={{ color: "#4E829C" }} />
+                                    <span className="text-sm font-medium" style={{ color: "#25352B" }}>Enviar por e-mail</span>
                                 </button>
                             </div>
                         </div>
                     </div>
 
                     {/* Histórico */}
-                    <div className="bg-white rounded-2xl overflow-hidden" style={{ border: "1px solid #E7E9E4" }}>
+                    <div className="bg-white rounded-2xl overflow-hidden" style={{ border: "1px solid #E1E6DF" }}>
                         <div
                             className="flex items-center justify-between px-5 sm:px-6 py-4"
-                            style={{ borderBottom: "1px solid #E7E9E4", background: "#F7F8F5" }}
+                            style={{ borderBottom: "1px solid #E1E6DF", background: "#F5F6F2" }}
                         >
-                            <h3 className="font-bold" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                            <h3 className="font-bold" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 Histórico de relatórios
                             </h3>
                             {historico.length > 0 && (
@@ -438,7 +438,7 @@ export default function Relatorios() {
                                         }
                                     }}
                                     className="text-xs font-medium transition hover:opacity-70"
-                                    style={{ color: "#8B978A" }}
+                                    style={{ color: "#647269" }}
                                 >
                                     Limpar histórico
                                 </button>
@@ -447,16 +447,16 @@ export default function Relatorios() {
 
                         {historicoFiltrado.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-20 gap-3">
-                                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#EFF5EC" }}>
+                                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#E9F1E8" }}>
                                     <FileText size={20} style={{ color: "#8CA88A" }} />
                                 </div>
-                                <p className="text-sm" style={{ color: "#7A8A78" }}>
+                                <p className="text-sm" style={{ color: "#647269" }}>
                                     {historico.length === 0 ? "Nenhum relatório gerado ainda" : "Nenhum relatório nesta categoria"}
                                 </p>
                                 <button
                                     onClick={gerarRelatorio}
                                     className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
-                                    style={{ color: "#0D5006", background: "#EAF9EC" }}
+                                    style={{ color: "#1F5B3A", background: "#E8F3EA" }}
                                 >
                                     <Plus size={13} /> Gerar relatório
                                 </button>
@@ -470,14 +470,14 @@ export default function Relatorios() {
                                     <div
                                         key={r.id}
                                         className="flex items-center gap-3 sm:gap-4 px-5 sm:px-6 py-4"
-                                        style={{ borderBottom: i < historicoFiltrado.length - 1 ? "1px solid #F0F1EC" : "none" }}
+                                        style={{ borderBottom: i < historicoFiltrado.length - 1 ? "1px solid #EFF3ED" : "none" }}
                                     >
                                         <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: corIcone.bg }}>
                                             <Icone size={16} style={{ color: corIcone.icone }} />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-semibold truncate" style={{ color: "#1A2E1A" }}>{r.titulo}</p>
-                                            <p className="text-xs mt-0.5" style={{ color: "#8B978A" }}>
+                                            <p className="text-sm font-semibold truncate" style={{ color: "#25352B" }}>{r.titulo}</p>
+                                            <p className="text-xs mt-0.5" style={{ color: "#647269" }}>
                                                 {CATEGORIA_LABEL[r.categoria]} · {tempoRelativo(r.geradoEm)}
                                             </p>
                                         </div>
@@ -493,17 +493,17 @@ export default function Relatorios() {
                                                 disabled={!r.dados}
                                                 title={r.dados ? "Ver detalhes" : "Detalhes indisponíveis para este exemplo"}
                                                 className="p-1.5 rounded-lg transition hover:brightness-95 disabled:opacity-40"
-                                                style={{ background: "#F3F7F1" }}
+                                                style={{ background: "#F2F5F0" }}
                                             >
-                                                <Eye size={13} style={{ color: "#0D5006" }} />
+                                                <Eye size={13} style={{ color: "#1F5B3A" }} />
                                             </button>
                                             <button
                                                 onClick={() => alternarCompartilhado(r.id)}
                                                 title={r.compartilhado ? "Deixar de compartilhar" : "Compartilhar"}
                                                 className="p-1.5 rounded-lg transition hover:brightness-95"
-                                                style={{ background: r.compartilhado ? "#EAF2FB" : "#F3F7F1" }}
+                                                style={{ background: r.compartilhado ? "#EAF2FB" : "#F2F5F0" }}
                                             >
-                                                <Share2 size={13} style={{ color: r.compartilhado ? "#3B82C4" : "#0D5006" }} />
+                                                <Share2 size={13} style={{ color: r.compartilhado ? "#4E829C" : "#1F5B3A" }} />
                                             </button>
                                         </div>
                                     </div>
@@ -517,46 +517,46 @@ export default function Relatorios() {
             {/* Modal de detalhes */}
             {detalhe && detalhe.dados && (
                 <div className="fixed inset-0 flex overflow-y-auto p-4" style={{ background: "rgba(0,0,0,0.4)", zIndex: 60 }}>
-                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6" style={{ border: "1px solid #E7E9E4" }}>
+                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6" style={{ border: "1px solid #E1E6DF" }}>
                         <div className="flex items-center justify-between">
-                            <h2 className="font-bold text-lg" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                            <h2 className="font-bold text-lg" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {detalhe.titulo}
                             </h2>
                             <button onClick={() => setDetalhe(null)} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela">
-                                <X size={18} style={{ color: "#8B978A" }} />
+                                <X size={18} style={{ color: "#647269" }} />
                             </button>
                         </div>
-                        <p className="text-xs -mt-2" style={{ color: "#8B978A" }}>{detalhe.dados.propriedade}</p>
+                        <p className="text-xs -mt-2" style={{ color: "#647269" }}>{detalhe.dados.propriedade}</p>
 
                         <div className="grid grid-cols-2 gap-3">
-                            <div className="rounded-xl px-4 py-3" style={{ background: "#EAF9EC" }}>
-                                <p className="text-xs" style={{ color: "#0D5006" }}>Entradas</p>
-                                <p className="text-base font-bold mt-0.5" style={{ color: "#1A2E1A" }}>{formatBRL(detalhe.dados.financeiro.entradas)}</p>
+                            <div className="rounded-xl px-4 py-3" style={{ background: "#E8F3EA" }}>
+                                <p className="text-xs" style={{ color: "#1F5B3A" }}>Entradas</p>
+                                <p className="text-base font-bold mt-0.5" style={{ color: "#25352B" }}>{formatBRL(detalhe.dados.financeiro.entradas)}</p>
                             </div>
-                            <div className="rounded-xl px-4 py-3" style={{ background: "#FDECEA" }}>
-                                <p className="text-xs" style={{ color: "#B0472F" }}>Saídas</p>
-                                <p className="text-base font-bold mt-0.5" style={{ color: "#1A2E1A" }}>{formatBRL(detalhe.dados.financeiro.saidas)}</p>
+                            <div className="rounded-xl px-4 py-3" style={{ background: "#F8ECE8" }}>
+                                <p className="text-xs" style={{ color: "#A8553E" }}>Saídas</p>
+                                <p className="text-base font-bold mt-0.5" style={{ color: "#25352B" }}>{formatBRL(detalhe.dados.financeiro.saidas)}</p>
                             </div>
-                            <div className="rounded-xl px-4 py-3 col-span-2" style={{ background: "#F3F7F1" }}>
-                                <p className="text-xs" style={{ color: "#3A4A38" }}>Saldo</p>
-                                <p className="text-lg font-bold mt-0.5" style={{ color: detalhe.dados.financeiro.saldo >= 0 ? "#0D5006" : "#B0472F" }}>
+                            <div className="rounded-xl px-4 py-3 col-span-2" style={{ background: "#F2F5F0" }}>
+                                <p className="text-xs" style={{ color: "#46564B" }}>Saldo</p>
+                                <p className="text-lg font-bold mt-0.5" style={{ color: detalhe.dados.financeiro.saldo >= 0 ? "#1F5B3A" : "#A8553E" }}>
                                     {formatBRL(detalhe.dados.financeiro.saldo)}
                                 </p>
                             </div>
-                            <div className="rounded-xl px-4 py-3" style={{ background: "#F3F7F1" }}>
-                                <p className="text-xs" style={{ color: "#3A4A38" }}>Produções registradas</p>
-                                <p className="text-base font-bold mt-0.5" style={{ color: "#1A2E1A" }}>{detalhe.dados.producao.total}</p>
+                            <div className="rounded-xl px-4 py-3" style={{ background: "#F2F5F0" }}>
+                                <p className="text-xs" style={{ color: "#46564B" }}>Produções registradas</p>
+                                <p className="text-base font-bold mt-0.5" style={{ color: "#25352B" }}>{detalhe.dados.producao.total}</p>
                             </div>
-                            <div className="rounded-xl px-4 py-3" style={{ background: "#F3F7F1" }}>
-                                <p className="text-xs" style={{ color: "#3A4A38" }}>Itens em estoque</p>
-                                <p className="text-base font-bold mt-0.5" style={{ color: "#1A2E1A" }}>{detalhe.dados.estoque.totalItens}</p>
+                            <div className="rounded-xl px-4 py-3" style={{ background: "#F2F5F0" }}>
+                                <p className="text-xs" style={{ color: "#46564B" }}>Itens em estoque</p>
+                                <p className="text-base font-bold mt-0.5" style={{ color: "#25352B" }}>{detalhe.dados.estoque.totalItens}</p>
                             </div>
                         </div>
 
                         <button
                             onClick={() => setDetalhe(null)}
                             className="mt-1 py-2.5 rounded-xl text-sm font-medium"
-                            style={{ background: "#F3F7F1", color: "#3A4A38" }}
+                            style={{ background: "#F2F5F0", color: "#46564B" }}
                         >
                             Fechar
                         </button>

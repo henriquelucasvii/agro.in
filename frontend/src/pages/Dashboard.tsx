@@ -48,6 +48,8 @@ interface DashboardData {
     meta: MetaResumo | null;
 }
 
+const DASHBOARD_ACCENT = "#2B6846";
+
 const DASHBOARD_VAZIO: DashboardData = {
     propriedade: null,
     financeiro: null,
@@ -62,14 +64,14 @@ const formatBRL = (valor: number) => valor.toLocaleString("pt-BR", { style: "cur
 function EmptyState({ label, cta, onClick }: { label: string; cta: string; onClick: () => void }) {
     return (
         <div className="flex flex-col items-center justify-center h-full gap-2 py-6 text-center">
-            <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "#EFF5EC" }}>
+            <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "#E9F1E8" }}>
                 <Leaf size={16} style={{ color: "#8CA88A" }} />
             </div>
-            <p className="text-sm" style={{ color: "#7A8A78" }}>{label}</p>
+            <p className="text-sm" style={{ color: "#647269" }}>{label}</p>
             <button
                 onClick={onClick}
                 className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full mt-1 transition-colors hover:brightness-95"
-                style={{ color: "#0D5006", background: "#EAF9EC" }}
+                style={{ color: "#1F5B3A", background: "#E8F3EA" }}
             >
                 <Plus size={13} /> {cta}
             </button>
@@ -96,11 +98,11 @@ function Card({
 
         <div
             className="rounded-2xl bg-white flex flex-col overflow-hidden transition-shadow hover:shadow-md"
-            style={{ border: "1px solid #E7E9E4", minHeight: 230 }}
+            style={{ border: "1px solid #E1E6DF", minHeight: 230 }}
         >
             <div className="h-1.5" style={{ background: accent }} />
             <div className="flex items-center justify-between px-5 pt-4 pb-3">
-                <h3 className="font-semibold text-[15px]" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                <h3 className="font-semibold text-[15px]" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                     {title}
                 </h3>
                 <ChevronRight size={16} style={{ color: "#C7D0C4" }} />
@@ -110,7 +112,7 @@ function Card({
                 <button
                     onClick={onFooterClick}
                     className="text-left px-5 py-2.5 text-xs font-medium border-t hover:underline"
-                    style={{ borderColor: "#F0F1EC", color: accent }}
+                    style={{ borderColor: "#EFF3ED", color: accent }}
                 >
                     {footer}
                 </button>
@@ -163,10 +165,10 @@ function ProgressBar({ label, percentual, color }: { label: string; percentual: 
     return (
         <div>
             <div className="flex items-center justify-between mb-1">
-                <span className="text-sm" style={{ color: "#3A4A38" }}>{label}</span>
-                <span className="text-xs font-medium" style={{ color: "#8B978A" }}>{percentual}%</span>
+                <span className="text-sm" style={{ color: "#46564B" }}>{label}</span>
+                <span className="text-xs font-medium" style={{ color: "#647269" }}>{percentual}%</span>
             </div>
-            <div className="w-full h-2 rounded-full" style={{ background: "#EDEFEA" }}>
+            <div className="w-full h-2 rounded-full" style={{ background: "#E4E9E3" }}>
                 <div className="h-2 rounded-full" style={{ width: `${percentual}%`, background: color }} />
             </div>
         </div>
@@ -195,7 +197,7 @@ function ProgressRing({ percentual, color }: { percentual: number; color: string
                 strokeLinecap="round"
                 transform={`rotate(-90 ${size / 2} ${size / 2})`}
             />
-            <text x="50%" y="50%" textAnchor="middle" dy="0.35em" fontSize={18} fontWeight={700} fill="#1A2E1A">
+            <text x="50%" y="50%" textAnchor="middle" dy="0.35em" fontSize={18} fontWeight={700} fill="#25352B">
                 {percentual}%
             </text>
         </svg>
@@ -319,20 +321,20 @@ export default function Dashboard() {
 
     if (loading || !data) {
         return (
-            <div className="min-h-screen w-full flex items-center justify-center" style={{ background: "#F7F8F5" }}>
-                <p className="text-sm" style={{ color: "#7A8A78" }}>Carregando dashboard...</p>
+            <div className="min-h-screen w-full flex items-center justify-center" style={{ background: "#F5F6F2" }}>
+                <p className="text-sm" style={{ color: "#647269" }}>Carregando dashboard...</p>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{ background: "#F7F8F5" }}>
+        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{ background: "#F5F6F2" }}>
             <Sidebar />
 
             {/* Main */}
             <div className="flex-1 flex flex-col">
 
-                <header className="px-10 pt-8 pb-6" style={{ background: "#0D5006" }}>
+                <header className="px-10 pt-8 pb-6" style={{ background: "#1F5B3A" }}>
                     <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Montserrat, sans-serif" }}>
                         Dashboard
                     </h1>
@@ -344,30 +346,30 @@ export default function Dashboard() {
                 <main className="px-10 py-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 flex-1">
                     {/* Propriedades */}
                     <Card
-                        accent="#0D5006"
+                        accent={DASHBOARD_ACCENT}
                         title="Propriedades"
                         footer={data.propriedade ? "Ver todas as propriedades" : undefined}
                         onFooterClick={() => navigate("/propriedade")}
                     >
                         {data.propriedade ? (
                             <div className="flex flex-col gap-2 pt-1">
-                                <div className="flex items-center justify-between rounded-lg px-3 py-2.5" style={{ background: "#F3F7F1" }}>
-                                    <span className="text-sm font-medium" style={{ color: "#1A2E1A" }}>{data.propriedade.nome}</span>
+                                <div className="flex items-center justify-between rounded-lg px-3 py-2.5" style={{ background: "#F2F5F0" }}>
+                                    <span className="text-sm font-medium" style={{ color: "#25352B" }}>{data.propriedade.nome}</span>
                                     <span
                                         className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                                        style={{ background: "#EAF9EC", color: "#0D5006" }}
+                                        style={{ background: "#E8F3EA", color: "#1F5B3A" }}
                                     >
                                         {data.propriedade.status}
                                     </span>
                                 </div>
                                 <div className="grid grid-cols-2 gap-2 mt-1">
-                                    <div className="rounded-lg px-3 py-2" style={{ background: "#F3F7F1" }}>
-                                        <p className="text-[11px]" style={{ color: "#8B978A" }}>Área Total</p>
-                                        <p className="text-sm font-semibold" style={{ color: "#1A2E1A" }}>{data.propriedade.areaTotalHa} ha</p>
+                                    <div className="rounded-lg px-3 py-2" style={{ background: "#F2F5F0" }}>
+                                        <p className="text-[11px]" style={{ color: "#647269" }}>Área Total</p>
+                                        <p className="text-sm font-semibold" style={{ color: "#25352B" }}>{data.propriedade.areaTotalHa} ha</p>
                                     </div>
-                                    <div className="rounded-lg px-3 py-2" style={{ background: "#F3F7F1" }}>
-                                        <p className="text-[11px]" style={{ color: "#8B978A" }}>Talhões</p>
-                                        <p className="text-sm font-semibold" style={{ color: "#1A2E1A" }}>{data.propriedade.talhoes}</p>
+                                    <div className="rounded-lg px-3 py-2" style={{ background: "#F2F5F0" }}>
+                                        <p className="text-[11px]" style={{ color: "#647269" }}>Talhões</p>
+                                        <p className="text-sm font-semibold" style={{ color: "#25352B" }}>{data.propriedade.talhoes}</p>
                                     </div>
                                 </div>
                             </div>
@@ -378,17 +380,17 @@ export default function Dashboard() {
 
                     {/* Financeiro */}
                     <Card
-                        accent="#2E7DAF"
+                        accent={DASHBOARD_ACCENT}
                         title="Financeiro"
                         footer={data.financeiro ? "Ver extrato completo" : undefined}
                         onFooterClick={() => navigate("/financeiro")}
                     >
                         {data.financeiro ? (
                             <div className="pt-1">
-                                <p className="text-xs" style={{ color: "#8B978A" }}>Saldo do mês</p>
-                                <p className="text-xl font-bold" style={{ color: "#1A2E1A" }}>{formatBRL(data.financeiro.saldoMes)}</p>
+                                <p className="text-xs" style={{ color: "#647269" }}>Saldo do mês</p>
+                                <p className="text-xl font-bold" style={{ color: "#25352B" }}>{formatBRL(data.financeiro.saldoMes)}</p>
                                 <div className="mt-2">
-                                    <MiniAreaChart data={data.financeiro.historico} color="#2E7DAF" />
+                                    <MiniAreaChart data={data.financeiro.historico} color={DASHBOARD_ACCENT} />
                                 </div>
                             </div>
                         ) : (
@@ -398,16 +400,16 @@ export default function Dashboard() {
 
                     {/* Produção */}
                     <Card
-                        accent="#C9A227"
+                        accent={DASHBOARD_ACCENT}
                         title="Produção"
                         footer={data.producao ? "Ver extrato completo" : undefined}
                         onFooterClick={() => navigate("/producao")}
                     >
                         {data.producao ? (
                             <div className="pt-1">
-                                <p className="text-xs" style={{ color: "#8B978A" }}>Área total utilizada (ha)</p>
-                                <p className="text-xl font-bold mb-2" style={{ color: "#1A2E1A" }}>{data.producao.colhendoTon} ha</p>
-                                <MiniBarChart data={data.producao.historico} color="#C9A227" />
+                                <p className="text-xs" style={{ color: "#647269" }}>Área total utilizada (ha)</p>
+                                <p className="text-xl font-bold mb-2" style={{ color: "#25352B" }}>{data.producao.colhendoTon} ha</p>
+                                <MiniBarChart data={data.producao.historico} color={DASHBOARD_ACCENT} />
                             </div>
                         ) : (
                             <EmptyState label="Nenhum registro de produção" cta="Registrar produção" onClick={() => navigate("/producao/")} />
@@ -416,7 +418,7 @@ export default function Dashboard() {
 
                     {/* Estoques */}
                     <Card
-                        accent="#8B5E34"
+                        accent={DASHBOARD_ACCENT}
                         title="Estoques"
                         footer={data.estoque.length ? "Ver todo o estoque" : undefined}
                         onFooterClick={() => navigate("/estoque")}
@@ -424,7 +426,7 @@ export default function Dashboard() {
                         {data.estoque.length ? (
                             <div className="flex flex-col gap-3 pt-1">
                                 {data.estoque.map((item) => (
-                                    <ProgressBar key={item.nome} label={item.nome} percentual={item.percentual} color="#8B5E34" />
+                                    <ProgressBar key={item.nome} label={item.nome} percentual={item.percentual} color={DASHBOARD_ACCENT} />
                                 ))}
                             </div>
                         ) : (
@@ -434,17 +436,17 @@ export default function Dashboard() {
 
                     {/* Metas */}
                     <Card
-                        accent="#B0472F"
+                        accent={DASHBOARD_ACCENT}
                         title="Metas"
                         footer={data.meta ? "Ver todas as metas" : undefined}
                         onFooterClick={() => navigate("/meta")}
                     >
                         {data.meta ? (
                             <div className="flex items-center gap-4 pt-1">
-                                <ProgressRing percentual={Math.round((data.meta.atual / data.meta.alvo) * 100)} color="#B0472F" />
+                                <ProgressRing percentual={Math.round((data.meta.atual / data.meta.alvo) * 100)} color={DASHBOARD_ACCENT} />
                                 <div>
-                                    <p className="text-sm font-semibold" style={{ color: "#1A2E1A" }}>{data.meta.titulo}</p>
-                                    <p className="text-xs mt-1" style={{ color: "#8B978A" }}>
+                                    <p className="text-sm font-semibold" style={{ color: "#25352B" }}>{data.meta.titulo}</p>
+                                    <p className="text-xs mt-1" style={{ color: "#647269" }}>
                                         {data.meta.atual} / {data.meta.alvo} {data.meta.unidade} · Prazo - {formatPrazo(data.meta.prazo)}
                                     </p>
                                 </div>
@@ -455,7 +457,7 @@ export default function Dashboard() {
                     </Card>
 
                     <Card
-                        accent="#5A6E57"
+                        accent={DASHBOARD_ACCENT}
                         title="Relatórios"
                         footer={relatoriosRecentes.length ? "Ver todos os relatórios" : undefined}
                         onFooterClick={() => navigate("/relatorios")}
@@ -467,10 +469,10 @@ export default function Dashboard() {
                                         key={relatorio.id}
                                         onClick={() => navigate("/relatorios")}
                                         className="text-left rounded-lg px-3 py-2 transition-colors hover:brightness-95"
-                                        style={{ background: "#F3F4F1" }}
+                                        style={{ background: "#F2F5F0" }}
                                     >
-                                        <p className="text-sm font-medium" style={{ color: "#1A2E1A" }}>{relatorio.titulo}</p>
-                                        <p className="text-[11px]" style={{ color: "#8B978A" }}>{tempoRelativo(relatorio.geradoEm)}</p>
+                                        <p className="text-sm font-medium" style={{ color: "#25352B" }}>{relatorio.titulo}</p>
+                                        <p className="text-[11px]" style={{ color: "#647269" }}>{tempoRelativo(relatorio.geradoEm)}</p>
                                     </button>
                                 ))}
                             </div>

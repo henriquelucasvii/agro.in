@@ -48,22 +48,22 @@ export default function Login() {
 
                     <div className="space-y-5">
                         <div>
-                            <label className="block text-[#0D5006] text-base mb-1">E-mail</label>
+                            <label className="block text-[#1F5B3A] text-base mb-1">E-mail</label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full h-12 rounded-md bg-[#E4E4E4] px-4 outline-none text-sm"
+                                className="w-full h-12 rounded-md bg-[#EFF2EE] px-4 outline-none text-sm"
                                 placeholder="Insira seu e-mail"
                             />
                         </div>
                         <div>
-                            <label className="block text-[#0D5006] text-base mb-1">Senha</label>
+                            <label className="block text-[#1F5B3A] text-base mb-1">Senha</label>
                             <input
                                 type="password"
                                 value={senha}
                                 onChange={(e) => setSenha(e.target.value)}
-                                className="w-full h-12 rounded-md bg-[#E4E4E4] px-4 outline-none text-sm"
+                                className="w-full h-12 rounded-md bg-[#EFF2EE] px-4 outline-none text-sm"
                                 placeholder="Insira sua senha"
                             />
                         </div>
@@ -76,7 +76,7 @@ export default function Login() {
                     <button
                         onClick={handleLogin}
                         disabled={loading}
-                        className="mt-8 w-full h-12 rounded-xl bg-[#0D5006] text-white text-base font-semibold hover:brightness-110 transition disabled:opacity-60"
+                        className="mt-8 w-full h-12 rounded-xl bg-[#1F5B3A] text-white text-base font-semibold hover:brightness-110 transition disabled:opacity-60"
                     >
                         {loading ? "Entrando..." : "Login"}
                     </button>
@@ -84,14 +84,14 @@ export default function Login() {
                     <button
                         type="button"
                         onClick={() => navigate("/esqueci-senha")}
-                        className="mt-4 inline-flex min-h-11 w-full items-center justify-center text-center text-sm font-semibold text-[#0D5006] hover:underline"
+                        className="mt-4 inline-flex min-h-11 w-full items-center justify-center text-center text-sm font-semibold text-[#1F5B3A] hover:underline"
                     >
                         Esqueceu sua senha?
                     </button>
 
                     <p className="text-center mt-6 text-sm">
                         Não possui uma conta?{" "}
-                        <button type="button" onClick={() => navigate("/")} className="inline-flex min-h-11 items-center font-semibold text-[#0D5006]">
+                        <button type="button" onClick={() => navigate("/")} className="inline-flex min-h-11 items-center font-semibold text-[#1F5B3A]">
                             Registre-se
                         </button>
                     </p>
@@ -99,9 +99,9 @@ export default function Login() {
                 </div>
             </div>
 
-            <div className="flex-1 bg-[#0D5006] flex flex-col justify-between px-8 py-12 overflow-hidden">
+            <div className="flex-1 bg-[#1F5B3A] flex flex-col justify-between px-8 py-12 overflow-hidden">
                 <div className="max-w-md self-center-safe">
-                    <p className="text-[#48F36B] font-bold uppercase text-sm tracking-widest mb-4">TUDO EM UM SÓ LUGAR</p>
+                    <p className="text-[#A9E7AF] font-bold uppercase text-sm tracking-widest mb-4">TUDO EM UM SÓ LUGAR</p>
                     <h2 className="text-white font-bold text-3xl lg:text-4xl xl:text-5xl leading-tight mb-6">
                         Conheça o melhor software de gestão de fazendas
                     </h2>

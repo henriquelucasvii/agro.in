@@ -324,17 +324,17 @@ export default function VistoriasFoliares() {
 
     if (carregando) {
         return (
-            <div className="flex min-h-screen bg-[#F3F5EF]">
+            <div className="flex min-h-screen bg-[#F5F6F2]">
                 <Sidebar />
                 <div className="flex flex-1 items-center justify-center">
-                    <LoaderCircle className="animate-spin text-[#174D27]" size={28} />
+                    <LoaderCircle className="animate-spin text-[#1F5B3A]" size={28} />
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#F3F5EF] text-[#1D2C20] lg:flex">
+        <div className="min-h-screen bg-[#F5F6F2] text-[#25352B] lg:flex">
             <Sidebar />
             <main className="min-w-0 flex-1">
                 <header className="border-b border-[#DDE2D8] bg-[#F8FAF5] px-5 py-5 md:px-8 lg:px-10">
@@ -401,7 +401,7 @@ export default function VistoriasFoliares() {
                         </div>
                         <button
                             onClick={() => setCriando((atual) => !atual)}
-                            className="flex items-center gap-2 rounded-xl bg-[#174D27] px-4 py-2.5 text-xs font-bold text-white"
+                            className="flex items-center gap-2 rounded-xl bg-[#1F5B3A] px-4 py-2.5 text-xs font-bold text-white"
                         >
                             <Plus size={15} /> Nova vistoria
                         </button>
@@ -452,7 +452,7 @@ export default function VistoriasFoliares() {
                             <button
                                 onClick={criarVistoria}
                                 disabled={ocupado}
-                                className="h-11 rounded-xl bg-[#174D27] px-5 text-xs font-bold text-white disabled:opacity-50"
+                                className="h-11 rounded-xl bg-[#1F5B3A] px-5 text-xs font-bold text-white disabled:opacity-50"
                             >
                                 Criar roteiro
                             </button>
@@ -644,7 +644,7 @@ export default function VistoriasFoliares() {
                                                                     `/analise-foliar?ponto=${ponto.id}&vistoria=${selecionada.id}`,
                                                                 )
                                                             }
-                                                            className="flex min-h-10 items-center gap-1.5 rounded-lg bg-[#174D27] px-3 py-2 text-[10px] font-bold text-white"
+                                                            className="flex min-h-10 items-center gap-1.5 rounded-lg bg-[#1F5B3A] px-3 py-2 text-[10px] font-bold text-white"
                                                         >
                                                             <Camera size={14} /> Fotografar
                                                         </button>
@@ -688,7 +688,7 @@ export default function VistoriasFoliares() {
                                             <button
                                                 onClick={adicionarPonto}
                                                 disabled={!novoPonto.trim() || ocupado}
-                                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#174D27] text-white disabled:opacity-40"
+                                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1F5B3A] text-white disabled:opacity-40"
                                                 aria-label="Adicionar ponto"
                                             >
                                                 <Plus size={16} />

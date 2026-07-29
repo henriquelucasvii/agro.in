@@ -151,19 +151,19 @@ export default function Perfil() {
 
     if (loading) {
         return (
-            <div className="flex min-h-screen w-full items-center justify-center" style={{ background: "#F7F8F5" }}>
-                <p className="text-sm" style={{ color: "#7A8A78" }}>Carregando perfil...</p>
+            <div className="flex min-h-screen w-full items-center justify-center" style={{ background: "#F5F6F2" }}>
+                <p className="text-sm" style={{ color: "#647269" }}>Carregando perfil...</p>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{ fontFamily: "Inter, sans-serif", background: "#F7F8F5" }}>
+        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{ fontFamily: "Inter, sans-serif", background: "#F5F6F2" }}>
             <Sidebar />
 
             <div className="flex-1 flex flex-col min-w-0">
 
-                <header className="px-6 lg:px-10 pt-8 pb-6" style={{ background: "#0D5006" }}>
+                <header className="px-6 lg:px-10 pt-8 pb-6" style={{ background: "#1F5B3A" }}>
                     <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Montserrat, sans-serif" }}>
                         Perfil
                     </h1>
@@ -172,25 +172,25 @@ export default function Perfil() {
                 <main className="px-6 lg:px-10 py-8 flex-1">
 
                     {sucesso && (
-                        <div className="mb-4 px-4 py-3 rounded-xl text-sm font-medium" style={{ background: "#EAF9EC", color: "#0D5006" }}>
+                        <div className="mb-4 px-4 py-3 rounded-xl text-sm font-medium" style={{ background: "#E8F3EA", color: "#1F5B3A" }}>
                             {sucesso}
                         </div>
                     )}
 
-                    <div className="bg-white rounded-2xl p-6 mb-5 flex flex-col sm:flex-row sm:items-center gap-5" style={{ border: "1px solid #E7E9E4" }}>
+                    <div className="bg-white rounded-2xl p-6 mb-5 flex flex-col sm:flex-row sm:items-center gap-5" style={{ border: "1px solid #E1E6DF" }}>
                         <div
                             className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold text-white shrink-0"
-                            style={{ background: "#0D5006" }}
+                            style={{ background: "#1F5B3A" }}
                         >
                             {iniciais}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h2 className="text-xl font-bold" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                            <h2 className="text-xl font-bold" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {usuario?.nome}
                             </h2>
-                            <p className="text-sm mt-0.5" style={{ color: "#8B978A" }}>Proprietário · Administrator</p>
+                            <p className="text-sm mt-0.5" style={{ color: "#647269" }}>Proprietário · Administrator</p>
                             {propriedades[0] && (
-                                <p className="text-xs mt-1" style={{ color: "#8B978A" }}>
+                                <p className="text-xs mt-1" style={{ color: "#647269" }}>
                                     {propriedades[0].nome} · Membro desde {membroDesde}
                                 </p>
                             )}
@@ -199,14 +199,14 @@ export default function Perfil() {
                             <button
                                 onClick={() => setModalSenha(true)}
                                 className="px-4 py-2 rounded-xl text-sm font-medium border transition hover:brightness-95"
-                                style={{ background: "white", color: "#3A4A38", border: "1px solid #E7E9E4" }}
+                                style={{ background: "white", color: "#46564B", border: "1px solid #E1E6DF" }}
                             >
                                 Alterar Senha
                             </button>
                             <button
                                 onClick={() => setEditando(true)}
                                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition hover:brightness-90"
-                                style={{ background: "#0D5006", color: "white" }}
+                                style={{ background: "#1F5B3A", color: "white" }}
                             >
                                 <Pencil size={14} />
                                 Editar perfil
@@ -218,8 +218,8 @@ export default function Perfil() {
 
                         <div className="lg:col-span-2 flex flex-col gap-5">
 
-                            <div className="bg-white rounded-2xl p-6" style={{ border: "2px solid #C9A227" }}>
-                                <h3 className="font-bold text-base mb-5" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                            <div className="rounded-2xl border border-[#DCE3DB] bg-white p-6">
+                                <h3 className="font-bold text-base mb-5" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                     Dados pessoais
                                 </h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -228,19 +228,19 @@ export default function Perfil() {
                                         { label: "E-MAIL", value: usuario?.email ?? "", key: "email" },
                                     ].map(({ label, value, key }) => (
                                         <div key={key}>
-                                            <p className="text-[11px] font-semibold mb-1" style={{ color: "#8B978A" }}>{label}</p>
+                                            <p className="text-[11px] font-semibold mb-1" style={{ color: "#647269" }}>{label}</p>
                                             {editando ? (
                                                 <input
                                                     type={key === "email" ? "email" : "text"}
                                                     value={form[key as keyof FormData]}
                                                     onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
                                                     className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                                    style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                                    style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                                 />
                                             ) : (
                                                 <div
                                                     className="w-full h-10 rounded-lg px-3 flex items-center text-sm"
-                                                    style={{ background: "#F3F7F1", color: "#1A2E1A" }}
+                                                    style={{ background: "#F2F5F0", color: "#25352B" }}
                                                 >
                                                     {value}
                                                 </div>
@@ -256,7 +256,7 @@ export default function Perfil() {
                                             <button
                                                 onClick={() => { setEditando(false); setErro(""); setForm({ nome: usuario?.nome ?? "", email: usuario?.email ?? "" }); }}
                                                 className="flex-1 py-2.5 rounded-xl text-sm font-medium"
-                                                style={{ background: "#F3F7F1", color: "#3A4A38" }}
+                                                style={{ background: "#F2F5F0", color: "#46564B" }}
                                             >
                                                 Cancelar
                                             </button>
@@ -264,7 +264,7 @@ export default function Perfil() {
                                                 onClick={salvarPerfil}
                                                 disabled={salvando}
                                                 className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
-                                                style={{ background: "#0D5006", color: "white" }}
+                                                style={{ background: "#1F5B3A", color: "white" }}
                                             >
                                                 {salvando ? "Salvando..." : "Salvar alterações"}
                                             </button>
@@ -273,29 +273,29 @@ export default function Perfil() {
                                 )}
                             </div>
 
-                            <div className="bg-white rounded-2xl p-6" style={{ border: "2px solid #C9A227" }}>
-                                <h3 className="font-bold text-base mb-5" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                            <div className="rounded-2xl border border-[#DCE3DB] bg-white p-6">
+                                <h3 className="font-bold text-base mb-5" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                     Propriedades vinculadas
                                 </h3>
                                 {propriedades.length === 0 ? (
-                                    <p className="text-sm" style={{ color: "#7A8A78" }}>Nenhuma propriedade cadastrada.</p>
+                                    <p className="text-sm" style={{ color: "#647269" }}>Nenhuma propriedade cadastrada.</p>
                                 ) : (
                                     <div className="flex flex-col gap-3">
                                         {propriedades.map((p, i) => (
                                             <div
                                                 key={p.id}
                                                 className="flex items-center justify-between px-4 py-3 rounded-xl"
-                                                style={{ background: "#F3F7F1" }}
+                                                style={{ background: "#F2F5F0" }}
                                             >
                                                 <div>
-                                                    <p className="text-sm font-semibold" style={{ color: "#1A2E1A" }}>{p.nome}</p>
-                                                    <p className="text-xs mt-0.5" style={{ color: "#8B978A" }}>{p.area_total} ha</p>
+                                                    <p className="text-sm font-semibold" style={{ color: "#25352B" }}>{p.nome}</p>
+                                                    <p className="text-xs mt-0.5" style={{ color: "#647269" }}>{p.area_total} ha</p>
                                                 </div>
                                                 <span
                                                     className="text-xs font-semibold px-2.5 py-1 rounded-full"
                                                     style={{
-                                                        background: i === 0 ? "#EAF9EC" : "#FDF3E6",
-                                                        color: i === 0 ? "#0D5006" : "#8A5A17",
+                                                        background: i === 0 ? "#E8F3EA" : "#FDF3E6",
+                                                        color: i === 0 ? "#1F5B3A" : "#8A5A17",
                                                     }}
                                                 >
                                                     {i === 0 ? "Principal" : "Secundária"}
@@ -309,8 +309,8 @@ export default function Perfil() {
 
                         {/* Coluna direita — Preferências */}
                         <div className="flex flex-col gap-5">
-                            <div className="bg-white rounded-2xl p-6" style={{ border: "2px solid #2E7DAF" }}>
-                                <h3 className="font-bold text-base mb-5" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                            <div className="rounded-2xl border border-[#DCE3DB] bg-white p-6">
+                                <h3 className="font-bold text-base mb-5" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                     Preferências
                                 </h3>
                                 <div className="flex flex-col gap-4">
@@ -340,10 +340,10 @@ export default function Perfil() {
                                     ].map(({ icon, label, desc, value, onClick }) => (
                                         <div key={label} className="flex items-center justify-between gap-3">
                                             <div className="flex items-start gap-3">
-                                                <div className="mt-0.5" style={{ color: "#8B978A" }}>{icon}</div>
+                                                <div className="mt-0.5" style={{ color: "#647269" }}>{icon}</div>
                                                 <div>
-                                                    <p className="text-sm font-medium" style={{ color: "#1A2E1A" }}>{label}</p>
-                                                    <p className="text-xs" style={{ color: "#8B978A" }}>{desc}</p>
+                                                    <p className="text-sm font-medium" style={{ color: "#25352B" }}>{label}</p>
+                                                    <p className="text-xs" style={{ color: "#647269" }}>{desc}</p>
                                                 </div>
                                             </div>
                                             <button
@@ -355,7 +355,7 @@ export default function Perfil() {
                                             >
                                                 <span
                                                     className="absolute inset-x-0 top-2 h-7 rounded-full transition-colors"
-                                                    style={{ background: value ? "#0D5006" : "#D1D5DB" }}
+                                                    style={{ background: value ? "#1F5B3A" : "#D1D5DB" }}
                                                 />
                                                 <span
                                                     className="absolute top-3.5 h-4 w-4 rounded-full bg-white transition-all"
@@ -377,17 +377,17 @@ export default function Perfil() {
                     <div
                         key={i}
                         className="flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg"
-                        style={{ background: "white", border: "1px solid #E7E9E4", minWidth: 240, maxWidth: 300 }}
+                        style={{ background: "white", border: "1px solid #E1E6DF", minWidth: 240, maxWidth: 300 }}
                     >
                         <div
                             className="w-2 h-2 rounded-full mt-1.5 shrink-0"
-                            style={{ background: alerta.percentual <= 30 ? "#B0472F" : "#C9A227" }}
+                            style={{ background: alerta.percentual <= 30 ? "#A8553E" : "#B49A45" }}
                         />
                         <div>
-                            <p className="text-sm font-semibold" style={{ color: "#1A2E1A" }}>
+                            <p className="text-sm font-semibold" style={{ color: "#25352B" }}>
                                 {alerta.nome}
                             </p>
-                            <p className="text-xs mt-0.5" style={{ color: "#8B978A" }}>
+                            <p className="text-xs mt-0.5" style={{ color: "#647269" }}>
                                 Estoque em {alerta.percentual}% do mínimo
                             </p>
                         </div>
@@ -398,13 +398,13 @@ export default function Perfil() {
             {/* Modal Alterar Senha */}
             {modalSenha && (
                 <div className="fixed inset-0 z-50 flex overflow-y-auto p-4" style={{ background: "rgba(0,0,0,0.4)" }}>
-                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-sm flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6" style={{ border: "1px solid #E7E9E4" }}>
+                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-sm flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6" style={{ border: "1px solid #E1E6DF" }}>
                         <div className="flex items-center justify-between">
-                            <h2 className="font-bold text-lg" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                            <h2 className="font-bold text-lg" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 Alterar senha
                             </h2>
                             <button onClick={() => { setModalSenha(false); setErroSenha(""); }} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela">
-                                <X size={18} style={{ color: "#8B978A" }} />
+                                <X size={18} style={{ color: "#647269" }} />
                             </button>
                         </div>
 
@@ -415,13 +415,13 @@ export default function Perfil() {
                                 { label: "Confirmar nova senha", value: confirmarSenha, set: setConfirmarSenha },
                             ].map(({ label, value, set }) => (
                                 <div key={label}>
-                                    <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>{label}</label>
+                                    <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>{label}</label>
                                     <input
                                         type="password"
                                         value={value}
                                         onChange={(e) => set(e.target.value)}
                                         className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                        style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                        style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                     />
                                 </div>
                             ))}
@@ -433,7 +433,7 @@ export default function Perfil() {
                             <button
                                 onClick={() => { setModalSenha(false); setErroSenha(""); }}
                                 className="flex-1 py-2.5 rounded-xl text-sm font-medium"
-                                style={{ background: "#F3F7F1", color: "#3A4A38" }}
+                                style={{ background: "#F2F5F0", color: "#46564B" }}
                             >
                                 Cancelar
                             </button>
@@ -441,7 +441,7 @@ export default function Perfil() {
                                 onClick={salvarSenha}
                                 disabled={salvandoSenha}
                                 className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
-                                style={{ background: "#0D5006", color: "white" }}
+                                style={{ background: "#1F5B3A", color: "white" }}
                             >
                                 {salvandoSenha ? "Salvando..." : "Alterar"}
                             </button>

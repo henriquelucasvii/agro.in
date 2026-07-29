@@ -71,10 +71,10 @@ const CATEGORIA_LABEL: Record<CategoriaMeta, string> = {
 };
 
 const CORES_CATEGORIA: Record<CategoriaMeta, { linha: string; barra: string; bg: string; texto: string }> = {
-    producao: { linha: "#E2574C", barra: "#E2574C", bg: "#FDECEA", texto: "#B0472F" },
-    financeiro: { linha: "#4FA84F", barra: "#4FA84F", bg: "#EAF9EC", texto: "#0D5006" },
+    producao: { linha: "#E2574C", barra: "#E2574C", bg: "#F8ECE8", texto: "#A8553E" },
+    financeiro: { linha: "#4E9462", barra: "#4E9462", bg: "#E8F3EA", texto: "#1F5B3A" },
     sustentabilidade: { linha: "#8B6F47", barra: "#8B6F47", bg: "#F2ECE1", texto: "#6B5636" },
-    geral: { linha: "#0D5006", barra: "#0D5006", bg: "#EAF9EC", texto: "#0D5006" },
+    geral: { linha: "#1F5B3A", barra: "#1F5B3A", bg: "#E8F3EA", texto: "#1F5B3A" },
 };
 
 const INTERVALO_SINCRONIA_MS = 15000;
@@ -106,9 +106,9 @@ const estaAtrasada = (m: Meta) => {
 };
 
 const statusInfo = (m: Meta) => {
-    if (m.status === "concluida") return { label: "Concluída", bg: "#EAF9EC", cor: "#0D5006" };
-    if (estaAtrasada(m)) return { label: "Atrasada", bg: "#FDECEA", cor: "#B0472F" };
-    return { label: "Dentro do prazo", bg: "#EAF9EC", cor: "#0D5006" };
+    if (m.status === "concluida") return { label: "Concluída", bg: "#E8F3EA", cor: "#1F5B3A" };
+    if (estaAtrasada(m)) return { label: "Atrasada", bg: "#F8ECE8", cor: "#A8553E" };
+    return { label: "Dentro do prazo", bg: "#E8F3EA", cor: "#1F5B3A" };
 };
 
 const estaNoTrimestreAtual = (data?: string | null) => {
@@ -140,7 +140,7 @@ function AnelProgresso({ percentual, cor, tamanho = 108, espessura = 10 }: { per
     return (
         <div className="relative shrink-0" style={{ width: tamanho, height: tamanho }}>
             <svg width={tamanho} height={tamanho} viewBox={`0 0 ${tamanho} ${tamanho}`}>
-                <circle cx={tamanho / 2} cy={tamanho / 2} r={raio} fill="none" stroke="#F0F1EC" strokeWidth={espessura} />
+                <circle cx={tamanho / 2} cy={tamanho / 2} r={raio} fill="none" stroke="#EFF3ED" strokeWidth={espessura} />
                 <circle
                     cx={tamanho / 2}
                     cy={tamanho / 2}
@@ -156,7 +156,7 @@ function AnelProgresso({ percentual, cor, tamanho = 108, espessura = 10 }: { per
                 />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-bold" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                <span className="text-2xl font-bold" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                     {percentual}%
                 </span>
             </div>
@@ -166,7 +166,7 @@ function AnelProgresso({ percentual, cor, tamanho = 108, espessura = 10 }: { per
 
 function BarraProgresso({ percentual, cor }: { percentual: number; cor: string }) {
     return (
-        <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "#EDEFE9" }}>
+        <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "#E4E9E3" }}>
             <div
                 className="h-full rounded-full"
                 style={{ width: `${percentual}%`, background: cor, transition: "width 0.6s ease" }}
@@ -373,14 +373,14 @@ export default function Metas() {
     // ------------------------------------------------------------
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{ fontFamily: "Inter, sans-serif", background: "#F7F8F5" }}>
+        <div className="flex flex-col lg:flex-row min-h-screen w-full" style={{ fontFamily: "Inter, sans-serif", background: "#F5F6F2" }}>
             <Sidebar />
 
             {/* Main */}
             <div className="flex-1 flex flex-col min-w-0">
 
                 {/* Header */}
-                <header className="px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 pb-6" style={{ background: "#0D5006" }}>
+                <header className="px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 pb-6" style={{ background: "#1F5B3A" }}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
                             <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Montserrat, sans-serif" }}>
@@ -390,7 +390,7 @@ export default function Metas() {
                                 <span
                                     className="w-1.5 h-1.5 rounded-full shrink-0"
                                     style={{
-                                        background: erroConexao ? "#FF6B6B" : "#4FF47B",
+                                        background: erroConexao ? "#E36C5C" : "#9AE6A6",
                                         boxShadow: erroConexao ? "none" : "0 0 0 3px rgba(79,244,123,0.25)",
                                     }}
                                 />
@@ -417,7 +417,7 @@ export default function Metas() {
                             <button
                                 onClick={abrirNovo}
                                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-90 whitespace-nowrap"
-                                style={{ background: "#4FF47B", color: "#0D5006" }}
+                                style={{ background: "#9AE6A6", color: "#1F5B3A" }}
                             >
                                 <Plus size={16} />
                                 Nova meta
@@ -436,9 +436,9 @@ export default function Metas() {
                                 onClick={() => setAbaCategoria(key)}
                                 className="px-4 py-2 rounded-full text-sm font-medium transition shrink-0"
                                 style={{
-                                    background: abaCategoria === key ? "#0D5006" : "white",
-                                    color: abaCategoria === key ? "white" : "#3A4A38",
-                                    border: "1px solid #E7E9E4",
+                                    background: abaCategoria === key ? "#1F5B3A" : "white",
+                                    color: abaCategoria === key ? "white" : "#46564B",
+                                    border: "1px solid #E1E6DF",
                                 }}
                             >
                                 {label}
@@ -453,9 +453,9 @@ export default function Metas() {
                             { label: "Progresso médio", valor: `${progressoMedio}%` },
                             { label: "Concluídas no trimestre", valor: String(concluidasTrimestre) },
                         ].map(({ label, valor }) => (
-                            <div key={label} className="rounded-2xl px-5 py-4" style={{ background: "#F0F2EC" }}>
-                                <p className="text-sm" style={{ color: "#7A8A78" }}>{label}</p>
-                                <p className="text-2xl font-bold mt-1" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                            <div key={label} className="rounded-2xl px-5 py-4" style={{ background: "#EFF3ED" }}>
+                                <p className="text-sm" style={{ color: "#647269" }}>{label}</p>
+                                <p className="text-2xl font-bold mt-1" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                     {valor}
                                 </p>
                             </div>
@@ -465,18 +465,18 @@ export default function Metas() {
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-24 gap-3">
                             <RefreshCw size={22} className="animate-spin" style={{ color: "#8CA88A" }} />
-                            <p className="text-sm" style={{ color: "#7A8A78" }}>Carregando metas...</p>
+                            <p className="text-sm" style={{ color: "#647269" }}>Carregando metas...</p>
                         </div>
                     ) : erroConexao && metas.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-24 gap-3">
-                            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#FDECEA" }}>
-                                <AlertCircle size={20} style={{ color: "#B0472F" }} />
+                            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#F8ECE8" }}>
+                                <AlertCircle size={20} style={{ color: "#A8553E" }} />
                             </div>
-                            <p className="text-sm" style={{ color: "#7A8A78" }}>Não foi possível carregar as metas</p>
+                            <p className="text-sm" style={{ color: "#647269" }}>Não foi possível carregar as metas</p>
                             <button
                                 onClick={() => carregar()}
                                 className="text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
-                                style={{ color: "#0D5006", background: "#EAF9EC" }}
+                                style={{ color: "#1F5B3A", background: "#E8F3EA" }}
                             >
                                 Tentar novamente
                             </button>
@@ -490,10 +490,10 @@ export default function Metas() {
                                     {destaque ? (
                                         <div
                                             className="bg-white rounded-2xl p-6 flex flex-col"
-                                            style={{ border: "1px solid #E7E9E4", borderTop: `4px solid ${corCategoria(destaque).linha}` }}
+                                            style={{ border: "1px solid #E1E6DF", borderTop: `4px solid ${corCategoria(destaque).linha}` }}
                                         >
                                             <div className="flex items-start justify-between gap-3 mb-5">
-                                                <h3 className="font-bold text-lg" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                                                <h3 className="font-bold text-lg" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                                     {destaque.descricao}
                                                 </h3>
                                                 <span
@@ -506,15 +506,15 @@ export default function Metas() {
                                             <div className="flex items-center gap-5 flex-1">
                                                 <AnelProgresso percentual={calcPercentual(destaque)} cor={corCategoria(destaque).linha} />
                                                 <div className="flex flex-col gap-1.5 min-w-0">
-                                                    <p className="text-sm font-medium truncate" style={{ color: "#3A4A38" }}>
+                                                    <p className="text-sm font-medium truncate" style={{ color: "#46564B" }}>
                                                         {formatValorMeta(destaque)}
                                                     </p>
-                                                    <div className="flex items-center gap-1.5 text-xs" style={{ color: "#8B978A" }}>
+                                                    <div className="flex items-center gap-1.5 text-xs" style={{ color: "#647269" }}>
                                                         <Clock size={12} className="shrink-0" />
                                                         Prazo · {formatPrazo(destaque.prazo)}
                                                     </div>
                                                     {destaque.responsavel && (
-                                                        <p className="text-xs truncate" style={{ color: "#8B978A" }}>
+                                                        <p className="text-xs truncate" style={{ color: "#647269" }}>
                                                             Responsável · {destaque.responsavel}
                                                         </p>
                                                     )}
@@ -531,30 +531,30 @@ export default function Metas() {
                                     ) : (
                                         <div
                                             className="bg-white rounded-2xl p-6 flex items-center justify-center text-center"
-                                            style={{ border: "1px solid #E7E9E4", minHeight: 200 }}
+                                            style={{ border: "1px solid #E1E6DF", minHeight: 200 }}
                                         >
-                                            <p className="text-sm" style={{ color: "#7A8A78" }}>
+                                            <p className="text-sm" style={{ color: "#647269" }}>
                                                 Todas as metas desta categoria foram concluídas 🎉
                                             </p>
                                         </div>
                                     )}
 
                                     {/* Progresso geral */}
-                                    <div className="bg-white rounded-2xl p-6" style={{ border: "1px solid #E7E9E4", borderTop: "4px solid #4FA84F" }}>
-                                        <h3 className="font-bold text-lg mb-5" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                                    <div className="bg-white rounded-2xl p-6" style={{ border: "1px solid #E1E6DF", borderTop: "4px solid #4E9462" }}>
+                                        <h3 className="font-bold text-lg mb-5" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                             Progresso geral
                                         </h3>
                                         <div className="flex flex-col gap-4">
                                             {secundarias.length === 0 ? (
-                                                <p className="text-sm" style={{ color: "#7A8A78" }}>Sem outras metas nesta categoria.</p>
+                                                <p className="text-sm" style={{ color: "#647269" }}>Sem outras metas nesta categoria.</p>
                                             ) : (
                                                 secundarias.map((m) => (
                                                     <div key={m.id}>
                                                         <div className="flex items-center justify-between gap-3 mb-1.5">
-                                                            <span className="text-sm font-medium truncate" style={{ color: "#3A4A38" }}>
+                                                            <span className="text-sm font-medium truncate" style={{ color: "#46564B" }}>
                                                                 {m.descricao}
                                                             </span>
-                                                            <span className="text-sm font-semibold shrink-0" style={{ color: "#1A2E1A" }}>
+                                                            <span className="text-sm font-semibold shrink-0" style={{ color: "#25352B" }}>
                                                                 {calcPercentual(m)}%
                                                             </span>
                                                         </div>
@@ -568,36 +568,36 @@ export default function Metas() {
                             )}
 
                             {/* Busca */}
-                            <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 mb-4 w-full sm:max-w-sm" style={{ border: "1px solid #E7E9E4" }}>
-                                <Search size={16} style={{ color: "#8B978A" }} />
+                            <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 mb-4 w-full sm:max-w-sm" style={{ border: "1px solid #E1E6DF" }}>
+                                <Search size={16} style={{ color: "#647269" }} />
                                 <input
                                     type="text"
                                     placeholder="Buscar meta..."
                                     value={busca}
                                     onChange={(e) => setBusca(e.target.value)}
                                     className="flex-1 text-sm outline-none bg-transparent"
-                                    style={{ color: "#1A2E1A" }}
+                                    style={{ color: "#25352B" }}
                                 />
                             </div>
 
                             {/* Lista completa */}
-                            <div className="bg-white rounded-2xl overflow-hidden" style={{ border: "1px solid #E7E9E4" }}>
-                                <div className="px-5 sm:px-6 py-4" style={{ borderBottom: "1px solid #E7E9E4", background: "#F7F8F5" }}>
-                                    <h3 className="font-bold" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                            <div className="bg-white rounded-2xl overflow-hidden" style={{ border: "1px solid #E1E6DF" }}>
+                                <div className="px-5 sm:px-6 py-4" style={{ borderBottom: "1px solid #E1E6DF", background: "#F5F6F2" }}>
+                                    <h3 className="font-bold" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                         Todas as metas
                                     </h3>
                                 </div>
 
                                 {metasFiltradas.length === 0 ? (
                                     <div className="flex flex-col items-center justify-center py-20 gap-3">
-                                        <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#EFF5EC" }}>
+                                        <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#E9F1E8" }}>
                                             <Target size={20} style={{ color: "#8CA88A" }} />
                                         </div>
-                                        <p className="text-sm" style={{ color: "#7A8A78" }}>Nenhuma meta encontrada</p>
+                                        <p className="text-sm" style={{ color: "#647269" }}>Nenhuma meta encontrada</p>
                                         <button
                                             onClick={abrirNovo}
                                             className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
-                                            style={{ color: "#0D5006", background: "#EAF9EC" }}
+                                            style={{ color: "#1F5B3A", background: "#E8F3EA" }}
                                         >
                                             <Plus size={13} /> Criar meta
                                         </button>
@@ -612,7 +612,7 @@ export default function Metas() {
                                             <div
                                                 key={m.id}
                                                 className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-5 sm:px-6 py-4"
-                                                style={{ borderBottom: i < metasFiltradas.length - 1 ? "1px solid #F0F1EC" : "none" }}
+                                                style={{ borderBottom: i < metasFiltradas.length - 1 ? "1px solid #EFF3ED" : "none" }}
                                             >
                                                 <button
                                                     onClick={() => alternarConcluida(m)}
@@ -620,15 +620,15 @@ export default function Metas() {
                                                     title={concluida ? "Marcar como pendente" : "Marcar como concluída"}
                                                 >
                                                     {concluida ? (
-                                                        <CheckCircle2 size={20} style={{ color: "#0D5006" }} />
+                                                        <CheckCircle2 size={20} style={{ color: "#1F5B3A" }} />
                                                     ) : (
                                                         <Circle size={20} style={{ color: "#C7D0C4" }} />
                                                     )}
                                                 </button>
 
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-semibold truncate" style={{ color: "#1A2E1A" }}>{m.descricao}</p>
-                                                    <p className="text-xs mt-0.5" style={{ color: "#8B978A" }}>Prazo - {formatPrazo(m.prazo)}</p>
+                                                    <p className="text-sm font-semibold truncate" style={{ color: "#25352B" }}>{m.descricao}</p>
+                                                    <p className="text-xs mt-0.5" style={{ color: "#647269" }}>Prazo - {formatPrazo(m.prazo)}</p>
                                                 </div>
 
                                                 <div className="flex items-center gap-3 sm:w-48 shrink-0">
@@ -640,7 +640,7 @@ export default function Metas() {
                                                             Concluída
                                                         </span>
                                                     ) : (
-                                                        <span className="text-xs font-semibold shrink-0 w-8 text-right" style={{ color: "#1A2E1A" }}>{pct}%</span>
+                                                        <span className="text-xs font-semibold shrink-0 w-8 text-right" style={{ color: "#25352B" }}>{pct}%</span>
                                                     )}
                                                 </div>
 
@@ -648,16 +648,16 @@ export default function Metas() {
                                                     <button
                                                         onClick={() => abrirEdicao(m)}
                                                         className="p-1.5 rounded-lg transition hover:brightness-95"
-                                                        style={{ background: "#F3F7F1" }}
+                                                        style={{ background: "#F2F5F0" }}
                                                     >
-                                                        <Pencil size={13} style={{ color: "#0D5006" }} />
+                                                        <Pencil size={13} style={{ color: "#1F5B3A" }} />
                                                     </button>
                                                     <button
                                                         onClick={() => deletar(m.id)}
                                                         className="p-1.5 rounded-lg transition hover:brightness-95"
-                                                        style={{ background: "#FDECEA" }}
+                                                        style={{ background: "#F8ECE8" }}
                                                     >
-                                                        <Trash2 size={13} style={{ color: "#B0472F" }} />
+                                                        <Trash2 size={13} style={{ color: "#A8553E" }} />
                                                     </button>
                                                 </div>
                                             </div>
@@ -678,22 +678,22 @@ export default function Metas() {
                 >
                     <div
                         className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6"
-                        style={{ border: "1px solid #E7E9E4" }}
+                        style={{ border: "1px solid #E1E6DF" }}
                     >
                         <div className="flex items-center justify-between">
-                            <h2 className="font-bold text-lg" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
+                            <h2 className="font-bold text-lg" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {editando ? "Editar meta" : "Nova meta"}
                             </h2>
-                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela"><X size={18} style={{ color: "#8B978A" }} /></button>
+                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela"><X size={18} style={{ color: "#647269" }} /></button>
                         </div>
 
                         <div>
-                            <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Propriedade *</label>
+                            <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Propriedade *</label>
                             <select
                                 value={form.propriedade_id}
                                 onChange={(e) => setForm((f) => ({ ...f, propriedade_id: e.target.value }))}
                                 className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                             >
                                 <option value="">Selecione uma propriedade</option>
                                 {propriedades.map((p) => (
@@ -704,19 +704,19 @@ export default function Metas() {
 
                         <div className="flex flex-col gap-3">
                             <div>
-                                <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Descrição *</label>
+                                <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Descrição *</label>
                                 <input
                                     type="text"
                                     placeholder="Ex: Produção anual de milho"
                                     value={form.descricao}
                                     onChange={(e) => setForm((f) => ({ ...f, descricao: e.target.value }))}
                                     className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                    style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                    style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Categoria</label>
+                                <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Categoria</label>
                                 <div className="flex gap-2 flex-wrap">
                                     {(["producao", "financeiro", "sustentabilidade", "geral"] as CategoriaMeta[]).map((c) => (
                                         <button
@@ -724,9 +724,9 @@ export default function Metas() {
                                             onClick={() => setForm((f) => ({ ...f, categoria: c }))}
                                             className="px-3 py-1.5 rounded-lg text-xs font-medium transition"
                                             style={{
-                                                background: form.categoria === c ? CORES_CATEGORIA[c].bg : "#F3F7F1",
-                                                color: form.categoria === c ? CORES_CATEGORIA[c].texto : "#8B978A",
-                                                border: `1px solid ${form.categoria === c ? CORES_CATEGORIA[c].linha : "#E7E9E4"}`,
+                                                background: form.categoria === c ? CORES_CATEGORIA[c].bg : "#F2F5F0",
+                                                color: form.categoria === c ? CORES_CATEGORIA[c].texto : "#647269",
+                                                border: `1px solid ${form.categoria === c ? CORES_CATEGORIA[c].linha : "#E1E6DF"}`,
                                             }}
                                         >
                                             {CATEGORIA_LABEL[c]}
@@ -737,67 +737,67 @@ export default function Metas() {
 
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Valor atual</label>
+                                    <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Valor atual</label>
                                     <input
                                         type="number"
                                         placeholder="0"
                                         value={form.valor_atual}
                                         onChange={(e) => setForm((f) => ({ ...f, valor_atual: e.target.value }))}
                                         className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                        style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                        style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Valor alvo</label>
+                                    <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Valor alvo</label>
                                     <input
                                         type="number"
                                         placeholder="Ex: 800"
                                         value={form.valor_alvo}
                                         onChange={(e) => setForm((f) => ({ ...f, valor_alvo: e.target.value }))}
                                         className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                        style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                        style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                     />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Unidade</label>
+                                    <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Unidade</label>
                                     <input
                                         type="text"
                                         placeholder="ton, kg, %..."
                                         value={form.unidade}
                                         onChange={(e) => setForm((f) => ({ ...f, unidade: e.target.value }))}
                                         className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                        style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                        style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Prazo *</label>
+                                    <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Prazo *</label>
                                     <input
                                         type="date"
                                         value={form.prazo}
                                         onChange={(e) => setForm((f) => ({ ...f, prazo: e.target.value }))}
                                         className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                        style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                        style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Responsável</label>
+                                <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Responsável</label>
                                 <input
                                     type="text"
                                     placeholder="Ex: Talhão 1 e 2"
                                     value={form.responsavel}
                                     onChange={(e) => setForm((f) => ({ ...f, responsavel: e.target.value }))}
                                     className="w-full h-10 rounded-lg px-3 text-sm outline-none"
-                                    style={{ background: "#F3F7F1", color: "#1A2E1A", border: "1px solid #E7E9E4" }}
+                                    style={{ background: "#F2F5F0", color: "#25352B", border: "1px solid #E1E6DF" }}
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-medium mb-1" style={{ color: "#0D5006" }}>Status</label>
+                                <label className="block text-xs font-medium mb-1" style={{ color: "#1F5B3A" }}>Status</label>
                                 <div className="flex gap-2">
                                     {([
                                         { key: "pendente", label: "Pendente" },
@@ -809,9 +809,9 @@ export default function Metas() {
                                             onClick={() => setForm((f) => ({ ...f, status: key }))}
                                             className="flex-1 py-2 rounded-lg text-xs font-medium transition"
                                             style={{
-                                                background: form.status === key ? "#EAF9EC" : "#F3F7F1",
-                                                color: form.status === key ? "#0D5006" : "#8B978A",
-                                                border: `1px solid ${form.status === key ? "#0D5006" : "#E7E9E4"}`,
+                                                background: form.status === key ? "#E8F3EA" : "#F2F5F0",
+                                                color: form.status === key ? "#1F5B3A" : "#647269",
+                                                border: `1px solid ${form.status === key ? "#1F5B3A" : "#E1E6DF"}`,
                                             }}
                                         >
                                             {label}
@@ -827,7 +827,7 @@ export default function Metas() {
                             <button
                                 onClick={fecharModal}
                                 className="flex-1 py-2.5 rounded-xl text-sm font-medium"
-                                style={{ background: "#F3F7F1", color: "#3A4A38" }}
+                                style={{ background: "#F2F5F0", color: "#46564B" }}
                             >
                                 Cancelar
                             </button>
@@ -835,7 +835,7 @@ export default function Metas() {
                                 onClick={salvar}
                                 disabled={salvando}
                                 className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
-                                style={{ background: "#0D5006", color: "#fff" }}
+                                style={{ background: "#1F5B3A", color: "#fff" }}
                             >
                                 {salvando ? "Salvando..." : editando ? "Salvar alterações" : "Adicionar"}
                             </button>

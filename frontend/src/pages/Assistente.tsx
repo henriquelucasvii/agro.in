@@ -214,7 +214,7 @@ export default function Assistente() {
     };
 
     return (
-        <div className="flex min-h-screen w-full flex-col bg-[#F4F5EF] text-[#1F3024] lg:flex-row">
+        <div className="flex min-h-screen w-full flex-col bg-[#F5F6F2] text-[#25352B] lg:flex-row">
             <Sidebar />
 
             <main className="min-w-0 flex-1">
@@ -333,7 +333,7 @@ export default function Assistente() {
                                                             href={fonte.url}
                                                             target="_blank"
                                                             rel="noreferrer"
-                                                            className="flex items-center justify-between gap-3 rounded-lg py-1.5 pr-1 text-[10px] text-[#376244] transition hover:text-[#174D27]"
+                                                            className="flex items-center justify-between gap-3 rounded-lg py-1.5 pr-1 text-[10px] text-[#376244] transition hover:text-[#1F5B3A]"
                                                         >
                                                             <span className="min-w-0 truncate">
                                                                 [{fonte.id}] {fonte.titulo}
@@ -380,7 +380,7 @@ export default function Assistente() {
                                             key={sugestao}
                                             type="button"
                                             onClick={() => void enviar(undefined, sugestao)}
-                                            className="min-w-[210px] flex-1 rounded-xl bg-[#F3F7F1] px-3 py-2.5 text-left text-[10px] leading-4 text-[#3F5D46] transition hover:bg-[#EAF3E7] hover:text-[#174D27]"
+                                            className="min-w-[210px] flex-1 rounded-xl bg-[#F2F5F0] px-3 py-2.5 text-left text-[10px] leading-4 text-[#3F5D46] transition hover:bg-[#EAF3E7] hover:text-[#1F5B3A]"
                                         >
                                             {sugestao}
                                         </button>
@@ -420,7 +420,7 @@ export default function Assistente() {
                                 <button
                                     type="submit"
                                     disabled={!entrada.trim() || !capacidades?.ativo || enviando}
-                                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#174D27] text-white shadow-[0_6px_14px_rgba(23,77,39,0.16)] transition hover:bg-[#0F3E1D] active:scale-95 disabled:cursor-not-allowed disabled:opacity-35"
+                                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#1F5B3A] text-white shadow-[0_6px_14px_rgba(23,77,39,0.16)] transition hover:bg-[#17482F] active:scale-95 disabled:cursor-not-allowed disabled:opacity-35"
                                     aria-label="Enviar pergunta"
                                 >
                                     {enviando ? <LoaderCircle size={17} className="animate-spin" /> : <Send size={17} />}
