@@ -211,15 +211,8 @@ class AssistenteService {
     capacidades() {
         return {
             ativo: Boolean(process.env.GROQ_API_KEY?.trim()),
-            provedor: "Groq Free",
-            modelo: process.env.GROQ_MODEL?.trim() || MODELO_PRINCIPAL,
-            base_conhecimento: "RAG local com fontes públicas e curadoria própria",
-            guarda_receituario: true,
-            envia_dados_propriedade: false,
-            limites_referencia: {
-                requisicoes_dia: 1_000,
-                tokens_dia_modelo_principal: 200_000,
-            },
+            orientacao_com_fontes: true,
+            aviso_tecnico: true,
         };
     }
 
@@ -258,7 +251,6 @@ class AssistenteService {
 
         const modeloPrincipal = process.env.GROQ_MODEL?.trim() || MODELO_PRINCIPAL;
         const modeloReserva = process.env.GROQ_FALLBACK_MODEL?.trim() || MODELO_RESERVA;
-        let modeloUsado = modeloPrincipal;
         let resposta: string;
 
         try {
@@ -270,7 +262,6 @@ class AssistenteService {
                 modeloReserva !== modeloPrincipal
             ) {
                 resposta = await consultarGroq(apiKey, modeloReserva, mensagens);
-                modeloUsado = modeloReserva;
             } else {
                 throw error;
             }
@@ -286,7 +277,6 @@ class AssistenteService {
         return {
             resposta,
             fontes,
-            modelo: modeloUsado,
             aviso: "Orientação educativa. Não substitui diagnóstico, receituário agronômico ou análise laboratorial.",
         };
     }

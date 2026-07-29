@@ -1,20 +1,20 @@
 import { isAxiosError } from "axios";
 import {
+    ArrowUpRight,
     Bot,
     BookOpen,
     CircleAlert,
     ExternalLink,
     Leaf,
     LoaderCircle,
-    LockKeyhole,
+    MapPin,
     RotateCcw,
     Send,
     ShieldCheck,
-    Sparkles,
+    Sprout,
 } from "lucide-react";
 import {
     useEffect,
-    useMemo,
     useRef,
     useState,
     type FormEvent,
@@ -42,21 +42,11 @@ interface Mensagem {
 
 interface Capacidades {
     ativo: boolean;
-    provedor: string;
-    modelo: string;
-    base_conhecimento: string;
-    guarda_receituario: boolean;
-    envia_dados_propriedade: boolean;
-    limites_referencia: {
-        requisicoes_dia: number;
-        tokens_dia_modelo_principal: number;
-    };
 }
 
 interface RespostaAssistente {
     resposta: string;
     fontes: Fonte[];
-    modelo: string;
     aviso: string;
 }
 
@@ -71,9 +61,9 @@ const MENSAGEM_INICIAL: Mensagem = {
 };
 
 const SUGESTOES = [
-    "Como diferenciar estresse hídrico de uma possível doença na soja?",
-    "O que devo registrar antes de coletar uma amostra de solo?",
-    "Como montar uma rotina de monitoramento de pragas no talhão?",
+    "Como diferenciar estresse hídrico de doença na soja?",
+    "O que registrar antes de coletar uma amostra de solo?",
+    "Como organizar o monitoramento de pragas no talhão?",
 ];
 
 const carregarConversa = (): Mensagem[] => {
@@ -98,14 +88,14 @@ function ConteudoMensagem({ texto }: { texto: string }) {
     const linhas = texto.split("\n");
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-2.5">
             {linhas.map((linha, indice) => {
                 const limpa = linha.trim();
                 if (!limpa) return <div key={indice} className="h-1" />;
                 if (/^[-•]\s/.test(limpa)) {
                     return (
-                        <div key={indice} className="flex gap-2">
-                            <span className="mt-[0.6em] h-1 w-1 shrink-0 rounded-full bg-current opacity-50" />
+                        <div key={indice} className="flex gap-2.5">
+                            <span className="mt-[0.65em] h-1 w-1 shrink-0 rounded-full bg-current opacity-45" />
                             <p>{limpa.replace(/^[-•]\s*/, "")}</p>
                         </div>
                     );
@@ -113,7 +103,7 @@ function ConteudoMensagem({ texto }: { texto: string }) {
                 if (/^\d+\.\s/.test(limpa)) {
                     const numero = limpa.match(/^\d+/)?.[0];
                     return (
-                        <div key={indice} className="flex gap-2">
+                        <div key={indice} className="flex gap-2.5">
                             <span className="min-w-4 font-bold">{numero}.</span>
                             <p>{limpa.replace(/^\d+\.\s*/, "")}</p>
                         </div>
@@ -127,7 +117,7 @@ function ConteudoMensagem({ texto }: { texto: string }) {
 
 export default function Assistente() {
     const navigate = useNavigate();
-    const fimRef = useRef<HTMLDivElement>(null);
+    const conversaRef = useRef<HTMLDivElement>(null);
     const [mensagens, setMensagens] = useState<Mensagem[]>(carregarConversa);
     const [capacidades, setCapacidades] = useState<Capacidades | null>(null);
     const [entrada, setEntrada] = useState("");
@@ -156,13 +146,14 @@ export default function Assistente() {
 
     useEffect(() => {
         localStorage.setItem(CHAVE_CONVERSA, JSON.stringify(mensagens.slice(-30)));
-        fimRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        const conversa = conversaRef.current;
+        if (conversa) {
+            conversa.scrollTo({
+                top: conversa.scrollHeight,
+                behavior: "smooth",
+            });
+        }
     }, [mensagens, enviando]);
-
-    const perguntasRealizadas = useMemo(
-        () => mensagens.filter((mensagem) => mensagem.papel === "usuario").length,
-        [mensagens],
-    );
 
     const limparConversa = () => {
         setMensagens([MENSAGEM_INICIAL]);
@@ -223,59 +214,57 @@ export default function Assistente() {
     };
 
     return (
-        <div className="flex min-h-screen w-full flex-col bg-[#F3F5F0] lg:flex-row">
+        <div className="flex min-h-screen w-full flex-col bg-[#F4F5EF] text-[#1F3024] lg:flex-row">
             <Sidebar />
 
             <main className="min-w-0 flex-1">
-                <header className="border-b border-white/10 bg-[#123F20] px-5 py-6 text-white md:px-8 lg:px-10">
-                    <div className="mx-auto flex max-w-[1240px] flex-col justify-between gap-5 md:flex-row md:items-end">
+                <header className="relative overflow-hidden bg-[#123F20] px-5 py-7 text-white md:px-8 lg:px-10 lg:py-8">
+                    <span className="pointer-events-none absolute -right-16 -top-28 h-64 w-64 rounded-full border border-white/[0.07]" />
+                    <span className="pointer-events-none absolute -right-2 -top-14 h-36 w-36 rounded-full border border-[#9BE6A4]/10" />
+
+                    <div className="relative mx-auto flex max-w-[1180px] items-end justify-between gap-8">
                         <div>
-                            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#A8E4A9]">
-                                <Sparkles size={14} />
-                                Conhecimento para o campo
-                            </div>
-                            <h1 className="mt-2 text-2xl font-bold tracking-[-0.035em] md:text-3xl">
+                            <p className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.2em] text-[#A7DBAE]">
+                                <Leaf size={13} />
+                                Agro.in Assistente
+                            </p>
+                            <h1 className="mt-2 text-2xl font-bold tracking-[-0.04em] md:text-[32px]">
                                 Assistente agronômico
                             </h1>
-                            <p className="mt-1 max-w-xl text-xs leading-5 text-white/60">
-                                Tire dúvidas, organize uma vistoria e encontre fontes técnicas para decidir com mais segurança.
+                            <p className="mt-2 max-w-2xl text-xs leading-5 text-white/62 md:text-[13px]">
+                                Organize o que você observou no campo e receba orientação com fontes técnicas.
                             </p>
                         </div>
 
-                        <div className="flex flex-wrap gap-2">
-                            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-3 py-2 text-[10px] font-semibold text-white/75">
-                                <Leaf size={13} className="text-[#9DE39C]" />
-                                IA gratuita
-                            </span>
-                            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-3 py-2 text-[10px] font-semibold text-white/75">
-                                <LockKeyhole size={13} className="text-[#9DE39C]" />
-                                Sem envio automático
-                            </span>
+                        <div className="hidden items-center gap-2 pb-1 text-[11px] font-semibold text-white/72 sm:flex">
+                            <span className={`h-2 w-2 rounded-full ${capacidades?.ativo ? "bg-[#63DB7B]" : "bg-[#E2B95B]"}`} />
+                            {carregando
+                                ? "Conectando..."
+                                : capacidades?.ativo
+                                    ? "Pronto para orientar"
+                                    : "Temporariamente indisponível"}
                         </div>
                     </div>
                 </header>
 
-                <div className="mx-auto grid max-w-[1240px] gap-5 px-4 py-5 md:px-8 md:py-7 lg:grid-cols-[minmax(0,1fr)_280px] lg:px-10">
-                    <section className="flex min-h-[680px] min-w-0 flex-col overflow-hidden rounded-2xl border border-[#DCE3D8] bg-white shadow-[0_12px_36px_rgba(27,62,32,0.06)]">
-                        <div className="flex items-center justify-between border-b border-[#E3E8E0] px-4 py-3.5 md:px-5">
+                <div className="mx-auto grid max-w-[1180px] gap-6 px-3 py-4 sm:px-5 md:px-8 md:py-6 lg:grid-cols-[minmax(0,1fr)_250px] lg:px-10">
+                    <section className="flex h-[calc(100svh-240px)] min-h-[560px] max-h-[790px] min-w-0 flex-col overflow-hidden rounded-[20px] border border-[#D7DED3] bg-white shadow-[0_18px_48px_rgba(28,57,32,0.07)]">
+                        <div className="flex items-center justify-between border-b border-[#E5E9E2] px-4 py-3.5 md:px-5">
                             <div className="flex items-center gap-3">
-                                <span
-                                    className="relative flex h-9 w-9 items-center justify-center rounded-full"
-                                    style={{ background: capacidades?.ativo ? "#E3F5E5" : "#F2F2ED" }}
-                                >
-                                    <Bot size={17} className={capacidades?.ativo ? "text-[#216631]" : "text-[#7B8579]"} />
+                                <span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-[#E8F3E5] text-[#236537]">
+                                    <Bot size={17} />
                                     {capacidades?.ativo && (
-                                        <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-[#41B75A]" />
+                                        <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-[#4DBD65]" />
                                     )}
                                 </span>
                                 <div>
-                                    <p className="text-xs font-bold text-[#25362A]">Agro.in IA</p>
+                                    <p className="text-xs font-bold text-[#25362A]">Assistente Agro.in</p>
                                     <p className="mt-0.5 text-[10px] text-[#7A867A]">
                                         {carregando
-                                            ? "Verificando disponibilidade..."
+                                            ? "Preparando a conversa..."
                                             : capacidades?.ativo
-                                                ? `${capacidades.provedor} · disponível`
-                                                : "Aguardando ativação gratuita"}
+                                                ? "Orientação com referências técnicas"
+                                                : "Serviço temporariamente indisponível"}
                                     </p>
                                 </div>
                             </div>
@@ -283,21 +272,24 @@ export default function Assistente() {
                             <button
                                 type="button"
                                 onClick={limparConversa}
-                                className="inline-flex items-center gap-1.5 rounded-lg border border-[#DEE4DA] px-2.5 py-2 text-[10px] font-semibold text-[#687568] transition hover:bg-[#F4F7F2]"
+                                className="inline-flex h-9 items-center gap-1.5 rounded-xl px-2.5 text-[10px] font-semibold text-[#687568] transition hover:bg-[#F1F4EF] hover:text-[#34513A]"
                             >
                                 <RotateCcw size={13} />
-                                Limpar
+                                <span className="hidden sm:inline">Nova conversa</span>
                             </button>
                         </div>
 
-                        <div className="assistente-scroll flex-1 space-y-5 overflow-y-auto px-4 py-5 md:px-6">
+                        <div
+                            ref={conversaRef}
+                            className="assistente-scroll flex-1 space-y-5 overflow-y-auto px-3 py-5 sm:px-4 md:px-6"
+                        >
                             {!carregando && !capacidades?.ativo && (
-                                <div className="flex items-start gap-3 rounded-xl border border-[#E6D6A5] bg-[#FFF9E8] p-4 text-[#6E591B]">
+                                <div className="flex items-start gap-3 rounded-xl border border-[#E7D8A8] bg-[#FFF9E7] p-4 text-[#6E591B]">
                                     <CircleAlert size={18} className="mt-0.5 shrink-0" />
                                     <div>
-                                        <p className="text-xs font-bold">Integração pronta para ativar</p>
+                                        <p className="text-xs font-bold">Assistente indisponível neste momento</p>
                                         <p className="mt-1 text-[11px] leading-5">
-                                            Falta somente cadastrar a chave gratuita da Groq no servidor. Nenhuma cobrança será configurada.
+                                            Tente novamente em alguns instantes. Seus outros módulos continuam funcionando.
                                         </p>
                                     </div>
                                 </div>
@@ -306,45 +298,45 @@ export default function Assistente() {
                             {mensagens.map((mensagem) => (
                                 <article
                                     key={mensagem.id}
-                                    className={`assistente-enter flex gap-3 ${
+                                    className={`assistente-enter flex gap-2.5 sm:gap-3 ${
                                         mensagem.papel === "usuario" ? "justify-end" : "justify-start"
                                     }`}
                                 >
                                     {mensagem.papel === "assistente" && (
-                                        <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#E6F2E4] text-[#286738]">
+                                        <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#E8F3E5] text-[#286738]">
                                             <Bot size={15} />
                                         </span>
                                     )}
 
-                                    <div className={`max-w-[86%] md:max-w-[78%] ${mensagem.papel === "usuario" ? "order-first" : ""}`}>
+                                    <div className={`max-w-[88%] md:max-w-[78%] ${mensagem.papel === "usuario" ? "order-first" : ""}`}>
                                         <div
-                                            className={`rounded-2xl px-4 py-3 text-xs leading-6 ${
+                                            className={`rounded-[18px] px-4 py-3 text-[12px] leading-6 sm:text-[13px] ${
                                                 mensagem.papel === "usuario"
-                                                    ? "rounded-br-md bg-[#174D27] text-white"
-                                                    : "rounded-bl-md border border-[#E1E7DE] bg-[#F8FAF6] text-[#354239]"
+                                                    ? "rounded-br-md bg-[#164D28] text-white shadow-[0_8px_18px_rgba(22,77,40,0.12)]"
+                                                    : "rounded-bl-md bg-[#F4F7F1] text-[#354239]"
                                             }`}
                                         >
                                             <ConteudoMensagem texto={mensagem.conteudo} />
                                         </div>
 
                                         {mensagem.fontes && mensagem.fontes.length > 0 && (
-                                            <div className="mt-2.5 rounded-xl border border-[#E1E6DD] bg-white p-3">
-                                                <div className="mb-2 flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-[#6B7A6A]">
+                                            <div className="mt-3 border-l-2 border-[#B7CDB4] pl-3">
+                                                <p className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-[#738073]">
                                                     <BookOpen size={12} />
-                                                    Fontes consultadas
-                                                </div>
-                                                <div className="space-y-1.5">
+                                                    Fontes usadas nesta resposta
+                                                </p>
+                                                <div className="mt-2 space-y-1">
                                                     {mensagem.fontes.map((fonte) => (
                                                         <a
                                                             key={`${mensagem.id}-${fonte.id}`}
                                                             href={fonte.url}
                                                             target="_blank"
                                                             rel="noreferrer"
-                                                            className="flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-[10px] text-[#3A6642] transition hover:bg-[#F1F6EF]"
+                                                            className="flex items-center justify-between gap-3 rounded-lg py-1.5 pr-1 text-[10px] text-[#376244] transition hover:text-[#174D27]"
                                                         >
                                                             <span className="min-w-0 truncate">
                                                                 [{fonte.id}] {fonte.titulo}
-                                                                <span className="ml-1 text-[#899389]">· {fonte.organizacao}</span>
+                                                                <span className="ml-1 text-[#8C958B]">· {fonte.organizacao}</span>
                                                             </span>
                                                             <ExternalLink size={11} className="shrink-0" />
                                                         </a>
@@ -354,7 +346,7 @@ export default function Assistente() {
                                         )}
 
                                         {mensagem.aviso && (
-                                            <p className="mt-2 flex items-start gap-1.5 px-1 text-[9px] leading-4 text-[#8A6F3C]">
+                                            <p className="mt-2.5 flex items-start gap-1.5 px-1 text-[9px] leading-4 text-[#846E3D]">
                                                 <ShieldCheck size={11} className="mt-0.5 shrink-0" />
                                                 {mensagem.aviso}
                                             </p>
@@ -365,30 +357,29 @@ export default function Assistente() {
 
                             {enviando && (
                                 <div className="assistente-enter flex items-center gap-3">
-                                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E6F2E4] text-[#286738]">
+                                    <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#E8F3E5] text-[#286738]">
                                         <Bot size={15} />
                                     </span>
-                                    <div className="flex items-center gap-2 rounded-2xl rounded-bl-md border border-[#E1E7DE] bg-[#F8FAF6] px-4 py-3 text-[11px] text-[#6D786D]">
+                                    <div className="flex items-center gap-2 rounded-[18px] rounded-bl-md bg-[#F4F7F1] px-4 py-3 text-[11px] text-[#6D786D]">
                                         <LoaderCircle size={14} className="animate-spin" />
-                                        Consultando a base técnica...
+                                        Consultando referências técnicas...
                                     </div>
                                 </div>
                             )}
-                            <div ref={fimRef} />
                         </div>
 
                         {mensagens.length === 1 && capacidades?.ativo && (
-                            <div className="border-t border-[#E8ECE5] px-4 py-3 md:px-6">
+                            <div className="border-t border-[#E8ECE5] px-3 py-3 sm:px-4 md:px-6">
                                 <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.14em] text-[#8A9589]">
-                                    Você pode começar por aqui
+                                    Perguntas para começar
                                 </p>
-                                <div className="flex flex-wrap gap-2">
+                                <div className="assistente-scroll -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
                                     {SUGESTOES.map((sugestao) => (
                                         <button
                                             key={sugestao}
                                             type="button"
                                             onClick={() => void enviar(undefined, sugestao)}
-                                            className="rounded-full border border-[#D8E3D5] bg-[#F6F9F4] px-3 py-2 text-left text-[10px] leading-4 text-[#44604A] transition hover:border-[#96B894] hover:bg-[#EEF6EB]"
+                                            className="min-w-[210px] flex-1 rounded-xl bg-[#F3F7F1] px-3 py-2.5 text-left text-[10px] leading-4 text-[#3F5D46] transition hover:bg-[#EAF3E7] hover:text-[#174D27]"
                                         >
                                             {sugestao}
                                         </button>
@@ -398,14 +389,14 @@ export default function Assistente() {
                         )}
 
                         {erro && (
-                            <div className="mx-4 mb-3 flex items-start gap-2 rounded-lg bg-[#FFF0EB] px-3 py-2.5 text-[10px] leading-4 text-[#95492F] md:mx-6">
+                            <div className="mx-3 mb-3 flex items-start gap-2 rounded-xl bg-[#FFF0EB] px-3 py-2.5 text-[10px] leading-4 text-[#95492F] sm:mx-4 md:mx-6">
                                 <CircleAlert size={14} className="mt-0.5 shrink-0" />
                                 {erro}
                             </div>
                         )}
 
-                        <form onSubmit={(evento) => void enviar(evento)} className="border-t border-[#E2E7DF] bg-[#FBFCFA] p-3 md:p-4">
-                            <div className="flex items-end gap-2 rounded-xl border border-[#D8DFD5] bg-white p-2 focus-within:border-[#70A276] focus-within:ring-2 focus-within:ring-[#70A276]/10">
+                        <form onSubmit={(evento) => void enviar(evento)} className="border-t border-[#E2E7DF] bg-[#FAFBF8] p-3 md:p-4">
+                            <div className="flex items-end gap-2 rounded-2xl border border-[#D4DDD1] bg-white p-2 shadow-[0_6px_18px_rgba(30,58,34,0.04)] transition focus-within:border-[#70A276] focus-within:ring-3 focus-within:ring-[#70A276]/10">
                                 <textarea
                                     value={entrada}
                                     onChange={(evento) => setEntrada(evento.target.value)}
@@ -420,72 +411,81 @@ export default function Assistente() {
                                     rows={2}
                                     placeholder={
                                         capacidades?.ativo
-                                            ? "Descreva a cultura, o que observou e há quanto tempo..."
-                                            : "O assistente será liberado após cadastrar a chave gratuita"
+                                            ? "Conte o que observou na lavoura..."
+                                            : "Assistente temporariamente indisponível"
                                     }
-                                    className="max-h-32 min-h-11 flex-1 resize-none bg-transparent px-2 py-2 text-xs leading-5 text-[#26352A] outline-none placeholder:text-[#9AA39A] disabled:cursor-not-allowed"
+                                    className="max-h-32 min-h-12 flex-1 resize-none bg-transparent px-2 py-2 text-xs leading-5 text-[#26352A] outline-none placeholder:text-[#9AA39A] disabled:cursor-not-allowed"
                                 />
                                 <button
                                     type="submit"
                                     disabled={!entrada.trim() || !capacidades?.ativo || enviando}
-                                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#174D27] text-white transition hover:bg-[#0F3E1D] disabled:cursor-not-allowed disabled:opacity-35"
+                                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#174D27] text-white shadow-[0_6px_14px_rgba(23,77,39,0.16)] transition hover:bg-[#0F3E1D] active:scale-95 disabled:cursor-not-allowed disabled:opacity-35"
                                     aria-label="Enviar pergunta"
                                 >
-                                    {enviando ? <LoaderCircle size={16} className="animate-spin" /> : <Send size={16} />}
+                                    {enviando ? <LoaderCircle size={17} className="animate-spin" /> : <Send size={17} />}
                                 </button>
                             </div>
                             <div className="mt-2 flex items-center justify-between px-1 text-[9px] text-[#929C91]">
-                                <span>Enter envia · Shift + Enter quebra a linha</span>
+                                <span className="hidden sm:inline">Enter envia · Shift + Enter quebra a linha</span>
+                                <span className="sm:hidden">Digite sua dúvida com detalhes</span>
                                 <span>{entrada.length}/1.800</span>
                             </div>
                         </form>
                     </section>
 
-                    <aside className="space-y-4">
-                        <section className="rounded-2xl bg-[#183E24] p-5 text-white">
-                            <div className="flex items-center justify-between">
-                                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#A4DAA5]">
-                                    Plano atual
+                    <aside className="hidden flex-col gap-7 pt-2 lg:flex">
+                        <section className="border-l border-[#CBD7C7] pl-5">
+                            <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#66806A]">
+                                Uma boa pergunta inclui
+                            </p>
+                            <ol className="mt-5 space-y-5">
+                                {[
+                                    ["01", "Cultura e fase", "Ex.: soja em floração"],
+                                    ["02", "Local e clima", "Região, chuva ou seca recente"],
+                                    ["03", "Sinais observados", "Onde começou e como evoluiu"],
+                                ].map(([numero, titulo, detalhe]) => (
+                                    <li key={numero} className="flex gap-3">
+                                        <span className="pt-0.5 text-[9px] font-bold text-[#8AA08C]">{numero}</span>
+                                        <span>
+                                            <span className="block text-xs font-bold text-[#2C3E31]">{titulo}</span>
+                                            <span className="mt-1 block text-[10px] leading-4 text-[#7B877B]">{detalhe}</span>
+                                        </span>
+                                    </li>
+                                ))}
+                            </ol>
+                        </section>
+
+                        <button
+                            type="button"
+                            onClick={() => navigate("/analise-foliar")}
+                            className="group border-y border-[#D7DED3] py-5 text-left"
+                        >
+                            <span className="flex items-center justify-between">
+                                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#E7F2E4] text-[#2B6B39]">
+                                    <Sprout size={17} />
+                                </span>
+                                <ArrowUpRight size={16} className="text-[#859087] transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#275D34]" />
+                            </span>
+                            <span className="mt-3 block text-xs font-bold text-[#293A2E]">Tem uma foto da folha?</span>
+                            <span className="mt-1 block text-[10px] leading-5 text-[#758176]">
+                                Abra a análise foliar para registrar a imagem e acompanhar a evolução.
+                            </span>
+                        </button>
+
+                        <section className="flex gap-3 text-[#78652E]">
+                            <ShieldCheck size={17} className="mt-0.5 shrink-0" />
+                            <div>
+                                <p className="text-[11px] font-bold">Orientação responsável</p>
+                                <p className="mt-1 text-[10px] leading-5 text-[#82764F]">
+                                    Confirme diagnósticos, defensivos e doses com análise e responsável técnico.
                                 </p>
-                                <Sparkles size={15} className="text-[#A4DAA5]" />
-                            </div>
-                            <p className="mt-3 text-xl font-bold">R$ 0</p>
-                            <p className="mt-1 text-[11px] leading-5 text-white/60">
-                                Sem cobrança por resposta. Uso sujeito ao limite diário do provedor gratuito.
-                            </p>
-                            <div className="mt-4 border-t border-white/10 pt-4">
-                                <div className="flex items-center justify-between text-[10px]">
-                                    <span className="text-white/55">Modelo principal</span>
-                                    <span className="font-semibold text-white/85">GPT-OSS 120B</span>
-                                </div>
-                                <div className="mt-2 flex items-center justify-between text-[10px]">
-                                    <span className="text-white/55">Perguntas nesta conversa</span>
-                                    <span className="font-semibold text-white/85">{perguntasRealizadas}</span>
-                                </div>
                             </div>
                         </section>
 
-                        <section className="rounded-2xl border border-[#DCE3D8] bg-white p-5">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#E9F4E6] text-[#2D6A39]">
-                                <BookOpen size={17} />
-                            </div>
-                            <h2 className="mt-3 text-sm font-bold text-[#26362A]">Como ele aprende</h2>
-                            <p className="mt-2 text-[11px] leading-5 text-[#717D71]">
-                                A resposta recebe somente os trechos relevantes de uma base auditável, com fontes da Embrapa, MAPA e curadoria técnica.
-                            </p>
-                        </section>
-
-                        <section className="rounded-2xl border border-[#E6D9B8] bg-[#FFF9EA] p-5">
-                            <div className="flex items-start gap-3">
-                                <ShieldCheck size={18} className="mt-0.5 shrink-0 text-[#85691A]" />
-                                <div>
-                                    <h2 className="text-xs font-bold text-[#695417]">Orientação, não receituário</h2>
-                                    <p className="mt-2 text-[10px] leading-5 text-[#7B6A39]">
-                                        O assistente não prescreve defensivos nem doses de adubo. Decisões de manejo devem considerar campo, laboratório, bula e responsável técnico.
-                                    </p>
-                                </div>
-                            </div>
-                        </section>
+                        <p className="flex items-center gap-2 text-[9px] leading-4 text-[#8A948A]">
+                            <MapPin size={12} className="shrink-0" />
+                            Informe apenas a região necessária para contextualizar a resposta.
+                        </p>
                     </aside>
                 </div>
             </main>

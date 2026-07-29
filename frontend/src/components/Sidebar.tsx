@@ -1,111 +1,212 @@
+import {
+    Bot,
+    ChartNoAxesCombined,
+    FileChartColumn,
+    LayoutDashboard,
+    Leaf,
+    Map,
+    Menu,
+    Package,
+    Search,
+    Sprout,
+    Target,
+    UserRound,
+    WalletCards,
+    X,
+    type LucideIcon,
+} from "lucide-react";
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { X, Bot, Search, Menu } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import logo from "../assets/logo.png";
 
-const NAV = [
-    { key: "dashboard", label: "Dashboard" },
-    { key: "propriedade", label: "Propriedade" },
-    { key: "financeiro", label: "Financeiro" },
-    { key: "producao", label: "Produção" },
-    { key: "estoque", label: "Estoque" },
-    { key: "meta", label: "Meta" },
-    { key: "analise-foliar", label: "Análise foliar" },
-    { key: "relatorios", label: "Relatórios" },
-    { key: "perfil", label: "Perfil" },
+interface ItemNavegacao {
+    key: string;
+    label: string;
+    icone: LucideIcon;
+}
+
+const NAV: ItemNavegacao[] = [
+    { key: "dashboard", label: "Dashboard", icone: LayoutDashboard },
+    { key: "propriedade", label: "Propriedade", icone: Map },
+    { key: "financeiro", label: "Financeiro", icone: WalletCards },
+    { key: "producao", label: "Produção", icone: Sprout },
+    { key: "estoque", label: "Estoque", icone: Package },
+    { key: "meta", label: "Metas", icone: Target },
+    { key: "analise-foliar", label: "Análise foliar", icone: Leaf },
+    { key: "relatorios", label: "Relatórios", icone: FileChartColumn },
+    { key: "perfil", label: "Perfil", icone: UserRound },
 ];
 
 export default function Sidebar() {
     const navigate = useNavigate();
     const location = useLocation();
-
     const [sidebarAberto, setSidebarAberto] = useState(false);
-    const [hoveredKey, setHoveredKey] = useState<string | null>(null);
+    const [busca, setBusca] = useState("");
+
+    const itensVisiveis = NAV.filter((item) =>
+        item.label.toLocaleLowerCase("pt-BR").includes(busca.trim().toLocaleLowerCase("pt-BR")),
+    );
+
+    const irPara = (path: string) => {
+        navigate(path);
+        setSidebarAberto(false);
+    };
 
     return (
         <>
-            {/* Overlay do menu mobile */}
             {sidebarAberto && (
-                <div
-                    className="fixed inset-0 z-40 lg:hidden"
-                    style={{ background: "rgba(0,0,0,0.45)" }}
+                <button
+                    type="button"
+                    aria-label="Fechar menu"
+                    className="fixed inset-0 z-40 bg-[#071C0D]/60 backdrop-blur-[2px] lg:hidden"
                     onClick={() => setSidebarAberto(false)}
                 />
             )}
 
-            {/* Sidebar */}
             <aside
-                className={`fixed lg:static inset-y-0 left-0 z-50 w-64 lg:w-60 flex flex-col py-6 px-4 shrink-0 transition-transform duration-300 ease-in-out ${
+                className={`fixed inset-y-0 left-0 z-50 flex w-[272px] shrink-0 flex-col border-r border-white/8 bg-[#0B3F1D] px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))] shadow-2xl transition-transform duration-300 ease-out lg:static lg:w-[248px] lg:translate-x-0 lg:shadow-none ${
                     sidebarAberto ? "translate-x-0" : "-translate-x-full"
-                } lg:translate-x-0`}
-                style={{ background: "#0D5006" }}
+                }`}
             >
-                <div className="flex items-center justify-between px-2 mb-8">
-                    <img src={logo} alt="Agro.in" className="w-14" />
-                    <button className="lg:hidden" onClick={() => setSidebarAberto(false)}>
-                        <X size={20} style={{ color: "rgba(255,255,255,0.8)" }} />
+                <div className="flex items-center justify-between px-1">
+                    <button
+                        type="button"
+                        onClick={() => irPara("/dashboard")}
+                        className="flex items-center gap-3 rounded-xl text-left"
+                        aria-label="Ir para o dashboard do Agro.in"
+                    >
+                        <img src={logo} alt="" className="h-11 w-11 object-contain" />
+                        <span>
+                            <span className="block text-lg font-bold leading-none tracking-[-0.04em] text-white">
+                                Agro.in
+                            </span>
+                            <span className="mt-1 block text-[9px] font-semibold uppercase tracking-[0.16em] text-[#9AC9A3]">
+                                Gestão rural
+                            </span>
+                        </span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="flex h-9 w-9 items-center justify-center rounded-xl text-white/70 transition hover:bg-white/10 hover:text-white lg:hidden"
+                        onClick={() => setSidebarAberto(false)}
+                        aria-label="Fechar menu"
+                    >
+                        <X size={19} />
                     </button>
                 </div>
 
-                <div className="flex items-center gap-2 rounded-lg px-3 py-2 mb-6" style={{ background: "rgba(255,255,255,0.08)" }}>
-                    <Search size={15} style={{ color: "rgba(255,255,255,0.5)" }} />
-                    <input type="text" placeholder="Pesquisar" className="flex-1 bg-transparent outline-none text-sm placeholder:text-white/50 text-white" />
+                <div className="mt-7 flex h-10 items-center gap-2 rounded-xl border border-white/8 bg-white/[0.06] px-3 transition focus-within:border-[#83B88B]/60 focus-within:bg-white/[0.09]">
+                    <Search size={14} className="shrink-0 text-white/40" />
+                    <input
+                        value={busca}
+                        onChange={(evento) => setBusca(evento.target.value)}
+                        type="search"
+                        placeholder="Encontrar módulo"
+                        className="min-w-0 flex-1 bg-transparent text-xs text-white outline-none placeholder:text-white/38"
+                    />
                 </div>
 
-                <nav className="flex flex-col gap-1 flex-1">
-                    {NAV.map(({ key, label }) => {
+                <p className="mb-2 mt-6 px-3 text-[9px] font-bold uppercase tracking-[0.18em] text-white/34">
+                    Operação
+                </p>
+
+                <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
+                    {itensVisiveis.map(({ key, label, icone: Icone }) => {
                         const path = `/${key}`;
-                        const isActive =
+                        const ativo =
                             location.pathname === path ||
-                            (key === "analise-foliar" &&
-                                location.pathname.startsWith(`${path}/`));
-                        const isHovered = hoveredKey === key;
+                            (key === "analise-foliar" && location.pathname.startsWith(`${path}/`));
 
                         return (
                             <button
                                 key={key}
-                                onClick={() => {
-                                    navigate(path);
-                                    setSidebarAberto(false);
-                                }}
-                                onMouseEnter={() => setHoveredKey(key)}
-                                onMouseLeave={() => setHoveredKey(null)}
-                                className="px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left"
-                                style={{
-                                    background: isActive ? "#4FF47B" : isHovered ? "rgba(255,255,255,0.08)" : "transparent",
-                                    color: isActive ? "#0D5006" : "rgba(255,255,255,0.85)",
-                                }}
+                                type="button"
+                                onClick={() => irPara(path)}
+                                className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-semibold transition ${
+                                    ativo
+                                        ? "bg-[#D9F6D8] text-[#103E1D]"
+                                        : "text-white/70 hover:bg-white/[0.07] hover:text-white"
+                                }`}
                             >
+                                <Icone
+                                    size={16}
+                                    strokeWidth={1.8}
+                                    className={ativo ? "text-[#24713A]" : "text-white/44 group-hover:text-white/75"}
+                                />
                                 {label}
+                                {ativo && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#2C8C47]" />}
                             </button>
                         );
                     })}
+
+                    {itensVisiveis.length === 0 && (
+                        <p className="px-3 py-4 text-[11px] leading-5 text-white/45">
+                            Nenhum módulo encontrado.
+                        </p>
+                    )}
                 </nav>
-                <button
-                    onClick={() => {
-                        navigate("/assistente");
-                        setSidebarAberto(false);
-                    }}
-                    className="flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-sm font-semibold mt-4"
-                    style={{
-                        background: location.pathname === "/assistente" ? "#4FF47B" : "rgba(79,244,123,0.15)",
-                        color: location.pathname === "/assistente" ? "#0D5006" : "#4FF47B",
-                        border: "1px solid rgba(79,244,123,0.35)",
-                    }}
-                >
-                    <Bot size={17} />
-                    Assistente de IA
-                </button>
+
+                <div className="mt-4 border-t border-white/8 pt-4">
+                    <button
+                        type="button"
+                        onClick={() => irPara("/assistente")}
+                        className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition ${
+                            location.pathname === "/assistente"
+                                ? "bg-[#4BEA75] text-[#0B3818]"
+                                : "bg-white/[0.07] text-[#C6F7D0] hover:bg-white/[0.11]"
+                        }`}
+                    >
+                        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-current/10">
+                            <Bot size={16} />
+                        </span>
+                        <span className="min-w-0">
+                            <span className="block text-xs font-bold">Assistente Agro.in</span>
+                            <span className={`mt-0.5 block text-[9px] ${location.pathname === "/assistente" ? "text-[#27683A]" : "text-white/40"}`}>
+                                Orientação para o campo
+                            </span>
+                        </span>
+                    </button>
+                </div>
             </aside>
 
-            {/* Topbar mobile */}
-            <div className="flex items-center justify-between px-4 py-3 lg:hidden" style={{ background: "#0D5006" }}>
-                <button onClick={() => setSidebarAberto(true)}>
-                    <Menu size={22} style={{ color: "white" }} />
+            <header className="sticky top-0 z-30 flex items-center justify-between border-b border-white/8 bg-[#0B3F1D] px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] shadow-[0_6px_22px_rgba(8,39,17,0.14)] lg:hidden">
+                <button
+                    type="button"
+                    onClick={() => setSidebarAberto(true)}
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.07] text-white"
+                    aria-label="Abrir menu"
+                >
+                    <Menu size={21} />
                 </button>
-                <img src={logo} alt="Agro.in" className="w-9" />
-                <div style={{ width: 22 }} />
-            </div>
+
+                <button
+                    type="button"
+                    onClick={() => irPara("/dashboard")}
+                    className="flex items-center gap-2.5 text-left"
+                    aria-label="Ir para o dashboard do Agro.in"
+                >
+                    <img src={logo} alt="" className="h-9 w-9 object-contain" />
+                    <span>
+                        <span className="block text-sm font-bold leading-none tracking-[-0.035em] text-white">
+                            Agro.in
+                        </span>
+                        <span className="mt-1 block text-[8px] font-semibold uppercase tracking-[0.14em] text-[#99C9A2]">
+                            Gestão rural
+                        </span>
+                    </span>
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => irPara("/relatorios")}
+                    className="flex h-10 w-10 items-center justify-center rounded-xl text-white/70 transition hover:bg-white/[0.07]"
+                    aria-label="Abrir relatórios"
+                >
+                    <ChartNoAxesCombined size={19} />
+                </button>
+            </header>
         </>
     );
 }
