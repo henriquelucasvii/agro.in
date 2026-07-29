@@ -335,7 +335,7 @@ export default function QuarentenasFoliares() {
                                             <button
                                                 onClick={alternarStatus}
                                                 disabled={salvando}
-                                                className="flex items-center justify-center gap-2 rounded-xl border border-[#CAD5C8] bg-white px-4 py-2.5 text-xs font-bold text-[#31533A]"
+                                                className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#CAD5C8] bg-white px-4 py-2.5 text-xs font-bold text-[#31533A]"
                                             >
                                                 {selecionado.status === "em_quarentena" ? (
                                                     <>
@@ -369,7 +369,7 @@ export default function QuarentenasFoliares() {
                                                                 `/analise-foliar?caso=${selecionado.id}`,
                                                             )
                                                         }
-                                                        className="flex items-center gap-2 rounded-xl bg-[#174D27] px-4 py-2.5 text-xs font-bold text-white"
+                                                        className="flex min-h-11 items-center gap-2 rounded-xl bg-[#174D27] px-4 py-2.5 text-xs font-bold text-white"
                                                     >
                                                         <Plus size={15} /> Nova foto
                                                     </button>

@@ -11,6 +11,7 @@
 html {
     min-width: 320px;
     background: #f4f5ef;
+    -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -33,6 +34,42 @@ button:hover {
 
 button:disabled:hover {
     cursor: not-allowed;
+}
+
+img,
+svg {
+    max-width: 100%;
+}
+
+main,
+section,
+article,
+aside,
+nav {
+    min-width: 0;
+}
+
+.mobile-app-header {
+    position: fixed;
+    inset: 0 0 auto;
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+.mobile-app-header-spacer {
+    height: calc(3.25rem + max(0.75rem, env(safe-area-inset-top)));
+}
+
+@media (max-width: 640px) {
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+        font-size: 16px;
+    }
+
+    button,
+    a {
+        -webkit-tap-highlight-color: transparent;
+    }
 }
 
 @keyframes foliar-scan {

@@ -171,7 +171,7 @@ export default function Sidebar() {
                 </div>
             </aside>
 
-            <header className="sticky top-0 z-30 flex items-center justify-between border-b border-white/8 bg-[#0B3F1D] px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] shadow-[0_6px_22px_rgba(8,39,17,0.14)] lg:hidden">
+            <header className="mobile-app-header z-30 flex items-center justify-between border-b border-white/8 bg-[#0B3F1D] px-4 pb-3 shadow-[0_6px_22px_rgba(8,39,17,0.14)] lg:hidden">
                 <button
                     type="button"
                     onClick={() => setSidebarAberto(true)}
@@ -207,6 +207,7 @@ export default function Sidebar() {
                     <ChartNoAxesCombined size={19} />
                 </button>
             </header>
+            <div className="mobile-app-header-spacer lg:hidden" aria-hidden="true" />
         </>
     );
 }

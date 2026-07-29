@@ -348,11 +348,17 @@ export default function Perfil() {
                                             </div>
                                             <button
                                                 onClick={onClick}
-                                                className="shrink-0 w-11 h-6 rounded-full transition-colors relative"
-                                                style={{ background: value ? "#0D5006" : "#D1D5DB" }}
+                                                type="button"
+                                                aria-pressed={value}
+                                                aria-label={`${label}: ${value ? "ativado" : "desativado"}`}
+                                                className="relative h-11 w-12 shrink-0"
                                             >
                                                 <span
-                                                    className="absolute top-1 w-4 h-4 rounded-full bg-white transition-all"
+                                                    className="absolute inset-x-0 top-2 h-7 rounded-full transition-colors"
+                                                    style={{ background: value ? "#0D5006" : "#D1D5DB" }}
+                                                />
+                                                <span
+                                                    className="absolute top-3.5 h-4 w-4 rounded-full bg-white transition-all"
                                                     style={{ left: value ? "calc(100% - 20px)" : "4px" }}
                                                 />
                                             </button>
@@ -391,13 +397,13 @@ export default function Perfil() {
 
             {/* Modal Alterar Senha */}
             {modalSenha && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.4)" }}>
-                    <div className="bg-white rounded-2xl p-6 w-full max-w-sm flex flex-col gap-4" style={{ border: "1px solid #E7E9E4" }}>
+                <div className="fixed inset-0 z-50 flex overflow-y-auto p-4" style={{ background: "rgba(0,0,0,0.4)" }}>
+                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-sm flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6" style={{ border: "1px solid #E7E9E4" }}>
                         <div className="flex items-center justify-between">
                             <h2 className="font-bold text-lg" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
                                 Alterar senha
                             </h2>
-                            <button onClick={() => { setModalSenha(false); setErroSenha(""); }}>
+                            <button onClick={() => { setModalSenha(false); setErroSenha(""); }} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela">
                                 <X size={18} style={{ color: "#8B978A" }} />
                             </button>
                         </div>

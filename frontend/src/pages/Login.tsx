@@ -84,16 +84,16 @@ export default function Login() {
                     <button
                         type="button"
                         onClick={() => navigate("/esqueci-senha")}
-                        className="mt-4 w-full text-center text-sm text-[#0D5006] font-semibold hover:underline"
+                        className="mt-4 inline-flex min-h-11 w-full items-center justify-center text-center text-sm font-semibold text-[#0D5006] hover:underline"
                     >
                         Esqueceu sua senha?
                     </button>
 
                     <p className="text-center mt-6 text-sm">
                         Não possui uma conta?{" "}
-                        <span onClick={() => navigate("/")} className="text-[#0D5006] font-semibold cursor-pointer">
+                        <button type="button" onClick={() => navigate("/")} className="inline-flex min-h-11 items-center font-semibold text-[#0D5006]">
                             Registre-se
-                        </span>
+                        </button>
                     </p>
 
                 </div>

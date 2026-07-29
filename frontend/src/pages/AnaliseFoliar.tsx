@@ -561,7 +561,7 @@ export default function AnaliseFoliar() {
                             <div className="flex items-start gap-2.5">
                                 <AlertTriangle size={17} className="mt-0.5 shrink-0" /><span>{erro}</span>
                             </div>
-                            <button onClick={() => setErro("")} aria-label="Fechar aviso"><X size={16} /></button>
+                            <button onClick={() => setErro("")} className="-m-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg" aria-label="Fechar aviso"><X size={16} /></button>
                         </div>
                     )}
 
@@ -787,8 +787,8 @@ export default function AnaliseFoliar() {
                                         <div className="border-t border-[#E3E8DF] bg-[#F8FAF6] p-5 md:p-7">
                                             <p className="text-xs font-bold">Essa triagem foi útil?</p>
                                             <div className="mt-3 flex gap-2">
-                                                <button onClick={() => enviarFeedback(true)} disabled={salvandoFeedback} className="flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold" style={{ borderColor: resultado.feedback_util === true ? "#4B8B57" : "#DDE3D9", background: resultado.feedback_util === true ? "#EAF6E8" : "white" }}><ThumbsUp size={14} /> Sim</button>
-                                                <button onClick={() => enviarFeedback(false)} disabled={salvandoFeedback} className="flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold" style={{ borderColor: resultado.feedback_util === false ? "#A4674C" : "#DDE3D9", background: resultado.feedback_util === false ? "#FAEEE9" : "white" }}><ThumbsDown size={14} /> Não</button>
+                                                <button onClick={() => enviarFeedback(true)} disabled={salvandoFeedback} className="flex min-h-10 items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold" style={{ borderColor: resultado.feedback_util === true ? "#4B8B57" : "#DDE3D9", background: resultado.feedback_util === true ? "#EAF6E8" : "white" }}><ThumbsUp size={14} /> Sim</button>
+                                                <button onClick={() => enviarFeedback(false)} disabled={salvandoFeedback} className="flex min-h-10 items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold" style={{ borderColor: resultado.feedback_util === false ? "#A4674C" : "#DDE3D9", background: resultado.feedback_util === false ? "#FAEEE9" : "white" }}><ThumbsDown size={14} /> Não</button>
                                             </div>
                                             <input value={diagnosticoReal} onChange={(e) => setDiagnosticoReal(e.target.value)} placeholder="Diagnóstico confirmado depois (opcional)" maxLength={160} className="mt-3 h-10 w-full rounded-lg border border-[#DDE3D9] bg-white px-3 text-xs outline-none focus:border-[#5D8C63]" />
                                             {!resultado.caso_id && !resultado.ponto_vistoria_id && (
@@ -853,7 +853,7 @@ export default function AnaliseFoliar() {
                                                 <ChevronRight size={17} className="shrink-0 text-[#A1AAA0]" />
                                             </button>
                                             {!analise.caso_id && !analise.ponto_vistoria_id && (
-                                                <button onClick={() => removerAnalise(analise)} className="rounded-lg p-2 text-[#9AA39A] opacity-100 transition hover:bg-[#F9EDE8] hover:text-[#A14D37] md:opacity-0 md:group-hover:opacity-100" aria-label="Excluir análise"><Trash2 size={15} /></button>
+                                                <button onClick={() => removerAnalise(analise)} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-[#9AA39A] opacity-100 transition hover:bg-[#F9EDE8] hover:text-[#A14D37] md:opacity-0 md:group-hover:opacity-100" aria-label="Excluir análise"><Trash2 size={15} /></button>
                                             )}
                                         </div>
                                     );

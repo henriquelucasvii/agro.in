@@ -427,18 +427,18 @@ export default function Producao() {
             {/* Modal */}
             {modalAberto && (
                 <div
-                    className="fixed inset-0 flex items-center justify-center p-4"
+                    className="fixed inset-0 flex overflow-y-auto p-4"
                     style={{ background: "rgba(0,0,0,0.4)", zIndex: 60 }}
                 >
                     <div
-                        className="bg-white rounded-2xl p-6 w-full max-w-md flex flex-col gap-4 overflow-y-auto"
-                        style={{ border: "1px solid #E7E9E4", maxHeight: "90vh" }}
+                        className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6"
+                        style={{ border: "1px solid #E7E9E4" }}
                     >
                         <div className="flex items-center justify-between">
                             <h2 className="font-bold text-lg" style={{ color: "#1A2E1A", fontFamily: "Montserrat, sans-serif" }}>
                                 {editando ? "Editar produção" : "Nova produção"}
                             </h2>
-                            <button onClick={fecharModal}><X size={18} style={{ color: "#8B978A" }} /></button>
+                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela"><X size={18} style={{ color: "#8B978A" }} /></button>
                         </div>
 
                         <div className="flex flex-col gap-3">

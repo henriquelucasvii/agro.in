@@ -272,7 +272,8 @@ export default function Assistente() {
                             <button
                                 type="button"
                                 onClick={limparConversa}
-                                className="inline-flex h-9 items-center gap-1.5 rounded-xl px-2.5 text-[10px] font-semibold text-[#687568] transition hover:bg-[#F1F4EF] hover:text-[#34513A]"
+                                className="inline-flex h-10 min-w-10 items-center justify-center gap-1.5 rounded-xl px-2.5 text-[10px] font-semibold text-[#687568] transition hover:bg-[#F1F4EF] hover:text-[#34513A] sm:h-9 sm:min-w-0"
+                                aria-label="Iniciar nova conversa"
                             >
                                 <RotateCcw size={13} />
                                 <span className="hidden sm:inline">Nova conversa</span>

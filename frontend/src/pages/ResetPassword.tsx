@@ -124,7 +124,7 @@ export default function ResetPassword() {
                         <button
                             type="button"
                             onClick={() => navigate("/login")}
-                            className="mt-5 w-full text-center text-sm text-[#0D5006] font-semibold hover:underline"
+                            className="mt-5 inline-flex min-h-11 w-full items-center justify-center text-center text-sm font-semibold text-[#0D5006] hover:underline"
                         >
                             Voltar para o login
                         </button>

@@ -494,7 +494,7 @@ export default function VistoriasFoliares() {
                                     <button
                                         onClick={alternarStatus}
                                         disabled={ocupado}
-                                        className="flex items-center justify-center gap-2 rounded-xl border border-[#CBD6C8] px-4 py-2.5 text-xs font-bold text-[#31533A]"
+                                        className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#CBD6C8] px-4 py-2.5 text-xs font-bold text-[#31533A]"
                                     >
                                         {selecionada.status === "em_andamento" ? (
                                             <>
@@ -616,7 +616,7 @@ export default function VistoriasFoliares() {
                                                                 marcarPonto(ponto)
                                                             }
                                                             disabled={ocupado}
-                                                            className="flex items-center gap-1.5 rounded-lg border border-[#D4DDD1] px-3 py-2 text-[10px] font-bold text-[#49604E]"
+                                                            className="flex min-h-10 items-center gap-1.5 rounded-lg border border-[#D4DDD1] px-3 py-2 text-[10px] font-bold text-[#49604E]"
                                                         >
                                                             <LocateFixed size={14} />
                                                             {ponto.latitude == null
@@ -630,7 +630,7 @@ export default function VistoriasFoliares() {
                                                                 medirDistancia(ponto)
                                                             }
                                                             disabled={ocupado}
-                                                            className="flex items-center gap-1.5 rounded-lg border border-[#D4DDD1] px-3 py-2 text-[10px] font-bold text-[#49604E]"
+                                                            className="flex min-h-10 items-center gap-1.5 rounded-lg border border-[#D4DDD1] px-3 py-2 text-[10px] font-bold text-[#49604E]"
                                                         >
                                                             <Crosshair size={14} /> Voltar ao
                                                             ponto
@@ -644,7 +644,7 @@ export default function VistoriasFoliares() {
                                                                     `/analise-foliar?ponto=${ponto.id}&vistoria=${selecionada.id}`,
                                                                 )
                                                             }
-                                                            className="flex items-center gap-1.5 rounded-lg bg-[#174D27] px-3 py-2 text-[10px] font-bold text-white"
+                                                            className="flex min-h-10 items-center gap-1.5 rounded-lg bg-[#174D27] px-3 py-2 text-[10px] font-bold text-white"
                                                         >
                                                             <Camera size={14} /> Fotografar
                                                         </button>

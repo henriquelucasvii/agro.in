@@ -92,9 +92,9 @@ export default function Register() {
 
                     <p className="text-center mt-6 text-sm">
                         Já possui uma conta?{" "}
-                        <span onClick={() => navigate("/login")} className="text-[#0D5006] font-semibold cursor-pointer">
+                        <button type="button" onClick={() => navigate("/login")} className="inline-flex min-h-11 items-center font-semibold text-[#0D5006]">
                             Entre
-                        </span>
+                        </button>
                     </p>
 
                 </div>
