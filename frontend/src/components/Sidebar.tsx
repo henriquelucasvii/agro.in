@@ -126,7 +126,7 @@ export default function Sidebar() {
                                 <Icone
                                     size={16}
                                     strokeWidth={1.8}
-                                    className={`lg:hidden ${ativo ? "text-[#9AE6A6]" : "text-white/44 group-hover:text-white/75"}`}
+                                    className={ativo ? "text-[#9AE6A6]" : "text-white/44 group-hover:text-white/75"}
                                 />
                                 {label}
                             </button>
@@ -150,7 +150,7 @@ export default function Sidebar() {
                                 : "border-[#58AC63] bg-transparent text-[#9AE6A6] hover:bg-white/[0.07]"
                         }`}
                     >
-                        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-current/10 lg:hidden">
+                        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-current/10">
                             <Bot size={16} />
                         </span>
                         <span className="min-w-0 text-xs font-bold">Assistente Agro.in</span>
