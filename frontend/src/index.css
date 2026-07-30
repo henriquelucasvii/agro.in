@@ -142,6 +142,10 @@ nav {
     animation: assistente-enter 260ms ease-out both;
 }
 
+.auth-enter {
+    animation: assistente-enter 360ms ease-out both;
+}
+
 .assistente-scroll {
     scrollbar-color: #cbd6c8 transparent;
     scrollbar-width: thin;
@@ -169,6 +173,10 @@ nav {
     }
 
     .assistente-enter {
+        animation: none;
+    }
+
+    .auth-enter {
         animation: none;
     }
 }
