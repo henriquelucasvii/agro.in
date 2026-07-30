@@ -48,7 +48,14 @@ interface DashboardData {
     meta: MetaResumo | null;
 }
 
-const DASHBOARD_ACCENT = "#2B6846";
+const DASHBOARD_ACCENTS = {
+    propriedade: "#2C7A3D",
+    financeiro: "#4D98BC",
+    producao: "#C8A229",
+    estoque: "#956437",
+    metas: "#B64C35",
+    relatorios: "#617665",
+} as const;
 
 const DASHBOARD_VAZIO: DashboardData = {
     propriedade: null,
@@ -94,11 +101,12 @@ function Card({
     return (
 
         <div
-            className="flex min-h-[196px] flex-col overflow-hidden rounded-lg bg-white transition-colors hover:border-[#B8C7B8]"
-            style={{ border: "1px solid #D8E0D8", borderLeft: `3px solid ${accent}` }}
+            className="flex min-h-[190px] flex-col overflow-hidden rounded-lg bg-white shadow-[0_3px_9px_rgba(26,48,31,0.10)] transition hover:-translate-y-0.5 hover:shadow-[0_7px_18px_rgba(26,48,31,0.13)] sm:min-h-[224px]"
+            style={{ border: "1px solid #D8E0D8" }}
         >
+            <div className="h-1.5 shrink-0" style={{ background: accent }} />
             <div className="flex items-center justify-between px-4 pb-3 pt-4">
-                <h3 className="text-[13px] font-bold uppercase tracking-[0.08em]" style={{ color: "#34473A" }}>
+                <h3 className="text-[15px] font-semibold" style={{ color: "#25352B" }}>
                     {title}
                 </h3>
                 <ChevronRight size={15} style={{ color: "#9DAA9F" }} />
@@ -330,19 +338,19 @@ export default function Dashboard() {
             {/* Main */}
             <div className="flex-1 flex flex-col">
 
-                <header className="border-b border-[#D8E0D8] bg-white px-4 pb-5 pt-6 sm:px-6 lg:px-10 lg:pb-6 lg:pt-8">
-                    <h1 className="text-2xl font-bold text-[#24372B]" style={{ fontFamily: "Montserrat, sans-serif" }}>
+                <header className="bg-[#0F5317] px-4 pb-6 pt-6 sm:px-6 lg:px-10 lg:pb-7 lg:pt-8">
+                    <h1 className="text-2xl font-bold text-[#83E092]" style={{ fontFamily: "Montserrat, sans-serif" }}>
                         Dashboard
                     </h1>
-                    <p className="mt-1 text-sm" style={{ color: "#647269" }}>
-                        Resumo da operação rural
+                    <p className="mt-1 text-sm text-white/65">
+                        Visão geral da sua propriedade
                     </p>
                 </header>
 
                 <main className="grid flex-1 content-start grid-cols-1 gap-4 px-4 py-5 sm:px-6 md:grid-cols-2 lg:px-10 lg:py-7 xl:grid-cols-3">
                     {/* Propriedades */}
                     <Card
-                        accent={DASHBOARD_ACCENT}
+                        accent={DASHBOARD_ACCENTS.propriedade}
                         title="Propriedades"
                         footer={data.propriedade ? "Ver todas as propriedades" : undefined}
                         onFooterClick={() => navigate("/propriedade")}
@@ -376,7 +384,7 @@ export default function Dashboard() {
 
                     {/* Financeiro */}
                     <Card
-                        accent={DASHBOARD_ACCENT}
+                        accent={DASHBOARD_ACCENTS.financeiro}
                         title="Financeiro"
                         footer={data.financeiro ? "Ver extrato completo" : undefined}
                         onFooterClick={() => navigate("/financeiro")}
@@ -386,7 +394,7 @@ export default function Dashboard() {
                                 <p className="text-xs" style={{ color: "#647269" }}>Saldo do mês</p>
                                 <p className="text-xl font-bold" style={{ color: "#25352B" }}>{formatBRL(data.financeiro.saldoMes)}</p>
                                 <div className="mt-2">
-                                    <MiniAreaChart data={data.financeiro.historico} color={DASHBOARD_ACCENT} />
+                                    <MiniAreaChart data={data.financeiro.historico} color={DASHBOARD_ACCENTS.financeiro} />
                                 </div>
                             </div>
                         ) : (
@@ -396,7 +404,7 @@ export default function Dashboard() {
 
                     {/* Produção */}
                     <Card
-                        accent={DASHBOARD_ACCENT}
+                        accent={DASHBOARD_ACCENTS.producao}
                         title="Produção"
                         footer={data.producao ? "Ver extrato completo" : undefined}
                         onFooterClick={() => navigate("/producao")}
@@ -405,7 +413,7 @@ export default function Dashboard() {
                             <div className="pt-1">
                                 <p className="text-xs" style={{ color: "#647269" }}>Área total utilizada (ha)</p>
                                 <p className="text-xl font-bold mb-2" style={{ color: "#25352B" }}>{data.producao.colhendoTon} ha</p>
-                                <MiniBarChart data={data.producao.historico} color={DASHBOARD_ACCENT} />
+                                <MiniBarChart data={data.producao.historico} color={DASHBOARD_ACCENTS.producao} />
                             </div>
                         ) : (
                             <EmptyState label="Nenhum registro de produção" cta="Registrar produção" onClick={() => navigate("/producao/")} />
@@ -414,7 +422,7 @@ export default function Dashboard() {
 
                     {/* Estoques */}
                     <Card
-                        accent={DASHBOARD_ACCENT}
+                        accent={DASHBOARD_ACCENTS.estoque}
                         title="Estoques"
                         footer={data.estoque.length ? "Ver todo o estoque" : undefined}
                         onFooterClick={() => navigate("/estoque")}
@@ -422,7 +430,7 @@ export default function Dashboard() {
                         {data.estoque.length ? (
                             <div className="flex flex-col gap-3 pt-1">
                                 {data.estoque.map((item) => (
-                                    <ProgressBar key={item.nome} label={item.nome} percentual={item.percentual} color={DASHBOARD_ACCENT} />
+                                    <ProgressBar key={item.nome} label={item.nome} percentual={item.percentual} color={DASHBOARD_ACCENTS.estoque} />
                                 ))}
                             </div>
                         ) : (
@@ -432,14 +440,14 @@ export default function Dashboard() {
 
                     {/* Metas */}
                     <Card
-                        accent={DASHBOARD_ACCENT}
+                        accent={DASHBOARD_ACCENTS.metas}
                         title="Metas"
                         footer={data.meta ? "Ver todas as metas" : undefined}
                         onFooterClick={() => navigate("/meta")}
                     >
                         {data.meta ? (
                             <div className="flex items-center gap-4 pt-1">
-                                <ProgressRing percentual={Math.round((data.meta.atual / data.meta.alvo) * 100)} color={DASHBOARD_ACCENT} />
+                                <ProgressRing percentual={Math.round((data.meta.atual / data.meta.alvo) * 100)} color={DASHBOARD_ACCENTS.metas} />
                                 <div>
                                     <p className="text-sm font-semibold" style={{ color: "#25352B" }}>{data.meta.titulo}</p>
                                     <p className="text-xs mt-1" style={{ color: "#647269" }}>
@@ -453,7 +461,7 @@ export default function Dashboard() {
                     </Card>
 
                     <Card
-                        accent={DASHBOARD_ACCENT}
+                        accent={DASHBOARD_ACCENTS.relatorios}
                         title="Relatórios"
                         footer={relatoriosRecentes.length ? "Ver todos os relatórios" : undefined}
                         onFooterClick={() => navigate("/relatorios")}

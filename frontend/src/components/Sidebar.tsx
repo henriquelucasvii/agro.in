@@ -2,7 +2,6 @@ import {
     Bot,
     ChartNoAxesCombined,
     FileChartColumn,
-    LayoutDashboard,
     Leaf,
     Map,
     Menu,
@@ -27,7 +26,6 @@ interface ItemNavegacao {
 }
 
 const NAV: ItemNavegacao[] = [
-    { key: "dashboard", label: "Dashboard", icone: LayoutDashboard },
     { key: "propriedade", label: "Propriedade", icone: Map },
     { key: "financeiro", label: "Financeiro", icone: WalletCards },
     { key: "producao", label: "Produção", icone: Sprout },
@@ -65,7 +63,7 @@ export default function Sidebar() {
             )}
 
             <aside
-                className={`fixed inset-y-0 left-0 z-50 flex w-[272px] shrink-0 flex-col border-r border-white/8 bg-[#163B2A] px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))] shadow-2xl transition-transform duration-300 ease-out lg:static lg:w-[248px] lg:translate-x-0 lg:shadow-none ${
+                className={`fixed inset-y-0 left-0 z-50 flex w-[272px] shrink-0 flex-col border-r border-white/8 bg-[#0F5317] px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))] shadow-2xl transition-transform duration-300 ease-out lg:static lg:w-[216px] lg:translate-x-0 lg:shadow-none ${
                     sidebarAberto ? "translate-x-0" : "-translate-x-full"
                 }`}
             >
@@ -76,12 +74,12 @@ export default function Sidebar() {
                         className="flex items-center gap-3 rounded-md text-left"
                         aria-label="Ir para o dashboard do Agro.in"
                     >
-                        <img src={logo} alt="" className="h-11 w-11 object-contain" />
+                        <img src={logo} alt="" className="h-12 w-12 object-contain lg:h-16 lg:w-16" />
                         <span>
-                            <span className="block text-lg font-bold leading-none tracking-[-0.04em] text-white">
+                            <span className="block text-lg font-bold leading-none tracking-[-0.04em] text-white lg:hidden">
                                 Agro.in
                             </span>
-                            <span className="mt-1 block text-[9px] font-semibold uppercase tracking-[0.16em] text-[#9AC9A3]">
+                            <span className="mt-1 block text-[9px] font-semibold uppercase tracking-[0.16em] text-[#9AC9A3] lg:hidden">
                                 Gestão rural
                             </span>
                         </span>
@@ -97,22 +95,18 @@ export default function Sidebar() {
                     </button>
                 </div>
 
-                <div className="mt-7 flex h-10 items-center gap-2 rounded-md border border-white/8 bg-white/[0.06] px-3 transition focus-within:border-[#83B88B]/60 focus-within:bg-white/[0.09]">
+                <div className="mt-7 flex h-9 items-center gap-2 rounded-md border border-white/8 bg-white/[0.08] px-3 transition focus-within:border-[#83B88B]/60 focus-within:bg-white/[0.11]">
                     <Search size={14} className="shrink-0 text-white/40" />
                     <input
                         value={busca}
                         onChange={(evento) => setBusca(evento.target.value)}
                         type="search"
-                        placeholder="Encontrar módulo"
+                        placeholder="Pesquisar"
                         className="min-w-0 flex-1 bg-transparent text-xs text-white outline-none placeholder:text-white/38"
                     />
                 </div>
 
-                <p className="mb-2 mt-6 px-3 text-[9px] font-bold uppercase tracking-[0.18em] text-white/34">
-                    Operação
-                </p>
-
-                <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
+                <nav className="mt-5 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto">
                     {itensVisiveis.map(({ key, label, icone: Icone }) => {
                         const path = `/${key}`;
                         const ativo =
@@ -124,19 +118,18 @@ export default function Sidebar() {
                                 key={key}
                                 type="button"
                                 onClick={() => irPara(path)}
-                                className={`group relative flex items-center gap-3 rounded-md px-3 py-2.5 text-left text-xs font-semibold transition ${
+                                className={`group relative flex items-center gap-3 border-l-2 px-3 py-2.5 text-left text-sm transition ${
                                     ativo
-                                        ? "bg-[#DCEFE1] text-[#17472F]"
-                                        : "text-white/70 hover:bg-white/[0.07] hover:text-white"
+                                        ? "border-[#82DF91] bg-white/[0.08] font-semibold text-white"
+                                        : "border-transparent font-medium text-white/78 hover:bg-white/[0.06] hover:text-white"
                                 }`}
                             >
                                 <Icone
                                     size={16}
                                     strokeWidth={1.8}
-                                    className={ativo ? "text-[#24713A]" : "text-white/44 group-hover:text-white/75"}
+                                    className={`lg:hidden ${ativo ? "text-[#9AE6A6]" : "text-white/44 group-hover:text-white/75"}`}
                                 />
                                 {label}
-                                {ativo && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#2C8C47]" />}
                             </button>
                         );
                     })}
@@ -148,30 +141,25 @@ export default function Sidebar() {
                     )}
                 </nav>
 
-                <div className="mt-4 border-t border-white/8 pt-4">
+                <div className="mt-4 border-t border-white/10 pt-4">
                     <button
                         type="button"
                         onClick={() => irPara("/assistente")}
-                        className={`flex w-full items-center gap-3 rounded-md px-3 py-3 text-left transition ${
+                        className={`flex w-full items-center gap-3 rounded-md border px-3 py-2.5 text-left transition ${
                             location.pathname === "/assistente"
-                                ? "bg-[#A0E4AD] text-[#153F29]"
-                                : "bg-white/[0.07] text-[#C6F7D0] hover:bg-white/[0.11]"
+                                ? "border-[#9AE6A6] bg-[#9AE6A6] text-[#153F29]"
+                                : "border-[#58AC63] bg-transparent text-[#9AE6A6] hover:bg-white/[0.07]"
                         }`}
                     >
-                        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-current/10">
+                        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-current/10 lg:hidden">
                             <Bot size={16} />
                         </span>
-                        <span className="min-w-0">
-                            <span className="block text-xs font-bold">Assistente Agro.in</span>
-                            <span className={`mt-0.5 block text-[9px] ${location.pathname === "/assistente" ? "text-[#356348]" : "text-white/40"}`}>
-                                Orientação para o campo
-                            </span>
-                        </span>
+                        <span className="min-w-0 text-xs font-bold">Assistente Agro.in</span>
                     </button>
                 </div>
             </aside>
 
-            <header className="mobile-app-header z-30 flex items-center justify-between border-b border-white/8 bg-[#1F5B3A] px-4 pb-3 shadow-[0_6px_20px_rgba(22,59,42,0.12)] lg:hidden">
+            <header className="mobile-app-header z-30 flex items-center justify-between border-b border-white/8 bg-[#0F5317] px-4 pb-3 shadow-[0_6px_20px_rgba(15,83,23,0.16)] lg:hidden">
                 <button
                     type="button"
                     onClick={() => setSidebarAberto(true)}
