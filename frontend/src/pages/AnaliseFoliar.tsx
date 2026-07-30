@@ -16,7 +16,6 @@ import {
     Microscope,
     RefreshCw,
     ShieldCheck,
-    Sparkles,
     Sprout,
     SunMedium,
     ThumbsDown,
@@ -499,11 +498,11 @@ export default function AnaliseFoliar() {
                     <div className="mx-auto flex max-w-[1380px] flex-col justify-between gap-4 md:flex-row md:items-end">
                         <div>
                             <div className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#317244]">
-                                <Sparkles size={14} /> Campo inteligente
+                                <Microscope size={14} /> Diagnóstico foliar
                             </div>
                             <h1 className="text-3xl font-bold tracking-[-0.035em] md:text-4xl">Análise foliar</h1>
                             <p className="mt-2 max-w-2xl text-sm leading-6 text-[#687267]">
-                                Transforme uma boa captura em hipóteses verificáveis e próximos passos seguros.
+                                Registre a amostra, processe a imagem e acompanhe o resultado.
                             </p>
                         </div>
                         <div className="self-start text-right md:self-auto">
@@ -530,7 +529,7 @@ export default function AnaliseFoliar() {
                 <div className="mx-auto max-w-[1380px] px-4 py-5 md:px-8 md:py-8 lg:px-10">
                     <AnaliseFoliarNav />
                     {contexto && (
-                        <div className="mb-5 flex flex-col justify-between gap-3 rounded-xl border border-[#C9DEC8] bg-[#EDF6EA] px-4 py-3 sm:flex-row sm:items-center">
+                        <div className="mb-5 flex flex-col justify-between gap-3 rounded-md border border-[#C9DEC8] bg-[#EDF6EA] px-4 py-3 sm:flex-row sm:items-center">
                             <div className="flex items-start gap-3">
                                 {contexto.tipo === "caso" ? (
                                     <ShieldCheck size={18} className="mt-0.5 text-[#2D713D]" />
@@ -557,7 +556,7 @@ export default function AnaliseFoliar() {
                         </div>
                     )}
                     {erro && (
-                        <div className="foliar-enter mb-5 flex items-start justify-between gap-3 rounded-xl border border-[#E9C1A8] bg-[#FFF4EC] px-4 py-3 text-sm text-[#8A431F]">
+                        <div className="foliar-enter mb-5 flex items-start justify-between gap-3 rounded-md border border-[#E9C1A8] bg-[#FFF4EC] px-4 py-3 text-sm text-[#8A431F]">
                             <div className="flex items-start gap-2.5">
                                 <AlertTriangle size={17} className="mt-0.5 shrink-0" /><span>{erro}</span>
                             </div>
@@ -565,7 +564,7 @@ export default function AnaliseFoliar() {
                         </div>
                     )}
 
-                    <section className="grid overflow-hidden rounded-[26px] border border-[#D9E0D4] bg-white shadow-[0_24px_60px_rgba(31,61,35,0.07)] xl:grid-cols-[minmax(0,1.08fr)_minmax(430px,0.92fr)]">
+                    <section className="grid overflow-hidden rounded-lg border border-[#CFD8CE] bg-white xl:grid-cols-[minmax(0,1.08fr)_minmax(430px,0.92fr)]">
                         <div className="relative min-h-[520px] overflow-hidden bg-[#173A29] md:min-h-[620px]">
                             {imagem ? (
                                 <>
@@ -578,12 +577,12 @@ export default function AnaliseFoliar() {
                                     </div>
                                 </>
                             ) : (
-                                <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
-                                    <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_25%_25%,#4f8a54_0,transparent_32%),radial-gradient(circle_at_80%_70%,#325d38_0,transparent_36%)]" />
-                                    <div className="relative flex h-24 w-24 items-center justify-center rounded-full border border-white/15 bg-white/8"><Leaf size={42} className="text-[#B7F6A8]" strokeWidth={1.5} /></div>
-                                    <h2 className="relative mt-6 text-2xl font-semibold tracking-[-0.025em] text-white md:text-3xl">Enquadre uma folha por vez</h2>
-                                    <p className="relative mt-3 max-w-md text-sm leading-6 text-white/60">Use luz natural indireta, preencha o quadro e fotografe também o verso em uma nova análise quando houver manchas.</p>
-                                    <button onClick={() => inputRef.current?.click()} className="relative mt-7 flex items-center gap-2 rounded-full bg-[#B8E6A8] px-5 py-3 text-sm font-bold text-[#12371B] transition hover:-translate-y-0.5"><Camera size={18} /> Abrir câmera</button>
+                                <div className="absolute inset-0 flex flex-col items-start justify-center px-7 text-left md:px-10">
+                                    <div className="flex h-11 w-11 items-center justify-center rounded-md border border-white/15 bg-white/8"><Camera size={21} className="text-[#B7F6A8]" /></div>
+                                    <p className="mt-7 text-[10px] font-bold uppercase tracking-[0.16em] text-[#A9CDB0]">Nova amostra</p>
+                                    <h2 className="mt-2 text-2xl font-semibold tracking-[-0.025em] text-white md:text-3xl">Fotografe uma folha por vez</h2>
+                                    <p className="mt-3 max-w-md text-sm leading-6 text-white/60">Use luz natural, preencha o quadro e mantenha a imagem em foco. Se houver manchas, registre também o verso.</p>
+                                    <button onClick={() => inputRef.current?.click()} className="mt-7 flex items-center gap-2 rounded-md bg-[#B8E6A8] px-5 py-3 text-sm font-bold text-[#12371B] transition hover:bg-[#A9DB99]"><Camera size={18} /> Abrir câmera</button>
                                 </div>
                             )}
 
@@ -592,10 +591,10 @@ export default function AnaliseFoliar() {
                             {processando && (
                                 <div className="absolute inset-0 z-20 flex flex-col justify-end bg-[#07150B]/82 p-6 backdrop-blur-sm md:p-8">
                                     <div className="mb-auto flex items-center justify-between text-white/70">
-                                        <span className="text-xs font-bold uppercase tracking-[0.17em]">Multiprocessamento</span>
+                                        <span className="text-xs font-bold uppercase tracking-[0.17em]">Processando imagem</span>
                                         <LoaderCircle size={20} className="animate-spin text-[#B8E6A8]" />
                                     </div>
-                                    <h3 className="max-w-lg text-3xl font-semibold tracking-[-0.04em] text-white">Lendo os sinais da folha</h3>
+                                    <h3 className="max-w-lg text-3xl font-semibold tracking-[-0.04em] text-white">Analisando a amostra</h3>
                                     <div className="mt-7 grid gap-4 sm:grid-cols-2">
                                         {PROCESSOS.map((processo, indice) => (
                                             <div key={processo.titulo} className={`flex items-start gap-3 transition-all duration-500 ${indice <= processoAtual ? "opacity-100" : "opacity-30"}`}>
@@ -618,10 +617,10 @@ export default function AnaliseFoliar() {
                                                 <QualidadeItem icone={SunMedium} label="luz" valor={percentual(resultado.metricas_visuais.luminosidade)} />
                                                 <QualidadeItem icone={ImagePlus} label="folha" valor={percentual(resultado.metricas_visuais.area_foliar_aproximada)} />
                                             </div>
-                                            <button onClick={novaAnalise} className="flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-xs font-bold text-[#18351F] shadow-lg"><Camera size={15} /> Nova foto</button>
+                                            <button onClick={novaAnalise} className="flex items-center gap-2 rounded-md bg-white px-4 py-2.5 text-xs font-bold text-[#18351F]"><Camera size={15} /> Nova foto</button>
                                         </div>
                                     ) : (
-                                        <button onClick={() => inputRef.current?.click()} className="flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-xs font-bold text-[#18351F] shadow-lg"><RefreshCw size={15} /> Trocar foto</button>
+                                        <button onClick={() => inputRef.current?.click()} className="flex items-center gap-2 rounded-md bg-white px-4 py-2.5 text-xs font-bold text-[#18351F]"><RefreshCw size={15} /> Trocar foto</button>
                                     )}
                                 </div>
                             )}
@@ -633,7 +632,7 @@ export default function AnaliseFoliar() {
                                     <div className="flex items-start justify-between gap-4">
                                         <div>
                                             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#3A7949]">Contexto da amostra</p>
-                                            <h2 className="mt-2 text-2xl font-bold tracking-[-0.03em]">Ajude o modelo a comparar melhor</h2>
+                                            <h2 className="mt-2 text-2xl font-bold tracking-[-0.03em]">Informações da amostra</h2>
                                         </div>
                                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#E9F4E7] text-[#27693A]"><Sprout size={19} /></div>
                                     </div>
@@ -641,20 +640,20 @@ export default function AnaliseFoliar() {
                                     <div className="mt-7 space-y-5">
                                         <div>
                                             <label htmlFor="cultura" className="mb-2 block text-xs font-semibold text-[#405043]">Cultura ou planta <span className="font-normal text-[#8A9588]">(se souber)</span></label>
-                                            <input id="cultura" value={cultura} onChange={(e) => setCultura(e.target.value)} placeholder="Ex.: soja, café, tomate" className="h-12 w-full rounded-xl border border-[#DCE2D8] bg-[#F8FAF6] px-4 text-sm outline-none transition focus:border-[#4A8A55] focus:bg-white" />
+                                            <input id="cultura" value={cultura} onChange={(e) => setCultura(e.target.value)} placeholder="Ex.: soja, café, tomate" className="h-12 w-full rounded-md border border-[#DCE2D8] bg-[#F8FAF6] px-4 text-sm outline-none transition focus:border-[#4A8A55] focus:bg-white" />
                                         </div>
                                         <div>
                                             <label htmlFor="propriedade" className="mb-2 block text-xs font-semibold text-[#405043]">Propriedade</label>
-                                            <select id="propriedade" value={propriedadeId} onChange={(e) => setPropriedadeId(e.target.value)} className="h-12 w-full rounded-xl border border-[#DCE2D8] bg-[#F8FAF6] px-4 text-sm outline-none transition focus:border-[#4A8A55] focus:bg-white">
+                                            <select id="propriedade" value={propriedadeId} onChange={(e) => setPropriedadeId(e.target.value)} className="h-12 w-full rounded-md border border-[#DCE2D8] bg-[#F8FAF6] px-4 text-sm outline-none transition focus:border-[#4A8A55] focus:bg-white">
                                                 <option value="">Sem vínculo</option>
                                                 {propriedades.map((p) => <option key={p.id} value={p.id}>{p.nome}</option>)}
                                             </select>
                                         </div>
                                         <div>
                                             <label htmlFor="observacoes" className="mb-2 block text-xs font-semibold text-[#405043]">O que você observou?</label>
-                                            <textarea id="observacoes" value={observacoes} onChange={(e) => setObservacoes(e.target.value)} placeholder="Quando começou, onde apareceu e como está o clima..." maxLength={600} className="min-h-24 w-full resize-none rounded-xl border border-[#DCE2D8] bg-[#F8FAF6] px-4 py-3 text-sm leading-5 outline-none transition focus:border-[#4A8A55] focus:bg-white" />
+                                            <textarea id="observacoes" value={observacoes} onChange={(e) => setObservacoes(e.target.value)} placeholder="Quando começou, onde apareceu e como está o clima..." maxLength={600} className="min-h-24 w-full resize-none rounded-md border border-[#DCE2D8] bg-[#F8FAF6] px-4 py-3 text-sm leading-5 outline-none transition focus:border-[#4A8A55] focus:bg-white" />
                                         </div>
-                                        <button type="button" onClick={obterLocalizacao} disabled={localizando} className="flex w-full items-center justify-between rounded-xl border border-[#DCE2D8] px-4 py-3 text-left transition hover:bg-[#F7FAF4]">
+                                        <button type="button" onClick={obterLocalizacao} disabled={localizando} className="flex w-full items-center justify-between rounded-md border border-[#DCE2D8] px-4 py-3 text-left transition hover:bg-[#F7FAF4]">
                                             <span className="flex items-center gap-3">
                                                 {coordenadas ? <MapPin size={18} className="text-[#268448]" /> : <LocateFixed size={18} className="text-[#647365]" />}
                                                 <span>
@@ -666,7 +665,7 @@ export default function AnaliseFoliar() {
                                         </button>
                                     </div>
 
-                                    <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-xl bg-[#F3F6F0] p-3.5">
+                                    <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-md bg-[#F3F6F0] p-3.5">
                                         <input type="checkbox" checked={consentimento} onChange={(e) => setConsentimento(e.target.checked)} className="mt-0.5 h-4 w-4 accent-[#175F2D]" />
                                         <span className="text-[11px] leading-5 text-[#617063]">
                                             Autorizo o processamento e armazenamento desta foto no meu histórico
@@ -677,7 +676,7 @@ export default function AnaliseFoliar() {
                                         </span>
                                     </label>
                                     <div className="mt-auto pt-6">
-                                        <button onClick={analisar} disabled={!imagem || processando} className="flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#1F5B3A] px-5 text-sm font-bold text-white transition hover:bg-[#17482F] disabled:cursor-not-allowed disabled:opacity-45"><Microscope size={18} /> Processar análise</button>
+                                        <button onClick={analisar} disabled={!imagem || processando} className="flex h-13 w-full items-center justify-center gap-2 rounded-md bg-[#1F5B3A] px-5 text-sm font-bold text-white transition hover:bg-[#17482F] disabled:cursor-not-allowed disabled:opacity-45"><Microscope size={18} /> Processar análise</button>
                                         <p className="mt-3 text-center text-[10px] leading-4 text-[#8A9588]">Resultado de triagem. Não substitui diagnóstico agronômico, fitopatológico ou análise laboratorial.</p>
                                     </div>
                                 </div>
@@ -694,7 +693,7 @@ export default function AnaliseFoliar() {
                                                 <div className="flex h-13 w-13 items-center justify-center rounded-full bg-white text-sm font-bold">{percentual(resultado.confianca)}</div>
                                             </div>
                                         </div>
-                                        <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-[#E8DDAA] bg-[#FFF9E5] p-3 text-[11px] leading-5 text-[#705C16]">
+                                        <div className="mt-5 flex items-start gap-2.5 rounded-md border border-[#E8DDAA] bg-[#FFF9E5] p-3 text-[11px] leading-5 text-[#705C16]">
                                             <ShieldCheck size={17} className="mt-0.5 shrink-0" />
                                             <span><strong>Hipótese, não laudo.</strong> Confiança indica semelhança visual, não certeza da causa. Use os diferenciais e perguntas abaixo.</span>
                                         </div>
@@ -715,7 +714,7 @@ export default function AnaliseFoliar() {
                                             const meta = COMPARACAO[resultado.comparacao_anterior.estado];
                                             return (
                                                 <div className="border-b border-[#E3E8DF] p-5 md:p-7">
-                                                    <div className="flex items-start gap-3 rounded-xl p-4" style={{ color: meta.cor, background: meta.fundo }}>
+                                                    <div className="flex items-start gap-3 rounded-md p-4" style={{ color: meta.cor, background: meta.fundo }}>
                                                         <ArrowLeftRight size={19} className="mt-0.5 shrink-0" />
                                                         <div>
                                                             <p className="text-xs font-bold">{meta.titulo} · {resultado.comparacao_anterior.dias_desde} dias</p>
@@ -756,7 +755,7 @@ export default function AnaliseFoliar() {
                                                             const proximo = new Set(atual);
                                                             if (proximo.has(indice)) proximo.delete(indice); else proximo.add(indice);
                                                             return proximo;
-                                                        })} className="flex w-full items-start gap-3 rounded-xl border p-3 text-left transition" style={{ borderColor: marcada ? "#7FAD79" : "#E1E6DD", background: marcada ? "#F0F8ED" : "#FFFFFF" }}>
+                                                        })} className="flex w-full items-start gap-3 rounded-md border p-3 text-left transition" style={{ borderColor: marcada ? "#7FAD79" : "#E1E6DD", background: marcada ? "#F0F8ED" : "#FFFFFF" }}>
                                                             <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded" style={{ background: marcada ? "#2F743D" : "#EEF1EC", color: "white" }}>{marcada && <Check size={11} />}</span>
                                                             <span className="text-xs leading-5 text-[#536055]">{pergunta}</span>
                                                         </button>
@@ -795,7 +794,7 @@ export default function AnaliseFoliar() {
                                                 <button
                                                     onClick={iniciarQuarentena}
                                                     disabled={criandoQuarentena}
-                                                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1F5B3A] px-4 py-3 text-xs font-bold text-white disabled:opacity-50"
+                                                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-[#1F5B3A] px-4 py-3 text-xs font-bold text-white disabled:opacity-50"
                                                 >
                                                     {criandoQuarentena ? (
                                                         <LoaderCircle size={16} className="animate-spin" />
@@ -808,7 +807,7 @@ export default function AnaliseFoliar() {
                                             {contexto && (
                                                 <button
                                                     onClick={() => navigate(contexto.retorno)}
-                                                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-[#C8D5C6] bg-white px-4 py-3 text-xs font-bold text-[#31533A]"
+                                                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-md border border-[#C8D5C6] bg-white px-4 py-3 text-xs font-bold text-[#31533A]"
                                                 >
                                                     Ver histórico e comparação
                                                 </button>
@@ -821,7 +820,7 @@ export default function AnaliseFoliar() {
                     </section>
 
                     {!capacidades?.diagnostico_especializado && (
-                        <section className="mt-5 flex flex-col justify-between gap-4 rounded-2xl border border-[#E5D5AA] bg-[#FFFAEB] p-4 md:flex-row md:items-center md:px-5">
+                        <section className="mt-5 flex flex-col justify-between gap-4 rounded-lg border border-[#E5D5AA] bg-[#FFFAEB] p-4 md:flex-row md:items-center md:px-5">
                             <div className="flex items-start gap-3">
                                 <ShieldCheck size={20} className="mt-0.5 shrink-0 text-[#8A6A10]" />
                                 <div><p className="text-xs font-bold text-[#665215]">Modo atual: triagem visual segura</p><p className="mt-1 text-[11px] leading-5 text-[#7E6D3C]">Qualidade e sinais cromáticos estão ativos. Espécie, fungos, bactérias, vírus e pragas serão liberados ao conectar a chave do classificador especializado.</p></div>
@@ -836,9 +835,9 @@ export default function AnaliseFoliar() {
                             <span className="text-xs text-[#7E887E]">{historico.length} registros</span>
                         </div>
                         {historico.length === 0 ? (
-                            <div className="flex min-h-36 items-center justify-center rounded-2xl border border-dashed border-[#CBD4C7] bg-white/50 p-6 text-center text-sm text-[#7C897B]">Sua primeira análise aparecerá aqui.</div>
+                            <div className="flex min-h-36 items-center justify-center rounded-lg border border-dashed border-[#CBD4C7] bg-white/50 p-6 text-center text-sm text-[#7C897B]">Sua primeira análise aparecerá aqui.</div>
                         ) : (
-                            <div className="overflow-hidden rounded-2xl border border-[#DDE3D9] bg-white">
+                            <div className="overflow-hidden rounded-lg border border-[#DDE3D9] bg-white">
                                 {historico.map((analise, indice) => {
                                     const meta = STATUS[analise.status_geral] ?? STATUS.inconclusivo;
                                     return (

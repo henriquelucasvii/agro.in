@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2, X, Search, Leaf } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Search } from "lucide-react";
 import { api } from "../lib/api";
 import Sidebar from "../components/Sidebar";
 
@@ -184,8 +184,8 @@ export default function Estoque() {
             <div className="flex-1 flex flex-col">
 
                 {/* Header */}
-                <header className="px-10 pt-8 pb-6" style={{ background: "#1F5B3A" }}>
-                    <div className="flex items-center justify-between">
+                <header className="px-4 pb-6 pt-6 sm:px-6 sm:pt-8 lg:px-10" style={{ background: "#1F5B3A" }}>
+                    <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Montserrat, sans-serif" }}>
                                 Estoque
@@ -196,7 +196,7 @@ export default function Estoque() {
                         </div>
                         <button
                             onClick={abrirNovo}
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-90"
+                            className="flex w-full items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition hover:brightness-90 sm:w-auto"
                             style={{ background: "#9AE6A6", color: "#1F5B3A" }}
                         >
                             <Plus size={16} />
@@ -205,10 +205,10 @@ export default function Estoque() {
                     </div>
                 </header>
 
-                <main className="px-10 py-8 flex-1">
+                <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
 
                     {/* Busca */}
-                    <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 mb-6 w-full max-w-sm" style={{ border: "1px solid #E1E6DF" }}>
+                    <div className="flex items-center gap-3 bg-white rounded-md px-4 py-3 mb-6 w-full max-w-sm" style={{ border: "1px solid #E1E6DF" }}>
                         <Search size={16} style={{ color: "#647269" }} />
                         <input
                             type="text"
@@ -224,15 +224,13 @@ export default function Estoque() {
                     {loading ? (
                         <p className="text-sm" style={{ color: "#647269" }}>Carregando...</p>
                     ) : itensFiltrados.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-24 gap-3">
-                            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#E9F1E8" }}>
-                                <Leaf size={20} style={{ color: "#8CA88A" }} />
-                            </div>
-                            <p className="text-sm" style={{ color: "#647269" }}>Nenhum item no estoque ainda</p>
+                        <div className="flex flex-col items-start justify-center gap-3 border-t border-[#DDE4DC] py-16">
+                            <p className="text-sm font-medium" style={{ color: "#46564B" }}>Nenhum item cadastrado</p>
+                            <p className="text-xs" style={{ color: "#7A877E" }}>Cadastre insumos ou materiais para acompanhar o saldo do estoque.</p>
                             <button
                                 onClick={abrirNovo}
-                                className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
-                                style={{ color: "#1F5B3A", background: "#E8F3EA" }}
+                                className="flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs font-semibold transition hover:bg-[#EDF3EC]"
+                                style={{ color: "#1F5B3A", borderColor: "#C7D5C7", background: "#FFFFFF" }}
                             >
                                 <Plus size={13} /> Adicionar item
                             </button>
@@ -247,7 +245,7 @@ export default function Estoque() {
                                 return (
                                     <div
                                         key={item.id}
-                                        className="bg-white rounded-2xl p-5 flex flex-col gap-3"
+                                        className="bg-white rounded-lg p-5 flex flex-col gap-3"
                                         style={{ border: "1px solid #E1E6DF" }}
                                     >
                                         <div className="flex items-start justify-between">
@@ -306,13 +304,13 @@ export default function Estoque() {
             {/* Modal */}
             {modalAberto && (
                 <div className="fixed inset-0 z-50 flex overflow-y-auto p-4" style={{ background: "rgba(0,0,0,0.4)" }}>
-                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6" style={{ border: "1px solid #E1E6DF" }}>
+                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-lg bg-white p-5 sm:p-6" style={{ border: "1px solid #E1E6DF" }}>
 
                         <div className="flex items-center justify-between">
                             <h2 className="font-bold text-lg" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {editando ? "Editar item" : "Novo item"}
                             </h2>
-                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela">
+                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-md" aria-label="Fechar janela">
                                 <X size={18} style={{ color: "#647269" }} />
                             </button>
                         </div>
@@ -344,7 +342,7 @@ export default function Estoque() {
                         <div className="flex gap-2 mt-1">
                             <button
                                 onClick={fecharModal}
-                                className="flex-1 py-2.5 rounded-xl text-sm font-medium"
+                                className="flex-1 py-2.5 rounded-md text-sm font-medium"
                                 style={{ background: "#F2F5F0", color: "#46564B" }}
                             >
                                 Cancelar
@@ -352,7 +350,7 @@ export default function Estoque() {
                             <button
                                 onClick={salvar}
                                 disabled={salvando}
-                                className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
+                                className="flex-1 py-2.5 rounded-md text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
                                 style={{ background: "#1F5B3A", color: "#fff" }}
                             >
                                 {salvando ? "Salvando..." : editando ? "Salvar alterações" : "Adicionar"}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2, X, Search, Leaf, TrendingUp, TrendingDown } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Search, TrendingUp, TrendingDown } from "lucide-react";
 import { api } from "../lib/api";
 import Sidebar from "../components/Sidebar";
 
@@ -188,8 +188,8 @@ export default function Financeiro() {
             <div className="flex-1 flex flex-col">
 
                 {/* Header */}
-                <header className="px-10 pt-8 pb-6" style={{ background: "#1F5B3A" }}>
-                    <div className="flex items-center justify-between">
+                <header className="px-4 pb-6 pt-6 sm:px-6 sm:pt-8 lg:px-10" style={{ background: "#1F5B3A" }}>
+                    <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Montserrat, sans-serif" }}>
                                 Financeiro
@@ -200,7 +200,7 @@ export default function Financeiro() {
                         </div>
                         <button
                             onClick={abrirNovo}
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-90"
+                            className="flex w-full items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition hover:brightness-90 sm:w-auto"
                             style={{ background: "#9AE6A6", color: "#1F5B3A" }}
                         >
                             <Plus size={16} />
@@ -209,13 +209,13 @@ export default function Financeiro() {
                     </div>
 
                     {/* Resumo cards */}
-                    <div className="grid grid-cols-3 gap-4 mt-6">
+                    <div className="mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-md border border-white/10 bg-white/10">
                         {[
                             { label: "Total Entradas", valor: totalEntradas, cor: "#9AE6A6", icon: <TrendingUp size={16} /> },
                             { label: "Total Saídas", valor: totalSaidas, cor: "#E36C5C", icon: <TrendingDown size={16} /> },
                             { label: "Saldo", valor: saldo, cor: saldo >= 0 ? "#9AE6A6" : "#E36C5C", icon: null },
                         ].map(({ label, valor, cor, icon }) => (
-                            <div key={label} className="rounded-xl px-4 py-3" style={{ background: "rgba(255,255,255,0.1)" }}>
+                            <div key={label} className="min-w-0 px-3 py-3 sm:px-4" style={{ background: "rgba(255,255,255,0.06)" }}>
                                 <div className="flex items-center gap-1.5 mb-1" style={{ color: cor }}>
                                     {icon}
                                     <p className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.65)" }}>{label}</p>
@@ -226,7 +226,7 @@ export default function Financeiro() {
                     </div>
                 </header>
 
-                <main className="px-10 py-8 flex-1">
+                <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
 
                     {/* Abas */}
                     <div className="flex gap-2 mb-6">
@@ -238,7 +238,7 @@ export default function Financeiro() {
                             <button
                                 key={key}
                                 onClick={() => setAba(key)}
-                                className="px-4 py-2 rounded-full text-sm font-medium transition"
+                                className="px-4 py-2 rounded-md text-sm font-medium transition"
                                 style={{
                                     background: corAba(key) ? "#1F5B3A" : "white",
                                     color: corAba(key) ? "white" : "#46564B",
@@ -251,7 +251,7 @@ export default function Financeiro() {
                     </div>
 
                     {/* Busca */}
-                    <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 mb-6 w-full max-w-sm" style={{ border: "1px solid #E1E6DF" }}>
+                    <div className="flex items-center gap-3 bg-white rounded-md px-4 py-3 mb-6 w-full max-w-sm" style={{ border: "1px solid #E1E6DF" }}>
                         <Search size={16} style={{ color: "#647269" }} />
                         <input
                             type="text"
@@ -267,21 +267,19 @@ export default function Financeiro() {
                     {loading ? (
                         <p className="text-sm" style={{ color: "#647269" }}>Carregando...</p>
                     ) : filtrados.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-24 gap-3">
-                            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#E9F1E8" }}>
-                                <Leaf size={20} style={{ color: "#8CA88A" }} />
-                            </div>
-                            <p className="text-sm" style={{ color: "#647269" }}>Nenhum lançamento encontrado</p>
+                        <div className="flex flex-col items-start justify-center gap-3 border-t border-[#DDE4DC] py-16">
+                            <p className="text-sm font-medium" style={{ color: "#46564B" }}>Nenhum lançamento encontrado</p>
+                            <p className="text-xs" style={{ color: "#7A877E" }}>Registre uma entrada ou saída para iniciar o controle financeiro.</p>
                             <button
                                 onClick={abrirNovo}
-                                className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
-                                style={{ color: "#1F5B3A", background: "#E8F3EA" }}
+                                className="flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs font-semibold transition hover:bg-[#EDF3EC]"
+                                style={{ color: "#1F5B3A", borderColor: "#C7D5C7", background: "#FFFFFF" }}
                             >
                                 <Plus size={13} /> Adicionar lançamento
                             </button>
                         </div>
                     ) : (
-                        <div className="bg-white rounded-2xl overflow-hidden" style={{ border: "1px solid #E1E6DF" }}>
+                        <div className="bg-white rounded-lg overflow-hidden" style={{ border: "1px solid #E1E6DF" }}>
                             <table className="w-full">
                                 <thead>
                                     <tr style={{ borderBottom: "1px solid #E1E6DF", background: "#F5F6F2" }}>
@@ -358,12 +356,12 @@ export default function Financeiro() {
             {/* Modal */}
             {modalAberto && (
                 <div className="fixed inset-0 z-50 flex overflow-y-auto p-4" style={{ background: "rgba(0,0,0,0.4)" }}>
-                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6" style={{ border: "1px solid #E1E6DF" }}>
+                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-lg bg-white p-5 sm:p-6" style={{ border: "1px solid #E1E6DF" }}>
                         <div className="flex items-center justify-between">
                             <h2 className="font-bold text-lg" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {editando ? "Editar lançamento" : "Novo lançamento"}
                             </h2>
-                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela"><X size={18} style={{ color: "#647269" }} /></button>
+                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-md" aria-label="Fechar janela"><X size={18} style={{ color: "#647269" }} /></button>
                         </div>
 
                         <div className="flex flex-col gap-3">
@@ -414,7 +412,7 @@ export default function Financeiro() {
                         <div className="flex gap-2 mt-1">
                             <button
                                 onClick={fecharModal}
-                                className="flex-1 py-2.5 rounded-xl text-sm font-medium"
+                                className="flex-1 py-2.5 rounded-md text-sm font-medium"
                                 style={{ background: "#F2F5F0", color: "#46564B" }}
                             >
                                 Cancelar
@@ -422,7 +420,7 @@ export default function Financeiro() {
                             <button
                                 onClick={salvar}
                                 disabled={salvando}
-                                className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
+                                className="flex-1 py-2.5 rounded-md text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
                                 style={{ background: "#1F5B3A", color: "#fff" }}
                             >
                                 {salvando ? "Salvando..." : editando ? "Salvar alterações" : "Adicionar"}

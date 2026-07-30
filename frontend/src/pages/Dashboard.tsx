@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, ChevronRight, Leaf } from "lucide-react";
+import { Plus, ChevronRight } from "lucide-react";
 import { api } from "../lib/api.ts";
 import Sidebar from "../components/Sidebar.tsx";
 import { useLocalStorage } from "../hooks/useLocalStorage";
@@ -63,15 +63,12 @@ const formatBRL = (valor: number) => valor.toLocaleString("pt-BR", { style: "cur
 
 function EmptyState({ label, cta, onClick }: { label: string; cta: string; onClick: () => void }) {
     return (
-        <div className="flex flex-col items-center justify-center h-full gap-2 py-6 text-center">
-            <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "#E9F1E8" }}>
-                <Leaf size={16} style={{ color: "#8CA88A" }} />
-            </div>
-            <p className="text-sm" style={{ color: "#647269" }}>{label}</p>
+        <div className="flex h-full flex-col items-start justify-center gap-3 py-4">
+            <p className="max-w-[240px] text-sm leading-5" style={{ color: "#647269" }}>{label}</p>
             <button
                 onClick={onClick}
-                className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full mt-1 transition-colors hover:brightness-95"
-                style={{ color: "#1F5B3A", background: "#E8F3EA" }}
+                className="flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs font-semibold transition-colors hover:bg-[#EDF3EC]"
+                style={{ color: "#1F5B3A", borderColor: "#C7D5C7", background: "#FFFFFF" }}
             >
                 <Plus size={13} /> {cta}
             </button>
@@ -97,21 +94,20 @@ function Card({
     return (
 
         <div
-            className="rounded-2xl bg-white flex flex-col overflow-hidden transition-shadow hover:shadow-md"
-            style={{ border: "1px solid #E1E6DF", minHeight: 230 }}
+            className="flex min-h-[196px] flex-col overflow-hidden rounded-lg bg-white transition-colors hover:border-[#B8C7B8]"
+            style={{ border: "1px solid #D8E0D8", borderLeft: `3px solid ${accent}` }}
         >
-            <div className="h-1.5" style={{ background: accent }} />
-            <div className="flex items-center justify-between px-5 pt-4 pb-3">
-                <h3 className="font-semibold text-[15px]" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
+            <div className="flex items-center justify-between px-4 pb-3 pt-4">
+                <h3 className="text-[13px] font-bold uppercase tracking-[0.08em]" style={{ color: "#34473A" }}>
                     {title}
                 </h3>
-                <ChevronRight size={16} style={{ color: "#C7D0C4" }} />
+                <ChevronRight size={15} style={{ color: "#9DAA9F" }} />
             </div>
-            <div className="flex-1 px-5 pb-2">{children}</div>
+            <div className="flex-1 px-4 pb-3">{children}</div>
             {footer && (
                 <button
                     onClick={onFooterClick}
-                    className="text-left px-5 py-2.5 text-xs font-medium border-t hover:underline"
+                    className="border-t px-4 py-2.5 text-left text-xs font-semibold transition-colors hover:bg-[#F5F7F3]"
                     style={{ borderColor: "#EFF3ED", color: accent }}
                 >
                     {footer}
@@ -334,16 +330,16 @@ export default function Dashboard() {
             {/* Main */}
             <div className="flex-1 flex flex-col">
 
-                <header className="px-10 pt-8 pb-6" style={{ background: "#1F5B3A" }}>
-                    <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Montserrat, sans-serif" }}>
+                <header className="border-b border-[#D8E0D8] bg-white px-4 pb-5 pt-6 sm:px-6 lg:px-10 lg:pb-6 lg:pt-8">
+                    <h1 className="text-2xl font-bold text-[#24372B]" style={{ fontFamily: "Montserrat, sans-serif" }}>
                         Dashboard
                     </h1>
-                    <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.65)" }}>
-                        Visão geral da sua propriedade
+                    <p className="mt-1 text-sm" style={{ color: "#647269" }}>
+                        Resumo da operação rural
                     </p>
                 </header>
 
-                <main className="px-10 py-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 flex-1">
+                <main className="grid flex-1 content-start grid-cols-1 gap-4 px-4 py-5 sm:px-6 md:grid-cols-2 lg:px-10 lg:py-7 xl:grid-cols-3">
                     {/* Propriedades */}
                     <Card
                         accent={DASHBOARD_ACCENT}

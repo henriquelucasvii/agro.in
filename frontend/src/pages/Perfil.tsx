@@ -172,12 +172,12 @@ export default function Perfil() {
                 <main className="px-6 lg:px-10 py-8 flex-1">
 
                     {sucesso && (
-                        <div className="mb-4 px-4 py-3 rounded-xl text-sm font-medium" style={{ background: "#E8F3EA", color: "#1F5B3A" }}>
+                        <div className="mb-4 px-4 py-3 rounded-md text-sm font-medium" style={{ background: "#E8F3EA", color: "#1F5B3A" }}>
                             {sucesso}
                         </div>
                     )}
 
-                    <div className="bg-white rounded-2xl p-6 mb-5 flex flex-col sm:flex-row sm:items-center gap-5" style={{ border: "1px solid #E1E6DF" }}>
+                    <div className="bg-white rounded-lg p-6 mb-5 flex flex-col sm:flex-row sm:items-center gap-5" style={{ border: "1px solid #E1E6DF" }}>
                         <div
                             className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold text-white shrink-0"
                             style={{ background: "#1F5B3A" }}
@@ -198,14 +198,14 @@ export default function Perfil() {
                         <div className="flex gap-2 shrink-0">
                             <button
                                 onClick={() => setModalSenha(true)}
-                                className="px-4 py-2 rounded-xl text-sm font-medium border transition hover:brightness-95"
+                                className="px-4 py-2 rounded-md text-sm font-medium border transition hover:brightness-95"
                                 style={{ background: "white", color: "#46564B", border: "1px solid #E1E6DF" }}
                             >
                                 Alterar Senha
                             </button>
                             <button
                                 onClick={() => setEditando(true)}
-                                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition hover:brightness-90"
+                                className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition hover:brightness-90"
                                 style={{ background: "#1F5B3A", color: "white" }}
                             >
                                 <Pencil size={14} />
@@ -218,7 +218,7 @@ export default function Perfil() {
 
                         <div className="lg:col-span-2 flex flex-col gap-5">
 
-                            <div className="rounded-2xl border border-[#DCE3DB] bg-white p-6">
+                            <div className="rounded-lg border border-[#DCE3DB] bg-white p-6">
                                 <h3 className="font-bold text-base mb-5" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                     Dados pessoais
                                 </h3>
@@ -255,7 +255,7 @@ export default function Perfil() {
                                         <div className="flex gap-2 mt-4">
                                             <button
                                                 onClick={() => { setEditando(false); setErro(""); setForm({ nome: usuario?.nome ?? "", email: usuario?.email ?? "" }); }}
-                                                className="flex-1 py-2.5 rounded-xl text-sm font-medium"
+                                                className="flex-1 py-2.5 rounded-md text-sm font-medium"
                                                 style={{ background: "#F2F5F0", color: "#46564B" }}
                                             >
                                                 Cancelar
@@ -263,7 +263,7 @@ export default function Perfil() {
                                             <button
                                                 onClick={salvarPerfil}
                                                 disabled={salvando}
-                                                className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
+                                                className="flex-1 py-2.5 rounded-md text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
                                                 style={{ background: "#1F5B3A", color: "white" }}
                                             >
                                                 {salvando ? "Salvando..." : "Salvar alterações"}
@@ -273,7 +273,7 @@ export default function Perfil() {
                                 )}
                             </div>
 
-                            <div className="rounded-2xl border border-[#DCE3DB] bg-white p-6">
+                            <div className="rounded-lg border border-[#DCE3DB] bg-white p-6">
                                 <h3 className="font-bold text-base mb-5" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                     Propriedades vinculadas
                                 </h3>
@@ -284,7 +284,7 @@ export default function Perfil() {
                                         {propriedades.map((p, i) => (
                                             <div
                                                 key={p.id}
-                                                className="flex items-center justify-between px-4 py-3 rounded-xl"
+                                                className="flex items-center justify-between px-4 py-3 rounded-md"
                                                 style={{ background: "#F2F5F0" }}
                                             >
                                                 <div>
@@ -309,7 +309,7 @@ export default function Perfil() {
 
                         {/* Coluna direita — Preferências */}
                         <div className="flex flex-col gap-5">
-                            <div className="rounded-2xl border border-[#DCE3DB] bg-white p-6">
+                            <div className="rounded-lg border border-[#DCE3DB] bg-white p-6">
                                 <h3 className="font-bold text-base mb-5" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                     Preferências
                                 </h3>
@@ -376,7 +376,7 @@ export default function Perfil() {
                 {alertasEstoque.map((alerta, i) => (
                     <div
                         key={i}
-                        className="flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg"
+                        className="flex items-start gap-3 px-4 py-3 rounded-md shadow-lg"
                         style={{ background: "white", border: "1px solid #E1E6DF", minWidth: 240, maxWidth: 300 }}
                     >
                         <div
@@ -398,12 +398,12 @@ export default function Perfil() {
             {/* Modal Alterar Senha */}
             {modalSenha && (
                 <div className="fixed inset-0 z-50 flex overflow-y-auto p-4" style={{ background: "rgba(0,0,0,0.4)" }}>
-                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-sm flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6" style={{ border: "1px solid #E1E6DF" }}>
+                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-sm flex-col gap-4 overflow-y-auto rounded-lg bg-white p-5 sm:p-6" style={{ border: "1px solid #E1E6DF" }}>
                         <div className="flex items-center justify-between">
                             <h2 className="font-bold text-lg" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 Alterar senha
                             </h2>
-                            <button onClick={() => { setModalSenha(false); setErroSenha(""); }} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela">
+                            <button onClick={() => { setModalSenha(false); setErroSenha(""); }} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-md" aria-label="Fechar janela">
                                 <X size={18} style={{ color: "#647269" }} />
                             </button>
                         </div>
@@ -432,7 +432,7 @@ export default function Perfil() {
                         <div className="flex gap-2">
                             <button
                                 onClick={() => { setModalSenha(false); setErroSenha(""); }}
-                                className="flex-1 py-2.5 rounded-xl text-sm font-medium"
+                                className="flex-1 py-2.5 rounded-md text-sm font-medium"
                                 style={{ background: "#F2F5F0", color: "#46564B" }}
                             >
                                 Cancelar
@@ -440,7 +440,7 @@ export default function Perfil() {
                             <button
                                 onClick={salvarSenha}
                                 disabled={salvandoSenha}
-                                className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
+                                className="flex-1 py-2.5 rounded-md text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
                                 style={{ background: "#1F5B3A", color: "white" }}
                             >
                                 {salvandoSenha ? "Salvando..." : "Alterar"}

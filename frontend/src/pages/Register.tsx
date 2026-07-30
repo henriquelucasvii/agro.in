@@ -85,7 +85,7 @@ export default function Register() {
                     <button
                         onClick={handleRegister}
                         disabled={loading}
-                        className="mt-8 w-full h-12 rounded-xl bg-[#1F5B3A] text-white text-base font-semibold hover:brightness-110 transition disabled:opacity-60"
+                        className="mt-8 w-full h-12 rounded-md bg-[#1F5B3A] text-white text-base font-semibold hover:brightness-110 transition disabled:opacity-60"
                     >
                         {loading ? "Registrando..." : "Registrar"}
                     </button>

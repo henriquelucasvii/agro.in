@@ -280,7 +280,7 @@ export default function Relatorios() {
                         {/* Seletor de propriedade */}
                         <div className="shrink-0">
                             {carregandoPropriedades ? (
-                                <div className="h-10 px-4 flex items-center gap-2 rounded-xl text-sm" style={{ background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.7)" }}>
+                                <div className="h-10 px-4 flex items-center gap-2 rounded-md text-sm" style={{ background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.7)" }}>
                                     <RefreshCw size={14} className="animate-spin" /> Carregando...
                                 </div>
                             ) : propriedades.length > 0 ? (
@@ -288,7 +288,7 @@ export default function Relatorios() {
                                     <select
                                         value={propriedadeId ?? ""}
                                         onChange={(e) => setPropriedadeId(Number(e.target.value))}
-                                        className="appearance-none h-10 pl-3 pr-8 rounded-xl text-sm font-medium outline-none cursor-pointer"
+                                        className="appearance-none h-10 pl-3 pr-8 rounded-md text-sm font-medium outline-none cursor-pointer"
                                         style={{ background: "rgba(255,255,255,0.1)", color: "white" }}
                                     >
                                         {propriedades.map((p) => (
@@ -306,7 +306,7 @@ export default function Relatorios() {
                                     value={propriedadeId ?? ""}
                                     onChange={(e) => setPropriedadeId(e.target.value ? Number(e.target.value) : null)}
                                     placeholder="ID da propriedade"
-                                    className="w-40 h-10 rounded-xl px-3 text-sm outline-none"
+                                    className="w-40 h-10 rounded-md px-3 text-sm outline-none"
                                     style={{ background: "rgba(255,255,255,0.1)", color: "white" }}
                                 />
                             )}
@@ -323,7 +323,7 @@ export default function Relatorios() {
                                 <button
                                     key={key}
                                     onClick={() => setAbaCategoria(key)}
-                                    className="px-4 py-2 rounded-full text-sm font-medium transition shrink-0"
+                                    className="px-4 py-2 rounded-md text-sm font-medium transition shrink-0"
                                     style={{
                                         background: abaCategoria === key ? "#1F5B3A" : "white",
                                         color: abaCategoria === key ? "white" : "#46564B",
@@ -337,7 +337,7 @@ export default function Relatorios() {
                         <button
                             onClick={gerarRelatorio}
                             disabled={gerando || !propriedadeId}
-                            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-90 disabled:opacity-60 shrink-0"
+                            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold transition hover:brightness-90 disabled:opacity-60 shrink-0"
                             style={{ background: "#9AE6A6", color: "#1F5B3A" }}
                         >
                             {gerando ? <RefreshCw size={16} className="animate-spin" /> : <Plus size={16} />}
@@ -346,20 +346,20 @@ export default function Relatorios() {
                     </div>
 
                     {erroGeracao && (
-                        <div className="flex items-center gap-2 mb-4 px-4 py-3 rounded-xl text-sm" style={{ background: "#F8ECE8", color: "#A8553E" }}>
+                        <div className="flex items-center gap-2 mb-4 px-4 py-3 rounded-md text-sm" style={{ background: "#F8ECE8", color: "#A8553E" }}>
                             <AlertCircle size={15} className="shrink-0" /> {erroGeracao}
                         </div>
                     )}
 
                     {/* Cards resumo */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                        <div className="rounded-2xl px-5 py-4" style={{ background: "#EFF3ED" }}>
+                        <div className="rounded-lg px-5 py-4" style={{ background: "#EFF3ED" }}>
                             <p className="text-sm" style={{ color: "#647269" }}>Gerados este mês</p>
                             <p className="text-2xl font-bold mt-1" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {geradosEsteMes}
                             </p>
                         </div>
-                        <div className="rounded-2xl px-5 py-4" style={{ background: "#EFF3ED" }}>
+                        <div className="rounded-lg px-5 py-4" style={{ background: "#EFF3ED" }}>
                             <p className="text-sm" style={{ color: "#647269" }}>Compartilhados</p>
                             <p className="text-2xl font-bold mt-1" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {totalCompartilhados}
@@ -370,7 +370,7 @@ export default function Relatorios() {
                     {/* Gráfico + Exportar */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
 
-                        <div className="bg-white rounded-2xl p-6" style={{ border: "1px solid #E1E6DF", borderTop: "4px solid #1F5B3A" }}>
+                        <div className="bg-white rounded-lg p-6" style={{ border: "1px solid #E1E6DF", borderTop: "4px solid #1F5B3A" }}>
                             <h3 className="font-bold text-lg mb-5" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 Relatórios gerados por mês
                             </h3>
@@ -400,7 +400,7 @@ export default function Relatorios() {
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-2xl p-6" style={{ border: "1px solid #E1E6DF", borderTop: "4px solid #4E829C" }}>
+                        <div className="bg-white rounded-lg p-6" style={{ border: "1px solid #E1E6DF", borderTop: "4px solid #4E829C" }}>
                             <h3 className="font-bold text-lg mb-4" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 Exportar
                             </h3>
@@ -422,7 +422,7 @@ export default function Relatorios() {
                     </div>
 
                     {/* Histórico */}
-                    <div className="bg-white rounded-2xl overflow-hidden" style={{ border: "1px solid #E1E6DF" }}>
+                    <div className="bg-white rounded-lg overflow-hidden" style={{ border: "1px solid #E1E6DF" }}>
                         <div
                             className="flex items-center justify-between px-5 sm:px-6 py-4"
                             style={{ borderBottom: "1px solid #E1E6DF", background: "#F5F6F2" }}
@@ -455,7 +455,7 @@ export default function Relatorios() {
                                 </p>
                                 <button
                                     onClick={gerarRelatorio}
-                                    className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
+                                    className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-md transition hover:brightness-95"
                                     style={{ color: "#1F5B3A", background: "#E8F3EA" }}
                                 >
                                     <Plus size={13} /> Gerar relatório
@@ -517,37 +517,37 @@ export default function Relatorios() {
             {/* Modal de detalhes */}
             {detalhe && detalhe.dados && (
                 <div className="fixed inset-0 flex overflow-y-auto p-4" style={{ background: "rgba(0,0,0,0.4)", zIndex: 60 }}>
-                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6" style={{ border: "1px solid #E1E6DF" }}>
+                    <div className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-lg bg-white p-5 sm:p-6" style={{ border: "1px solid #E1E6DF" }}>
                         <div className="flex items-center justify-between">
                             <h2 className="font-bold text-lg" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {detalhe.titulo}
                             </h2>
-                            <button onClick={() => setDetalhe(null)} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela">
+                            <button onClick={() => setDetalhe(null)} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-md" aria-label="Fechar janela">
                                 <X size={18} style={{ color: "#647269" }} />
                             </button>
                         </div>
                         <p className="text-xs -mt-2" style={{ color: "#647269" }}>{detalhe.dados.propriedade}</p>
 
                         <div className="grid grid-cols-2 gap-3">
-                            <div className="rounded-xl px-4 py-3" style={{ background: "#E8F3EA" }}>
+                            <div className="rounded-md px-4 py-3" style={{ background: "#E8F3EA" }}>
                                 <p className="text-xs" style={{ color: "#1F5B3A" }}>Entradas</p>
                                 <p className="text-base font-bold mt-0.5" style={{ color: "#25352B" }}>{formatBRL(detalhe.dados.financeiro.entradas)}</p>
                             </div>
-                            <div className="rounded-xl px-4 py-3" style={{ background: "#F8ECE8" }}>
+                            <div className="rounded-md px-4 py-3" style={{ background: "#F8ECE8" }}>
                                 <p className="text-xs" style={{ color: "#A8553E" }}>Saídas</p>
                                 <p className="text-base font-bold mt-0.5" style={{ color: "#25352B" }}>{formatBRL(detalhe.dados.financeiro.saidas)}</p>
                             </div>
-                            <div className="rounded-xl px-4 py-3 col-span-2" style={{ background: "#F2F5F0" }}>
+                            <div className="rounded-md px-4 py-3 col-span-2" style={{ background: "#F2F5F0" }}>
                                 <p className="text-xs" style={{ color: "#46564B" }}>Saldo</p>
                                 <p className="text-lg font-bold mt-0.5" style={{ color: detalhe.dados.financeiro.saldo >= 0 ? "#1F5B3A" : "#A8553E" }}>
                                     {formatBRL(detalhe.dados.financeiro.saldo)}
                                 </p>
                             </div>
-                            <div className="rounded-xl px-4 py-3" style={{ background: "#F2F5F0" }}>
+                            <div className="rounded-md px-4 py-3" style={{ background: "#F2F5F0" }}>
                                 <p className="text-xs" style={{ color: "#46564B" }}>Produções registradas</p>
                                 <p className="text-base font-bold mt-0.5" style={{ color: "#25352B" }}>{detalhe.dados.producao.total}</p>
                             </div>
-                            <div className="rounded-xl px-4 py-3" style={{ background: "#F2F5F0" }}>
+                            <div className="rounded-md px-4 py-3" style={{ background: "#F2F5F0" }}>
                                 <p className="text-xs" style={{ color: "#46564B" }}>Itens em estoque</p>
                                 <p className="text-base font-bold mt-0.5" style={{ color: "#25352B" }}>{detalhe.dados.estoque.totalItens}</p>
                             </div>
@@ -555,7 +555,7 @@ export default function Relatorios() {
 
                         <button
                             onClick={() => setDetalhe(null)}
-                            className="mt-1 py-2.5 rounded-xl text-sm font-medium"
+                            className="mt-1 py-2.5 rounded-md text-sm font-medium"
                             style={{ background: "#F2F5F0", color: "#46564B" }}
                         >
                             Fechar

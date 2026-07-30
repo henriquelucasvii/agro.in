@@ -73,7 +73,7 @@ export default function Sidebar() {
                     <button
                         type="button"
                         onClick={() => irPara("/dashboard")}
-                        className="flex items-center gap-3 rounded-xl text-left"
+                        className="flex items-center gap-3 rounded-md text-left"
                         aria-label="Ir para o dashboard do Agro.in"
                     >
                         <img src={logo} alt="" className="h-11 w-11 object-contain" />
@@ -89,7 +89,7 @@ export default function Sidebar() {
 
                     <button
                         type="button"
-                        className="flex h-9 w-9 items-center justify-center rounded-xl text-white/70 transition hover:bg-white/10 hover:text-white lg:hidden"
+                        className="flex h-9 w-9 items-center justify-center rounded-md text-white/70 transition hover:bg-white/10 hover:text-white lg:hidden"
                         onClick={() => setSidebarAberto(false)}
                         aria-label="Fechar menu"
                     >
@@ -97,7 +97,7 @@ export default function Sidebar() {
                     </button>
                 </div>
 
-                <div className="mt-7 flex h-10 items-center gap-2 rounded-xl border border-white/8 bg-white/[0.06] px-3 transition focus-within:border-[#83B88B]/60 focus-within:bg-white/[0.09]">
+                <div className="mt-7 flex h-10 items-center gap-2 rounded-md border border-white/8 bg-white/[0.06] px-3 transition focus-within:border-[#83B88B]/60 focus-within:bg-white/[0.09]">
                     <Search size={14} className="shrink-0 text-white/40" />
                     <input
                         value={busca}
@@ -124,7 +124,7 @@ export default function Sidebar() {
                                 key={key}
                                 type="button"
                                 onClick={() => irPara(path)}
-                                className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-semibold transition ${
+                                className={`group relative flex items-center gap-3 rounded-md px-3 py-2.5 text-left text-xs font-semibold transition ${
                                     ativo
                                         ? "bg-[#DCEFE1] text-[#17472F]"
                                         : "text-white/70 hover:bg-white/[0.07] hover:text-white"
@@ -152,7 +152,7 @@ export default function Sidebar() {
                     <button
                         type="button"
                         onClick={() => irPara("/assistente")}
-                        className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition ${
+                        className={`flex w-full items-center gap-3 rounded-md px-3 py-3 text-left transition ${
                             location.pathname === "/assistente"
                                 ? "bg-[#A0E4AD] text-[#153F29]"
                                 : "bg-white/[0.07] text-[#C6F7D0] hover:bg-white/[0.11]"
@@ -175,7 +175,7 @@ export default function Sidebar() {
                 <button
                     type="button"
                     onClick={() => setSidebarAberto(true)}
-                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.07] text-white"
+                    className="flex h-10 w-10 items-center justify-center rounded-md bg-white/[0.07] text-white"
                     aria-label="Abrir menu"
                 >
                     <Menu size={21} />
@@ -201,7 +201,7 @@ export default function Sidebar() {
                 <button
                     type="button"
                     onClick={() => irPara("/relatorios")}
-                    className="flex h-10 w-10 items-center justify-center rounded-xl text-white/70 transition hover:bg-white/[0.07]"
+                    className="flex h-10 w-10 items-center justify-center rounded-md text-white/70 transition hover:bg-white/[0.07]"
                     aria-label="Abrir relatórios"
                 >
                     <ChartNoAxesCombined size={19} />

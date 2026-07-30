@@ -408,7 +408,7 @@ export default function Metas() {
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => carregar()}
-                                className="flex items-center justify-center w-10 h-10 rounded-xl transition hover:brightness-90 shrink-0"
+                                className="flex items-center justify-center w-10 h-10 rounded-md transition hover:brightness-90 shrink-0"
                                 style={{ background: "rgba(255,255,255,0.1)" }}
                                 title="Atualizar agora"
                             >
@@ -416,7 +416,7 @@ export default function Metas() {
                             </button>
                             <button
                                 onClick={abrirNovo}
-                                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-90 whitespace-nowrap"
+                                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold transition hover:brightness-90 whitespace-nowrap"
                                 style={{ background: "#9AE6A6", color: "#1F5B3A" }}
                             >
                                 <Plus size={16} />
@@ -434,7 +434,7 @@ export default function Metas() {
                             <button
                                 key={key}
                                 onClick={() => setAbaCategoria(key)}
-                                className="px-4 py-2 rounded-full text-sm font-medium transition shrink-0"
+                                className="px-4 py-2 rounded-md text-sm font-medium transition shrink-0"
                                 style={{
                                     background: abaCategoria === key ? "#1F5B3A" : "white",
                                     color: abaCategoria === key ? "white" : "#46564B",
@@ -453,7 +453,7 @@ export default function Metas() {
                             { label: "Progresso médio", valor: `${progressoMedio}%` },
                             { label: "Concluídas no trimestre", valor: String(concluidasTrimestre) },
                         ].map(({ label, valor }) => (
-                            <div key={label} className="rounded-2xl px-5 py-4" style={{ background: "#EFF3ED" }}>
+                            <div key={label} className="rounded-lg px-5 py-4" style={{ background: "#EFF3ED" }}>
                                 <p className="text-sm" style={{ color: "#647269" }}>{label}</p>
                                 <p className="text-2xl font-bold mt-1" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                     {valor}
@@ -475,7 +475,7 @@ export default function Metas() {
                             <p className="text-sm" style={{ color: "#647269" }}>Não foi possível carregar as metas</p>
                             <button
                                 onClick={() => carregar()}
-                                className="text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
+                                className="text-xs font-semibold px-3 py-1.5 rounded-md transition hover:brightness-95"
                                 style={{ color: "#1F5B3A", background: "#E8F3EA" }}
                             >
                                 Tentar novamente
@@ -489,7 +489,7 @@ export default function Metas() {
                                     {/* Card destaque */}
                                     {destaque ? (
                                         <div
-                                            className="bg-white rounded-2xl p-6 flex flex-col"
+                                            className="bg-white rounded-lg p-6 flex flex-col"
                                             style={{ border: "1px solid #E1E6DF", borderTop: `4px solid ${corCategoria(destaque).linha}` }}
                                         >
                                             <div className="flex items-start justify-between gap-3 mb-5">
@@ -530,7 +530,7 @@ export default function Metas() {
                                         </div>
                                     ) : (
                                         <div
-                                            className="bg-white rounded-2xl p-6 flex items-center justify-center text-center"
+                                            className="bg-white rounded-lg p-6 flex items-center justify-center text-center"
                                             style={{ border: "1px solid #E1E6DF", minHeight: 200 }}
                                         >
                                             <p className="text-sm" style={{ color: "#647269" }}>
@@ -540,7 +540,7 @@ export default function Metas() {
                                     )}
 
                                     {/* Progresso geral */}
-                                    <div className="bg-white rounded-2xl p-6" style={{ border: "1px solid #E1E6DF", borderTop: "4px solid #4E9462" }}>
+                                    <div className="bg-white rounded-lg p-6" style={{ border: "1px solid #E1E6DF", borderTop: "4px solid #4E9462" }}>
                                         <h3 className="font-bold text-lg mb-5" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                             Progresso geral
                                         </h3>
@@ -568,7 +568,7 @@ export default function Metas() {
                             )}
 
                             {/* Busca */}
-                            <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 mb-4 w-full sm:max-w-sm" style={{ border: "1px solid #E1E6DF" }}>
+                            <div className="flex items-center gap-3 bg-white rounded-md px-4 py-3 mb-4 w-full sm:max-w-sm" style={{ border: "1px solid #E1E6DF" }}>
                                 <Search size={16} style={{ color: "#647269" }} />
                                 <input
                                     type="text"
@@ -581,7 +581,7 @@ export default function Metas() {
                             </div>
 
                             {/* Lista completa */}
-                            <div className="bg-white rounded-2xl overflow-hidden" style={{ border: "1px solid #E1E6DF" }}>
+                            <div className="bg-white rounded-lg overflow-hidden" style={{ border: "1px solid #E1E6DF" }}>
                                 <div className="px-5 sm:px-6 py-4" style={{ borderBottom: "1px solid #E1E6DF", background: "#F5F6F2" }}>
                                     <h3 className="font-bold" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                         Todas as metas
@@ -596,7 +596,7 @@ export default function Metas() {
                                         <p className="text-sm" style={{ color: "#647269" }}>Nenhuma meta encontrada</p>
                                         <button
                                             onClick={abrirNovo}
-                                            className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
+                                            className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-md transition hover:brightness-95"
                                             style={{ color: "#1F5B3A", background: "#E8F3EA" }}
                                         >
                                             <Plus size={13} /> Criar meta
@@ -677,14 +677,14 @@ export default function Metas() {
                     style={{ background: "rgba(0,0,0,0.4)", zIndex: 60 }}
                 >
                     <div
-                        className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6"
+                        className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-lg bg-white p-5 sm:p-6"
                         style={{ border: "1px solid #E1E6DF" }}
                     >
                         <div className="flex items-center justify-between">
                             <h2 className="font-bold text-lg" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {editando ? "Editar meta" : "Nova meta"}
                             </h2>
-                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela"><X size={18} style={{ color: "#647269" }} /></button>
+                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-md" aria-label="Fechar janela"><X size={18} style={{ color: "#647269" }} /></button>
                         </div>
 
                         <div>
@@ -826,7 +826,7 @@ export default function Metas() {
                         <div className="flex gap-2 mt-1">
                             <button
                                 onClick={fecharModal}
-                                className="flex-1 py-2.5 rounded-xl text-sm font-medium"
+                                className="flex-1 py-2.5 rounded-md text-sm font-medium"
                                 style={{ background: "#F2F5F0", color: "#46564B" }}
                             >
                                 Cancelar
@@ -834,7 +834,7 @@ export default function Metas() {
                             <button
                                 onClick={salvar}
                                 disabled={salvando}
-                                className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
+                                className="flex-1 py-2.5 rounded-md text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
                                 style={{ background: "#1F5B3A", color: "#fff" }}
                             >
                                 {salvando ? "Salvando..." : editando ? "Salvar alterações" : "Adicionar"}

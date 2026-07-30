@@ -71,7 +71,7 @@ export default function ResetPassword() {
                             <button
                                 type="button"
                                 onClick={() => navigate("/login")}
-                                className="mt-6 w-full h-12 rounded-xl bg-[#1F5B3A] text-white text-base font-semibold hover:brightness-110 transition"
+                                className="mt-6 w-full h-12 rounded-md bg-[#1F5B3A] text-white text-base font-semibold hover:brightness-110 transition"
                             >
                                 Ir para o login
                             </button>
@@ -113,7 +113,7 @@ export default function ResetPassword() {
                             <button
                                 type="submit"
                                 disabled={loading || !token}
-                                className="w-full h-12 rounded-xl bg-[#1F5B3A] text-white text-base font-semibold hover:brightness-110 transition disabled:opacity-60"
+                                className="w-full h-12 rounded-md bg-[#1F5B3A] text-white text-base font-semibold hover:brightness-110 transition disabled:opacity-60"
                             >
                                 {loading ? "Salvando..." : "Salvar nova senha"}
                             </button>

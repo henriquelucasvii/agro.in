@@ -369,7 +369,7 @@ export default function VistoriasFoliares() {
                 <div className="mx-auto max-w-[1380px] px-4 py-5 md:px-8 md:py-8 lg:px-10">
                     <AnaliseFoliarNav />
                     {erro && (
-                        <div className="mb-5 rounded-xl border border-[#E9C1A8] bg-[#FFF4EC] px-4 py-3 text-sm text-[#8A431F]">
+                        <div className="mb-5 rounded-md border border-[#E9C1A8] bg-[#FFF4EC] px-4 py-3 text-sm text-[#8A431F]">
                             {erro}
                         </div>
                     )}
@@ -401,21 +401,21 @@ export default function VistoriasFoliares() {
                         </div>
                         <button
                             onClick={() => setCriando((atual) => !atual)}
-                            className="flex items-center gap-2 rounded-xl bg-[#1F5B3A] px-4 py-2.5 text-xs font-bold text-white"
+                            className="flex items-center gap-2 rounded-md bg-[#1F5B3A] px-4 py-2.5 text-xs font-bold text-white"
                         >
                             <Plus size={15} /> Nova vistoria
                         </button>
                     </div>
 
                     {criando && (
-                        <section className="mb-5 grid gap-3 rounded-2xl border border-[#D9E1D5] bg-white p-5 md:grid-cols-[1fr_1fr_1fr_auto] md:items-end">
+                        <section className="mb-5 grid gap-3 rounded-lg border border-[#D9E1D5] bg-white p-5 md:grid-cols-[1fr_1fr_1fr_auto] md:items-end">
                             <label className="text-xs font-bold text-[#425346]">
                                 Nome
                                 <input
                                     value={nome}
                                     onChange={(event) => setNome(event.target.value)}
                                     placeholder="Talhão norte · julho"
-                                    className="mt-2 h-11 w-full rounded-xl border border-[#DCE2D8] px-3 text-sm outline-none focus:border-[#4A8A55]"
+                                    className="mt-2 h-11 w-full rounded-md border border-[#DCE2D8] px-3 text-sm outline-none focus:border-[#4A8A55]"
                                 />
                             </label>
                             <label className="text-xs font-bold text-[#425346]">
@@ -426,7 +426,7 @@ export default function VistoriasFoliares() {
                                         setCultura(event.target.value)
                                     }
                                     placeholder="Ex.: soja"
-                                    className="mt-2 h-11 w-full rounded-xl border border-[#DCE2D8] px-3 text-sm outline-none focus:border-[#4A8A55]"
+                                    className="mt-2 h-11 w-full rounded-md border border-[#DCE2D8] px-3 text-sm outline-none focus:border-[#4A8A55]"
                                 />
                             </label>
                             <label className="text-xs font-bold text-[#425346]">
@@ -436,7 +436,7 @@ export default function VistoriasFoliares() {
                                     onChange={(event) =>
                                         setPropriedadeId(event.target.value)
                                     }
-                                    className="mt-2 h-11 w-full rounded-xl border border-[#DCE2D8] bg-white px-3 text-sm outline-none"
+                                    className="mt-2 h-11 w-full rounded-md border border-[#DCE2D8] bg-white px-3 text-sm outline-none"
                                 >
                                     <option value="">Sem vínculo</option>
                                     {propriedades.map((propriedade) => (
@@ -452,7 +452,7 @@ export default function VistoriasFoliares() {
                             <button
                                 onClick={criarVistoria}
                                 disabled={ocupado}
-                                className="h-11 rounded-xl bg-[#1F5B3A] px-5 text-xs font-bold text-white disabled:opacity-50"
+                                className="h-11 rounded-md bg-[#1F5B3A] px-5 text-xs font-bold text-white disabled:opacity-50"
                             >
                                 Criar roteiro
                             </button>
@@ -460,7 +460,7 @@ export default function VistoriasFoliares() {
                     )}
 
                     {!selecionada ? (
-                        <section className="flex min-h-[420px] flex-col items-center justify-center rounded-[24px] border border-dashed border-[#C9D4C6] bg-white px-6 text-center">
+                        <section className="flex min-h-[420px] flex-col items-center justify-center rounded-lg border border-dashed border-[#C9D4C6] bg-white px-6 text-center">
                             <Route size={40} className="text-[#3B7748]" />
                             <h2 className="mt-5 text-2xl font-bold">
                                 Monte o primeiro roteiro
@@ -471,7 +471,7 @@ export default function VistoriasFoliares() {
                             </p>
                         </section>
                     ) : (
-                        <section className="overflow-hidden rounded-[24px] border border-[#D9E0D4] bg-white shadow-[0_22px_55px_rgba(31,61,35,0.06)]">
+                        <section className="overflow-hidden rounded-lg border border-[#D9E0D4] bg-white shadow-[0_22px_55px_rgba(31,61,35,0.06)]">
                             <div className="border-b border-[#E1E6DE] px-5 py-5 md:px-7">
                                 <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
                                     <div>
@@ -494,7 +494,7 @@ export default function VistoriasFoliares() {
                                     <button
                                         onClick={alternarStatus}
                                         disabled={ocupado}
-                                        className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#CBD6C8] px-4 py-2.5 text-xs font-bold text-[#31533A]"
+                                        className="flex min-h-11 items-center justify-center gap-2 rounded-md border border-[#CBD6C8] px-4 py-2.5 text-xs font-bold text-[#31533A]"
                                     >
                                         {selecionada.status === "em_andamento" ? (
                                             <>
@@ -508,7 +508,7 @@ export default function VistoriasFoliares() {
                                     </button>
                                 </div>
 
-                                <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[#DCE3D8] bg-[#DCE3D8] md:grid-cols-4">
+                                <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-md border border-[#DCE3D8] bg-[#DCE3D8] md:grid-cols-4">
                                     {[
                                         [
                                             "Cobertura",
@@ -683,19 +683,19 @@ export default function VistoriasFoliares() {
                                                     setNovoPonto(event.target.value)
                                                 }
                                                 placeholder="Outro ponto"
-                                                className="h-10 min-w-0 flex-1 rounded-xl border border-[#D7DED3] bg-white px-3 text-xs outline-none"
+                                                className="h-10 min-w-0 flex-1 rounded-md border border-[#D7DED3] bg-white px-3 text-xs outline-none"
                                             />
                                             <button
                                                 onClick={adicionarPonto}
                                                 disabled={!novoPonto.trim() || ocupado}
-                                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1F5B3A] text-white disabled:opacity-40"
+                                                className="flex h-10 w-10 items-center justify-center rounded-md bg-[#1F5B3A] text-white disabled:opacity-40"
                                                 aria-label="Adicionar ponto"
                                             >
                                                 <Plus size={16} />
                                             </button>
                                         </div>
                                     )}
-                                    <div className="mt-6 rounded-xl border border-[#E4D9AF] bg-[#FFF9E7] p-3 text-[10px] leading-5 text-[#756220]">
+                                    <div className="mt-6 rounded-md border border-[#E4D9AF] bg-[#FFF9E7] p-3 text-[10px] leading-5 text-[#756220]">
                                         <strong>Leitura orientativa.</strong> Caminhe em
                                         zigue-zague e distribua pontos em zonas homogêneas.
                                         Cinco fotos não representam automaticamente toda a

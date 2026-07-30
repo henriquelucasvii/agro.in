@@ -293,7 +293,7 @@ export default function Producao() {
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => carregar()}
-                                className="flex items-center justify-center w-10 h-10 rounded-xl transition hover:brightness-90 shrink-0"
+                                className="flex items-center justify-center w-10 h-10 rounded-md transition hover:brightness-90 shrink-0"
                                 style={{ background: "rgba(255,255,255,0.1)" }}
                                 title="Atualizar agora"
                             >
@@ -301,7 +301,7 @@ export default function Producao() {
                             </button>
                             <button
                                 onClick={abrirNovo}
-                                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-90 whitespace-nowrap"
+                                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold transition hover:brightness-90 whitespace-nowrap"
                                 style={{ background: "#9AE6A6", color: "#1F5B3A" }}
                             >
                                 <Plus size={16} />
@@ -319,7 +319,7 @@ export default function Producao() {
                             <button
                                 key={key}
                                 onClick={() => setAbaCategoria(key)}
-                                className="px-4 py-2 rounded-full text-sm font-medium transition shrink-0"
+                                className="px-4 py-2 rounded-md text-sm font-medium transition shrink-0"
                                 style={{
                                     background: abaCategoria === key ? "#1F5B3A" : "white",
                                     color: abaCategoria === key ? "white" : "#25352B",
@@ -332,7 +332,7 @@ export default function Producao() {
                     </div>
 
                     {/* Busca */}
-                    <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 mb-6 w-full sm:max-w-sm" style={{ border: "1px solid #E1E6DF" }}>
+                    <div className="flex items-center gap-3 bg-white rounded-md px-4 py-3 mb-6 w-full sm:max-w-sm" style={{ border: "1px solid #E1E6DF" }}>
                         <Search size={16} style={{ color: "#647269" }} />
                         <input
                             type="text"
@@ -357,14 +357,14 @@ export default function Producao() {
                             <p className="text-sm" style={{ color: "#647269" }}>Não foi possível carregar as produções</p>
                             <button
                                 onClick={() => carregar()}
-                                className="text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
+                                className="text-xs font-semibold px-3 py-1.5 rounded-md transition hover:brightness-95"
                                 style={{ color: "#1F5B3A", background: "#E8F3EA" }}
                             >
                                 Tentar novamente
                             </button>
                         </div>
                     ) : (
-                        <div className="bg-white rounded-2xl overflow-hidden" style={{ border: "2px solid #4E9462" }}>
+                        <div className="bg-white rounded-lg overflow-hidden" style={{ border: "2px solid #4E9462" }}>
                             {producoesFiltradas.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-20 gap-3">
                                     <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#E8F3EA" }}>
@@ -373,7 +373,7 @@ export default function Producao() {
                                     <p className="text-sm" style={{ color: "#647269" }}>Nenhuma produção encontrada</p>
                                     <button
                                         onClick={abrirNovo}
-                                        className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition hover:brightness-95"
+                                        className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-md transition hover:brightness-95"
                                         style={{ color: "#1F5B3A", background: "#E8F3EA" }}
                                     >
                                         <Plus size={13} /> Registrar produção
@@ -431,14 +431,14 @@ export default function Producao() {
                     style={{ background: "rgba(0,0,0,0.4)", zIndex: 60 }}
                 >
                     <div
-                        className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-2xl bg-white p-5 sm:p-6"
+                        className="mx-auto my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-lg bg-white p-5 sm:p-6"
                         style={{ border: "1px solid #E1E6DF" }}
                     >
                         <div className="flex items-center justify-between">
                             <h2 className="font-bold text-lg" style={{ color: "#25352B", fontFamily: "Montserrat, sans-serif" }}>
                                 {editando ? "Editar produção" : "Nova produção"}
                             </h2>
-                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-xl" aria-label="Fechar janela"><X size={18} style={{ color: "#647269" }} /></button>
+                            <button onClick={fecharModal} className="-mr-2 flex h-11 w-11 items-center justify-center rounded-md" aria-label="Fechar janela"><X size={18} style={{ color: "#647269" }} /></button>
                         </div>
 
                         <div className="flex flex-col gap-3">
@@ -562,7 +562,7 @@ export default function Producao() {
                         <div className="flex gap-2 mt-1">
                             <button
                                 onClick={fecharModal}
-                                className="flex-1 py-2.5 rounded-xl text-sm font-medium"
+                                className="flex-1 py-2.5 rounded-md text-sm font-medium"
                                 style={{ background: "#F2F5F0", color: "#46564B" }}
                             >
                                 Cancelar
@@ -570,7 +570,7 @@ export default function Producao() {
                             <button
                                 onClick={salvar}
                                 disabled={salvando}
-                                className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
+                                className="flex-1 py-2.5 rounded-md text-sm font-semibold transition hover:brightness-95 disabled:opacity-60"
                                 style={{ background: "#1F5B3A", color: "#fff" }}
                             >
                                 {salvando ? "Salvando..." : editando ? "Salvar alterações" : "Adicionar"}

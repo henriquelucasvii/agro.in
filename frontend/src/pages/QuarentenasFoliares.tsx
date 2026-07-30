@@ -217,13 +217,13 @@ export default function QuarentenasFoliares() {
                     <AnaliseFoliarNav />
 
                     {erro && (
-                        <div className="mb-5 rounded-xl border border-[#E9C1A8] bg-[#FFF4EC] px-4 py-3 text-sm text-[#8A431F]">
+                        <div className="mb-5 rounded-md border border-[#E9C1A8] bg-[#FFF4EC] px-4 py-3 text-sm text-[#8A431F]">
                             {erro}
                         </div>
                     )}
 
                     {casos.length === 0 ? (
-                        <section className="flex min-h-[440px] flex-col items-center justify-center rounded-[24px] border border-dashed border-[#C9D4C6] bg-white px-6 text-center">
+                        <section className="flex min-h-[440px] flex-col items-center justify-center rounded-lg border border-dashed border-[#C9D4C6] bg-white px-6 text-center">
                             <ShieldCheck size={38} className="text-[#3B7748]" />
                             <h2 className="mt-5 text-2xl font-bold">
                                 Nenhuma quarentena aberta
@@ -234,13 +234,13 @@ export default function QuarentenasFoliares() {
                             </p>
                             <button
                                 onClick={() => navigate("/analise-foliar")}
-                                className="mt-6 flex items-center gap-2 rounded-xl bg-[#1F5B3A] px-5 py-3 text-sm font-bold text-white"
+                                className="mt-6 flex items-center gap-2 rounded-md bg-[#1F5B3A] px-5 py-3 text-sm font-bold text-white"
                             >
                                 <Plus size={17} /> Nova análise
                             </button>
                         </section>
                     ) : (
-                        <section className="grid overflow-hidden rounded-[24px] border border-[#D9E0D4] bg-white shadow-[0_22px_55px_rgba(31,61,35,0.06)] lg:grid-cols-[330px_minmax(0,1fr)]">
+                        <section className="grid overflow-hidden rounded-lg border border-[#D9E0D4] bg-white shadow-[0_22px_55px_rgba(31,61,35,0.06)] lg:grid-cols-[330px_minmax(0,1fr)]">
                             <aside className="border-b border-[#E0E5DC] bg-[#F8FAF6] lg:border-b-0 lg:border-r">
                                 <div className="border-b border-[#E0E5DC] px-5 py-4">
                                     <div className="flex items-center justify-between">
@@ -335,7 +335,7 @@ export default function QuarentenasFoliares() {
                                             <button
                                                 onClick={alternarStatus}
                                                 disabled={salvando}
-                                                className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#CAD5C8] bg-white px-4 py-2.5 text-xs font-bold text-[#31533A]"
+                                                className="flex min-h-11 items-center justify-center gap-2 rounded-md border border-[#CAD5C8] bg-white px-4 py-2.5 text-xs font-bold text-[#31533A]"
                                             >
                                                 {selecionado.status === "em_quarentena" ? (
                                                     <>
@@ -369,7 +369,7 @@ export default function QuarentenasFoliares() {
                                                                 `/analise-foliar?caso=${selecionado.id}`,
                                                             )
                                                         }
-                                                        className="flex min-h-11 items-center gap-2 rounded-xl bg-[#1F5B3A] px-4 py-2.5 text-xs font-bold text-white"
+                                                        className="flex min-h-11 items-center gap-2 rounded-md bg-[#1F5B3A] px-4 py-2.5 text-xs font-bold text-white"
                                                     >
                                                         <Plus size={15} /> Nova foto
                                                     </button>
@@ -392,7 +392,7 @@ export default function QuarentenasFoliares() {
                                                                 <FotoAnaliseProtegida
                                                                     analiseId={analise.id}
                                                                     alt={`Foto ${indice + 1} de ${selecionado.titulo}`}
-                                                                    className="h-36 w-full rounded-xl sm:h-32"
+                                                                    className="h-36 w-full rounded-md sm:h-32"
                                                                 />
                                                                 <div className="min-w-0">
                                                                     <div className="flex flex-wrap items-center gap-2">
@@ -414,7 +414,7 @@ export default function QuarentenasFoliares() {
                                                                     </h4>
                                                                     {meta && comparacao && (
                                                                         <div
-                                                                            className="mt-3 rounded-xl p-3"
+                                                                            className="mt-3 rounded-md p-3"
                                                                             style={{
                                                                                 color: meta.cor,
                                                                                 background:
@@ -446,7 +446,7 @@ export default function QuarentenasFoliares() {
                                             </div>
                                         </div>
 
-                                        <aside className="h-fit rounded-2xl bg-[#F3F6F0] p-4">
+                                        <aside className="h-fit rounded-lg bg-[#F3F6F0] p-4">
                                             <p className="text-xs font-bold">
                                                 Plano de tratamento
                                             </p>
@@ -459,7 +459,7 @@ export default function QuarentenasFoliares() {
                                                     selecionado.status === "encerrado"
                                                 }
                                                 placeholder="O que foi aplicado, dose orientada, manejo realizado..."
-                                                className="mt-3 min-h-32 w-full resize-none rounded-xl border border-[#D7DED3] bg-white p-3 text-xs leading-5 outline-none focus:border-[#5D8C63] disabled:bg-[#EEF1EC]"
+                                                className="mt-3 min-h-32 w-full resize-none rounded-md border border-[#D7DED3] bg-white p-3 text-xs leading-5 outline-none focus:border-[#5D8C63] disabled:bg-[#EEF1EC]"
                                             />
                                             <label className="mt-4 block text-[11px] font-bold">
                                                 Próxima revisão
@@ -481,14 +481,14 @@ export default function QuarentenasFoliares() {
                                                         selecionado.status ===
                                                         "encerrado"
                                                     }
-                                                    className="h-10 w-full rounded-xl border border-[#D7DED3] bg-white pl-9 pr-3 text-xs outline-none disabled:bg-[#EEF1EC]"
+                                                    className="h-10 w-full rounded-md border border-[#D7DED3] bg-white pl-9 pr-3 text-xs outline-none disabled:bg-[#EEF1EC]"
                                                 />
                                             </div>
                                             {selecionado.status === "em_quarentena" && (
                                                 <button
                                                     onClick={salvarPlano}
                                                     disabled={salvando}
-                                                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1F5B3A] px-4 py-3 text-xs font-bold text-white disabled:opacity-50"
+                                                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-[#1F5B3A] px-4 py-3 text-xs font-bold text-white disabled:opacity-50"
                                                 >
                                                     {salvando ? (
                                                         <LoaderCircle

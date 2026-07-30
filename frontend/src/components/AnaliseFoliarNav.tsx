@@ -27,7 +27,7 @@ const itens = [
 
 export default function AnaliseFoliarNav() {
     return (
-        <nav className="mb-5 grid grid-cols-3 gap-1 rounded-xl border border-[#DCE3D8] bg-white p-1.5">
+        <nav className="mb-5 grid grid-cols-3 gap-1 rounded-md border border-[#DCE3D8] bg-white p-1.5">
             {itens.map(({ para, fim, rotulo, curto, icone: Icone }) => (
                 <NavLink
                     key={para}

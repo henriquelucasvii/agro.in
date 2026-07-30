@@ -218,21 +218,18 @@ export default function Assistente() {
             <Sidebar />
 
             <main className="min-w-0 flex-1">
-                <header className="relative overflow-hidden bg-[#123F20] px-5 py-7 text-white md:px-8 lg:px-10 lg:py-8">
-                    <span className="pointer-events-none absolute -right-16 -top-28 h-64 w-64 rounded-full border border-white/[0.07]" />
-                    <span className="pointer-events-none absolute -right-2 -top-14 h-36 w-36 rounded-full border border-[#9BE6A4]/10" />
-
-                    <div className="relative mx-auto flex max-w-[1180px] items-end justify-between gap-8">
+                <header className="border-b border-white/10 bg-[#163B2A] px-5 py-7 text-white md:px-8 lg:px-10 lg:py-8">
+                    <div className="mx-auto flex max-w-[1180px] items-end justify-between gap-8">
                         <div>
                             <p className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.2em] text-[#A7DBAE]">
                                 <Leaf size={13} />
-                                Agro.in Assistente
+                                Suporte técnico
                             </p>
                             <h1 className="mt-2 text-2xl font-bold tracking-[-0.04em] md:text-[32px]">
-                                Assistente agronômico
+                                Orientação agronômica
                             </h1>
                             <p className="mt-2 max-w-2xl text-xs leading-5 text-white/62 md:text-[13px]">
-                                Organize o que você observou no campo e receba orientação com fontes técnicas.
+                                Consulte referências técnicas e registre observações da lavoura.
                             </p>
                         </div>
 
@@ -248,10 +245,10 @@ export default function Assistente() {
                 </header>
 
                 <div className="mx-auto grid max-w-[1180px] gap-6 px-3 py-4 sm:px-5 md:px-8 md:py-6 lg:grid-cols-[minmax(0,1fr)_250px] lg:px-10">
-                    <section className="flex h-[calc(100svh-240px)] min-h-[560px] max-h-[790px] min-w-0 flex-col overflow-hidden rounded-[20px] border border-[#D7DED3] bg-white shadow-[0_18px_48px_rgba(28,57,32,0.07)]">
+                    <section className="flex h-[calc(100svh-240px)] min-h-[560px] max-h-[790px] min-w-0 flex-col overflow-hidden rounded-lg border border-[#D1DAD0] bg-white">
                         <div className="flex items-center justify-between border-b border-[#E5E9E2] px-4 py-3.5 md:px-5">
                             <div className="flex items-center gap-3">
-                                <span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-[#E8F3E5] text-[#236537]">
+                                <span className="relative flex h-9 w-9 items-center justify-center rounded-md bg-[#E8F3E5] text-[#236537]">
                                     <Bot size={17} />
                                     {capacidades?.ativo && (
                                         <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-[#4DBD65]" />
@@ -272,7 +269,7 @@ export default function Assistente() {
                             <button
                                 type="button"
                                 onClick={limparConversa}
-                                className="inline-flex h-10 min-w-10 items-center justify-center gap-1.5 rounded-xl px-2.5 text-[10px] font-semibold text-[#687568] transition hover:bg-[#F1F4EF] hover:text-[#34513A] sm:h-9 sm:min-w-0"
+                                className="inline-flex h-10 min-w-10 items-center justify-center gap-1.5 rounded-md px-2.5 text-[10px] font-semibold text-[#687568] transition hover:bg-[#F1F4EF] hover:text-[#34513A] sm:h-9 sm:min-w-0"
                                 aria-label="Iniciar nova conversa"
                             >
                                 <RotateCcw size={13} />
@@ -285,7 +282,7 @@ export default function Assistente() {
                             className="assistente-scroll flex-1 space-y-5 overflow-y-auto px-3 py-5 sm:px-4 md:px-6"
                         >
                             {!carregando && !capacidades?.ativo && (
-                                <div className="flex items-start gap-3 rounded-xl border border-[#E7D8A8] bg-[#FFF9E7] p-4 text-[#6E591B]">
+                                <div className="flex items-start gap-3 rounded-md border border-[#E7D8A8] bg-[#FFF9E7] p-4 text-[#6E591B]">
                                     <CircleAlert size={18} className="mt-0.5 shrink-0" />
                                     <div>
                                         <p className="text-xs font-bold">Assistente indisponível neste momento</p>
@@ -304,16 +301,16 @@ export default function Assistente() {
                                     }`}
                                 >
                                     {mensagem.papel === "assistente" && (
-                                        <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#E8F3E5] text-[#286738]">
+                                        <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#E8F3E5] text-[#286738]">
                                             <Bot size={15} />
                                         </span>
                                     )}
 
                                     <div className={`max-w-[88%] md:max-w-[78%] ${mensagem.papel === "usuario" ? "order-first" : ""}`}>
                                         <div
-                                            className={`rounded-[18px] px-4 py-3 text-[12px] leading-6 sm:text-[13px] ${
+                                            className={`rounded-md px-4 py-3 text-[12px] leading-6 sm:text-[13px] ${
                                                 mensagem.papel === "usuario"
-                                                    ? "rounded-br-md bg-[#164D28] text-white shadow-[0_8px_18px_rgba(22,77,40,0.12)]"
+                                                    ? "rounded-br-none bg-[#164D28] text-white"
                                                     : "rounded-bl-md bg-[#F4F7F1] text-[#354239]"
                                             }`}
                                         >
@@ -358,10 +355,10 @@ export default function Assistente() {
 
                             {enviando && (
                                 <div className="assistente-enter flex items-center gap-3">
-                                    <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#E8F3E5] text-[#286738]">
+                                    <span className="flex h-8 w-8 items-center justify-center rounded-md bg-[#E8F3E5] text-[#286738]">
                                         <Bot size={15} />
                                     </span>
-                                    <div className="flex items-center gap-2 rounded-[18px] rounded-bl-md bg-[#F4F7F1] px-4 py-3 text-[11px] text-[#6D786D]">
+                                    <div className="flex items-center gap-2 rounded-lg rounded-bl-md bg-[#F4F7F1] px-4 py-3 text-[11px] text-[#6D786D]">
                                         <LoaderCircle size={14} className="animate-spin" />
                                         Consultando referências técnicas...
                                     </div>
@@ -380,7 +377,7 @@ export default function Assistente() {
                                             key={sugestao}
                                             type="button"
                                             onClick={() => void enviar(undefined, sugestao)}
-                                            className="min-w-[210px] flex-1 rounded-xl bg-[#F2F5F0] px-3 py-2.5 text-left text-[10px] leading-4 text-[#3F5D46] transition hover:bg-[#EAF3E7] hover:text-[#1F5B3A]"
+                                            className="min-w-[210px] flex-1 rounded-md bg-[#F2F5F0] px-3 py-2.5 text-left text-[10px] leading-4 text-[#3F5D46] transition hover:bg-[#EAF3E7] hover:text-[#1F5B3A]"
                                         >
                                             {sugestao}
                                         </button>
@@ -390,14 +387,14 @@ export default function Assistente() {
                         )}
 
                         {erro && (
-                            <div className="mx-3 mb-3 flex items-start gap-2 rounded-xl bg-[#FFF0EB] px-3 py-2.5 text-[10px] leading-4 text-[#95492F] sm:mx-4 md:mx-6">
+                            <div className="mx-3 mb-3 flex items-start gap-2 rounded-md bg-[#FFF0EB] px-3 py-2.5 text-[10px] leading-4 text-[#95492F] sm:mx-4 md:mx-6">
                                 <CircleAlert size={14} className="mt-0.5 shrink-0" />
                                 {erro}
                             </div>
                         )}
 
                         <form onSubmit={(evento) => void enviar(evento)} className="border-t border-[#E2E7DF] bg-[#FAFBF8] p-3 md:p-4">
-                            <div className="flex items-end gap-2 rounded-2xl border border-[#D4DDD1] bg-white p-2 shadow-[0_6px_18px_rgba(30,58,34,0.04)] transition focus-within:border-[#70A276] focus-within:ring-3 focus-within:ring-[#70A276]/10">
+                            <div className="flex items-end gap-2 rounded-md border border-[#C9D4C8] bg-white p-2 transition focus-within:border-[#70A276] focus-within:ring-3 focus-within:ring-[#70A276]/10">
                                 <textarea
                                     value={entrada}
                                     onChange={(evento) => setEntrada(evento.target.value)}
@@ -420,7 +417,7 @@ export default function Assistente() {
                                 <button
                                     type="submit"
                                     disabled={!entrada.trim() || !capacidades?.ativo || enviando}
-                                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#1F5B3A] text-white shadow-[0_6px_14px_rgba(23,77,39,0.16)] transition hover:bg-[#17482F] active:scale-95 disabled:cursor-not-allowed disabled:opacity-35"
+                                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[#1F5B3A] text-white transition hover:bg-[#17482F] active:scale-95 disabled:cursor-not-allowed disabled:opacity-35"
                                     aria-label="Enviar pergunta"
                                 >
                                     {enviando ? <LoaderCircle size={17} className="animate-spin" /> : <Send size={17} />}
@@ -462,7 +459,7 @@ export default function Assistente() {
                             className="group border-y border-[#D7DED3] py-5 text-left"
                         >
                             <span className="flex items-center justify-between">
-                                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#E7F2E4] text-[#2B6B39]">
+                                <span className="flex h-9 w-9 items-center justify-center rounded-md bg-[#E7F2E4] text-[#2B6B39]">
                                     <Sprout size={17} />
                                 </span>
                                 <ArrowUpRight size={16} className="text-[#859087] transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#275D34]" />
