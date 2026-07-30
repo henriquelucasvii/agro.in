@@ -1,6 +1,5 @@
 import {
     Bot,
-    ChartNoAxesCombined,
     FileChartColumn,
     Leaf,
     Map,
@@ -159,7 +158,7 @@ export default function Sidebar() {
                 </div>
             </aside>
 
-            <header className="mobile-app-header z-30 flex items-center justify-between border-b border-white/8 bg-[#0F5317] px-4 pb-3 shadow-[0_6px_20px_rgba(15,83,23,0.16)] lg:hidden">
+            <header className="mobile-app-header z-30 grid grid-cols-[40px_1fr_40px] items-center border-b border-white/8 bg-[#0F5317] px-4 pb-3 shadow-[0_6px_20px_rgba(15,83,23,0.16)] lg:hidden">
                 <button
                     type="button"
                     onClick={() => setSidebarAberto(true)}
@@ -172,7 +171,7 @@ export default function Sidebar() {
                 <button
                     type="button"
                     onClick={() => irPara("/dashboard")}
-                    className="flex items-center gap-2.5 text-left"
+                    className="flex items-center justify-self-center gap-2.5 text-left"
                     aria-label="Ir para o dashboard do Agro.in"
                 >
                     <img src={logo} alt="" className="h-9 w-9 object-contain" />
@@ -186,14 +185,7 @@ export default function Sidebar() {
                     </span>
                 </button>
 
-                <button
-                    type="button"
-                    onClick={() => irPara("/relatorios")}
-                    className="flex h-10 w-10 items-center justify-center rounded-md text-white/70 transition hover:bg-white/[0.07]"
-                    aria-label="Abrir relatórios"
-                >
-                    <ChartNoAxesCombined size={19} />
-                </button>
+                <span className="h-10 w-10" aria-hidden="true" />
             </header>
             <div className="mobile-app-header-spacer lg:hidden" aria-hidden="true" />
         </>
