@@ -2,6 +2,7 @@ import {
     Bot,
     FileChartColumn,
     Leaf,
+    LayoutDashboard,
     Map,
     Menu,
     Package,
@@ -25,6 +26,7 @@ interface ItemNavegacao {
 }
 
 const NAV: ItemNavegacao[] = [
+    { key: "dashboard", label: "Dashboard", icone: LayoutDashboard },
     { key: "propriedade", label: "Propriedade", icone: Map },
     { key: "financeiro", label: "Financeiro", icone: WalletCards },
     { key: "producao", label: "Produção", icone: Sprout },
