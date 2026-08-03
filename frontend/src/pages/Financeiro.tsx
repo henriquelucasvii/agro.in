@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { isAxiosError } from "axios";
 import { Plus, Pencil, Trash2, X, Search, TrendingUp, TrendingDown } from "lucide-react";
 import { api } from "../lib/api";
 import Sidebar from "../components/Sidebar";
@@ -40,7 +41,15 @@ const formVazio = (propriedadeId: string): FormData => ({
 
 const formatBRL = (valor: number) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-const formatData = (data: string) => new Date(data).toLocaleDateString("pt-BR");
+const formatData = (data: string) => new Date(data).toLocaleDateString("pt-BR", { timeZone: "UTC" });
+
+const mensagemErroApi = (error: unknown, fallback: string) => {
+    if (isAxiosError<{ error?: string }>(error)) {
+        return error.response?.data?.error ?? fallback;
+    }
+
+    return fallback;
+};
 
 // ============================================================
 // Financeiro
@@ -57,32 +66,55 @@ export default function Financeiro() {
     const [form, setForm] = useState<FormData>(formVazio(""));
     const [salvando, setSalvando] = useState(false);
     const [erro, setErro] = useState("");
+    const [erroCarregamento, setErroCarregamento] = useState("");
 
     const carregar = async () => {
         try {
             const { data } = await api.get<Lancamento[]>("/financeiro");
             setLancamentos(data);
-        } catch {
-            setLancamentos([]);
+            setErroCarregamento("");
+        } catch (error) {
+            setErroCarregamento(mensagemErroApi(error, "Não foi possível carregar os lançamentos financeiros."));
         } finally {
             setLoading(false);
         }
     };
 
-    const carregarPropriedade = async () => {
-        try {
-            const { data } = await api.get<{ id: number }[]>("/propriedades");
-            if (data.length > 0) {
-                setPropriedadeId(String(data[0].id));
-            }
-        } catch {
-            setPropriedadeId("");
-        }
+    const recarregar = () => {
+        setLoading(true);
+        void carregar();
     };
 
     useEffect(() => {
-        carregar();
-        carregarPropriedade();
+        let ativo = true;
+
+        void api.get<Lancamento[]>("/financeiro")
+            .then(({ data }) => {
+                if (!ativo) return;
+                setLancamentos(data);
+                setErroCarregamento("");
+            })
+            .catch((error: unknown) => {
+                if (!ativo) return;
+                setErroCarregamento(mensagemErroApi(error, "Não foi possível carregar os lançamentos financeiros."));
+            })
+            .finally(() => {
+                if (ativo) setLoading(false);
+            });
+
+        void api.get<{ id: number }[]>("/propriedades")
+            .then(({ data }) => {
+                if (ativo && data.length > 0) {
+                    setPropriedadeId(String(data[0].id));
+                }
+            })
+            .catch(() => {
+                if (ativo) setPropriedadeId("");
+            });
+
+        return () => {
+            ativo = false;
+        };
     }, []);
 
     const abrirNovo = () => {
@@ -148,8 +180,8 @@ export default function Financeiro() {
             }
             await carregar();
             fecharModal();
-        } catch {
-            setErro("Erro ao salvar lançamento. Tente novamente.");
+        } catch (error) {
+            setErro(mensagemErroApi(error, "Erro ao salvar lançamento. Tente novamente."));
         } finally {
             setSalvando(false);
         }
@@ -160,8 +192,8 @@ export default function Financeiro() {
         try {
             await api.delete(`/financeiro/${id}`);
             await carregar();
-        } catch {
-            alert("Erro ao excluir lançamento.");
+        } catch (error) {
+            alert(mensagemErroApi(error, "Erro ao excluir lançamento."));
         }
     };
 
@@ -266,6 +298,17 @@ export default function Financeiro() {
                     {/* Tabela */}
                     {loading ? (
                         <p className="text-sm" style={{ color: "#647269" }}>Carregando...</p>
+                    ) : erroCarregamento ? (
+                        <div className="flex flex-col items-start gap-3 border-t border-[#DDE4DC] py-16">
+                            <p className="text-sm font-medium text-red-700">{erroCarregamento}</p>
+                            <button
+                                onClick={recarregar}
+                                className="rounded-md border px-3 py-2 text-xs font-semibold transition hover:bg-[#EDF3EC]"
+                                style={{ color: "#1F5B3A", borderColor: "#C7D5C7", background: "#FFFFFF" }}
+                            >
+                                Tentar novamente
+                            </button>
+                        </div>
                     ) : filtrados.length === 0 ? (
                         <div className="flex flex-col items-start justify-center gap-3 border-t border-[#DDE4DC] py-16">
                             <p className="text-sm font-medium" style={{ color: "#46564B" }}>Nenhum lançamento encontrado</p>

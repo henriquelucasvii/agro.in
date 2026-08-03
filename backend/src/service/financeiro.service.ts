@@ -5,6 +5,18 @@ import { AppError } from "../errors/AppError.js"
 export class FinanceiroError extends AppError {}
 
 class FinanceiroService {
+    private parseData = (data: string): Date => {
+        const dataNormalizada = /^\d{4}-\d{2}-\d{2}$/.test(data)
+            ? `${data}T12:00:00.000Z`
+            : data;
+        const dataConvertida = new Date(dataNormalizada);
+
+        if (Number.isNaN(dataConvertida.getTime())) {
+            throw new FinanceiroError("Data do lançamento inválida.", 400);
+        }
+
+        return dataConvertida;
+    };
     
     // Garante que a propriedade existe e pertence ao usuário
     private assertPropriedadePertenceAoUsuario = async (propriedadeId: number, usuarioId: number) => {
@@ -38,9 +50,13 @@ class FinanceiroService {
 
     create = async (usuarioId: number, data: CreateFinanceiroBody) => {
         await this.assertPropriedadePertenceAoUsuario(data.propriedade_id, usuarioId);
+        const { data: dataLancamento, ...resto } = data;
 
         return prisma.financeiro.create({
-            data: {...data},
+            data: {
+                ...resto,
+                data: this.parseData(dataLancamento),
+            },
         });
     };
 
@@ -54,6 +70,7 @@ class FinanceiroService {
 
         return prisma.financeiro.findMany({
             where: { propriedade_id: { in: ids } },
+            orderBy: [{ data: "desc" }, { id: "desc" }],
         });
     };
 
@@ -63,10 +80,16 @@ class FinanceiroService {
 
     update = async (usuarioId: number, id: number, data: UpdateFinanceiroBody) => {
         await this.findOwnedOrFail(id, usuarioId);
+        const { data: dataLancamento, ...resto } = data;
 
         return prisma.financeiro.update({
             where: { id },
-            data,
+            data: {
+                ...resto,
+                ...(dataLancamento !== undefined
+                    ? { data: this.parseData(dataLancamento) }
+                    : {}),
+            },
         });
     };
 

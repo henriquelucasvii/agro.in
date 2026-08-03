@@ -8,5 +8,5 @@ export const financeiroRoutes = async (app: FastifyInstance) => {
     app.get("/", { preHandler: [authMiddleware] }, financeiroController.findAll)
     app.get<{ Params: {id: string} }>("/:id", { preHandler: [authMiddleware] } , financeiroController.findById)
     app.put<{ Params: {id: string}, Body: UpdateFinanceiroBody }>("/:id", { preHandler: [authMiddleware] }, financeiroController.update)
-    app.delete<{ Params: {id: string} }>(":/id", { preHandler: [authMiddleware] } , financeiroController.remove)
+    app.delete<{ Params: {id: string} }>("/:id", { preHandler: [authMiddleware] } , financeiroController.remove)
 }
