@@ -2,6 +2,7 @@ import type {
     HipoteseFoliar,
     MetricasVisuais,
     RecomendacaoFoliar,
+    RespostaCampoFoliar,
     ResultadoDiagnostico,
 } from "../types/analise-foliar.types.js";
 import { iaVisualFoliarService } from "./ia-visual-foliar.service.js";
@@ -15,6 +16,7 @@ interface EntradaDiagnostico {
     observacoes?: string;
     latitude?: number;
     longitude?: number;
+    respostasCampo?: RespostaCampoFoliar[];
 }
 
 type Registro = Record<string, unknown>;
@@ -277,66 +279,59 @@ const unicos = <T>(itens: T[], chave: (item: T) => string, limite: number) => {
 };
 
 const combinarDiagnosticos = (
-    especializado: ResultadoDiagnostico,
+    especializados: ResultadoDiagnostico[],
     ia: ResultadoDiagnostico & { concordancia?: string },
 ): ResultadoDiagnostico => {
-    const primeiraEspecializada = especializado.hipoteses[0];
     const primeiraIa = ia.hipoteses[0];
-    if (!primeiraEspecializada || !primeiraIa) return especializado;
+    const primeiraEspecializada = especializados[0]?.hipoteses[0];
+    if (!primeiraIa) return especializados[0] ?? ia;
+    if (!primeiraEspecializada) return ia;
     const provedorIa = ia.referencia_provedor?.includes("Claude Vision")
         ? "Claude Vision"
         : "Groq Vision";
-
-    const categoriasConcordam = primeiraEspecializada.categoria === primeiraIa.categoria;
-    const confianca = categoriasConcordam
-        ? Math.min(0.92, especializado.confianca * 0.6 + ia.confianca * 0.4 + 0.04)
-        : Math.min(0.58, Math.max(especializado.confianca, ia.confianca) * 0.7);
-    const hipotesesOrdenadas = categoriasConcordam
-        ? [
-            {
-                ...primeiraIa,
-                probabilidade: confianca,
-                descricao:
-                    `${primeiraIa.descricao ?? "A segunda leitura visual encontrou sinais compatíveis."} ` +
-                    `A categoria também apareceu no ${nomeProvedor(especializado.origem)}.`,
-            },
-            ...ia.hipoteses.slice(1),
-            ...especializado.hipoteses,
-        ]
-        : [...ia.hipoteses, ...especializado.hipoteses]
-            .sort((a, b) => b.probabilidade - a.probabilidade);
+    const todasEspecializadas = especializados.flatMap((resultado) => resultado.hipoteses);
+    const hipotesesOrdenadas = [
+        { ...primeiraIa, probabilidade: ia.confianca },
+        ...ia.hipoteses.slice(1),
+        ...todasEspecializadas,
+    ];
     const hipoteses = unicos(
         hipotesesOrdenadas,
         (item) => `${item.categoria}:${chaveTexto(item.nome)}`,
         4,
     );
-    const principal = hipoteses[0] ?? primeiraEspecializada;
-    const recomendacoes = categoriasConcordam && ia.recomendacoes.length
+    const principal = hipoteses[0] ?? primeiraIa;
+    const recomendacoes = ia.recomendacoes.length
         ? ia.recomendacoes
         : recomendacoesPorCategoria(principal.categoria);
     const perguntas = unicos(
-        [...ia.perguntas, ...especializado.perguntas],
+        [...ia.perguntas, ...especializados.flatMap((resultado) => resultado.perguntas)],
         chaveTexto,
         6,
     );
-    const mensagemConcordancia = categoriasConcordam
-        ? `Análise cruzada convergente: ${nomeProvedor(especializado.origem)} e ${provedorIa} apontaram a categoria ${principal.categoria.replaceAll("_", " ")}.`
-        : `Análise cruzada divergente: ${nomeProvedor(especializado.origem)} e ${provedorIa} apontaram categorias diferentes; a confiança foi reduzida e não há recomendação química específica.`;
-    const versaoModelo = [especializado.versao_modelo, ia.versao_modelo]
+    const provedoresEspecializados = especializados.map((resultado) => nomeProvedor(resultado.origem));
+    const mensagemConcordancia = ia.concordancia === "alta"
+        ? `Hipótese específica reforçada por ${provedoresEspecializados.join(" e ")} e ${provedorIa}; ainda requer confirmação compatível com o tipo de causa.`
+        : ia.concordancia === "parcial"
+            ? `Concordância apenas no grupo da causa entre ${provedoresEspecializados.join(" e ")} e ${provedorIa}; isso não confirma o diagnóstico específico.`
+            : `Análise cruzada divergente entre ${provedoresEspecializados.join(" e ")} e ${provedorIa}; a confiança foi reduzida.`;
+    const versaoModelo = [...especializados.map((resultado) => resultado.versao_modelo), ia.versao_modelo]
         .filter(Boolean)
         .join(" + ");
+    const resultadoComCultura = especializados.find((resultado) => resultado.cultura_detectada)
+        ?? especializados[0];
 
     return {
         status_geral: statusDaCategoria(principal.categoria),
-        confianca,
+        confianca: ia.confianca,
         origem: "analise_cruzada",
-        referencia_provedor: `${nomeProvedor(especializado.origem)} + ${provedorIa}`,
+        referencia_provedor: `${provedoresEspecializados.join(" + ")} + ${provedorIa}`,
         ...(versaoModelo ? { versao_modelo: versaoModelo } : {}),
-        ...(especializado.is_planta !== undefined ? { is_planta: especializado.is_planta } : {}),
-        ...(especializado.cultura_detectada ? { cultura_detectada: especializado.cultura_detectada } : {}),
-        ...(especializado.cultura_cientifica ? { cultura_cientifica: especializado.cultura_cientifica } : {}),
-        ...(especializado.cultura_confianca !== undefined
-            ? { cultura_confianca: especializado.cultura_confianca }
+        ...(resultadoComCultura?.is_planta !== undefined ? { is_planta: resultadoComCultura.is_planta } : {}),
+        ...(resultadoComCultura?.cultura_detectada ? { cultura_detectada: resultadoComCultura.cultura_detectada } : {}),
+        ...(resultadoComCultura?.cultura_cientifica ? { cultura_cientifica: resultadoComCultura.cultura_cientifica } : {}),
+        ...(resultadoComCultura?.cultura_confianca !== undefined
+            ? { cultura_confianca: resultadoComCultura.cultura_confianca }
             : {}),
         hipoteses,
         recomendacoes,
@@ -345,7 +340,7 @@ const combinarDiagnosticos = (
             [
                 mensagemConcordancia,
                 ...ia.avisos,
-                ...especializado.avisos,
+                ...especializados.flatMap((resultado) => resultado.avisos),
             ],
             chaveTexto,
             9,
@@ -697,25 +692,39 @@ class DiagnosticoFoliarService {
         }
 
         const avisosFallback: string[] = [];
-        let resultadoEspecializado: ResultadoDiagnostico | undefined;
-
+        const tentativasEspecializadas: Array<{
+            nome: string;
+            executar: () => Promise<ResultadoDiagnostico>;
+        }> = [];
         if (plantNetApiKey) {
-            try {
-                resultadoEspecializado = await this.analisarComPlantNet(entrada, plantNetApiKey);
-            } catch (error) {
-                const mensagem = error instanceof Error ? error.message : "falha desconhecida";
-                avisosFallback.push(`O Pl@ntNet não concluiu esta tentativa (${mensagem}).`);
-            }
+            tentativasEspecializadas.push({
+                nome: "Pl@ntNet",
+                executar: () => this.analisarComPlantNet(entrada, plantNetApiKey),
+            });
+        }
+        if (cropHealthApiKey) {
+            tentativasEspecializadas.push({
+                nome: "crop.health",
+                executar: () => this.analisarComCropHealth(entrada, cropHealthApiKey),
+            });
         }
 
-        if (!resultadoEspecializado && cropHealthApiKey) {
-            try {
-                resultadoEspecializado = await this.analisarComCropHealth(entrada, cropHealthApiKey);
-            } catch (error) {
-                const mensagem = error instanceof Error ? error.message : "falha desconhecida";
-                avisosFallback.push(`O crop.health não concluiu esta tentativa (${mensagem}).`);
-            }
-        }
+        const respostasEspecializadas = await Promise.all(
+            tentativasEspecializadas.map(async ({ nome, executar }) => {
+                try {
+                    return { resultado: await executar() };
+                } catch (error) {
+                    const mensagem = error instanceof Error ? error.message : "falha desconhecida";
+                    return { aviso: `O ${nome} não concluiu esta tentativa (${mensagem}).` };
+                }
+            }),
+        );
+        const resultadosEspecializados = respostasEspecializadas
+            .map((item) => item.resultado)
+            .filter((item): item is ResultadoDiagnostico => Boolean(item));
+        avisosFallback.push(...respostasEspecializadas
+            .map((item) => item.aviso)
+            .filter((item): item is string => Boolean(item)));
 
         if (gatewayToken || anthropicApiKey || groqApiKey) {
             try {
@@ -725,12 +734,15 @@ class DiagnosticoFoliarService {
                         metricas: entrada.metricas,
                         ...(entrada.cultura ? { cultura: entrada.cultura } : {}),
                         ...(entrada.observacoes ? { observacoes: entrada.observacoes } : {}),
-                        ...(resultadoEspecializado ? { resultadoEspecializado } : {}),
+                        ...(resultadosEspecializados.length ? { resultadosEspecializados } : {}),
+                        ...(entrada.respostasCampo?.length
+                            ? { respostasCampo: entrada.respostasCampo }
+                            : {}),
                     },
                 );
 
-                return resultadoEspecializado
-                    ? combinarDiagnosticos(resultadoEspecializado, resultadoIa)
+                return resultadosEspecializados.length
+                    ? combinarDiagnosticos(resultadosEspecializados, resultadoIa)
                     : resultadoIa;
             } catch (error) {
                 const mensagem = error instanceof Error ? error.message : "falha desconhecida";
@@ -738,6 +750,8 @@ class DiagnosticoFoliarService {
             }
         }
 
+        const resultadoEspecializado = resultadosEspecializados
+            .sort((a, b) => b.confianca - a.confianca)[0];
         if (resultadoEspecializado) {
             return {
                 ...resultadoEspecializado,

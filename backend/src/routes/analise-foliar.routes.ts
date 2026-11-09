@@ -11,6 +11,7 @@ import type {
     CriarPontoVistoriaBody,
     CriarVistoriaAreaBody,
     FeedbackAnaliseFoliarBody,
+    RevisarAnaliseFoliarBody,
 } from "../types/analise-foliar.types.js";
 
 export const analiseFoliarRoutes = async (app: FastifyInstance) => {
@@ -104,6 +105,14 @@ export const analiseFoliarRoutes = async (app: FastifyInstance) => {
         "/:id/imagem",
         { preHandler: [authMiddleware] },
         analiseFoliarController.imagem,
+    );
+    app.post<{
+        Params: { id: string };
+        Body: RevisarAnaliseFoliarBody;
+    }>(
+        "/:id/revisar",
+        { preHandler: [authMiddleware] },
+        analiseFoliarController.revisar,
     );
     app.patch<{
         Params: { id: string };

@@ -69,6 +69,8 @@ model AnaliseFoliar {
   hipoteses              Json
   recomendacoes          Json
   perguntas_confirmacao  Json
+  confirmacoes_campo     Json?
+  revisado_em            DateTime?
   metricas_visuais       Json
   avisos                 Json
   latitude               Float?

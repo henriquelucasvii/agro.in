@@ -5,6 +5,9 @@ import { prisma } from "../lib/prisma.js";
 import type {
     CriarAnaliseFoliarBody,
     FeedbackAnaliseFoliarBody,
+    MetricasVisuais,
+    RespostaCampoFoliar,
+    RevisarAnaliseFoliarBody,
 } from "../types/analise-foliar.types.js";
 import { comparacaoFoliarService } from "./comparacao-foliar.service.js";
 import { diagnosticoFoliarService } from "./diagnostico-foliar.service.js";
@@ -36,6 +39,8 @@ export const camposPublicos = {
     hipoteses: true,
     recomendacoes: true,
     perguntas_confirmacao: true,
+    confirmacoes_campo: true,
+    revisado_em: true,
     metricas_visuais: true,
     avisos: true,
     latitude: true,
@@ -364,6 +369,91 @@ class AnaliseFoliarService {
 
         if (!analise) throw new AnaliseFoliarError("Análise não encontrada.", 404);
         return analise;
+    };
+
+    revisarDiagnostico = async (
+        usuarioId: number,
+        id: number,
+        entrada: RevisarAnaliseFoliarBody,
+    ) => {
+        if (!Number.isInteger(id) || id <= 0) {
+            throw new AnaliseFoliarError("Análise inválida.", 400);
+        }
+
+        const analise = await prisma.analiseFoliar.findFirst({
+            where: { id, usuario_id: usuarioId },
+            select: {
+                cultura_informada: true,
+                qualidade_foto: true,
+                metricas_visuais: true,
+                perguntas_confirmacao: true,
+                observacoes: true,
+                latitude: true,
+                longitude: true,
+                imagem_preview: true,
+            },
+        });
+        if (!analise) throw new AnaliseFoliarError("Análise não encontrada.", 404);
+
+        const perguntasValidas = new Set(
+            Array.isArray(analise.perguntas_confirmacao)
+                ? analise.perguntas_confirmacao.filter(
+                    (item): item is string => typeof item === "string" && Boolean(item.trim()),
+                )
+                : [],
+        );
+        const respostasPermitidas = new Set(["sim", "nao", "nao_sei"]);
+        const respostas = Array.isArray(entrada?.respostas)
+            ? entrada.respostas
+                .map((item): RespostaCampoFoliar | null => {
+                    const pergunta = item?.pergunta?.trim();
+                    if (!pergunta || !perguntasValidas.has(pergunta)) return null;
+                    if (!respostasPermitidas.has(item.resposta)) return null;
+                    return { pergunta, resposta: item.resposta };
+                })
+                .filter((item): item is RespostaCampoFoliar => item !== null)
+            : [];
+        const unicas = [...new Map(respostas.map((item) => [item.pergunta, item])).values()];
+        if (!unicas.length) {
+            throw new AnaliseFoliarError("Responda ao menos uma pergunta de campo.", 400);
+        }
+
+        const diagnostico = await diagnosticoFoliarService.analisar({
+            imagem: Buffer.from(analise.imagem_preview),
+            qualidade: analise.qualidade_foto as "boa" | "aceitavel" | "refazer",
+            alertasQualidade: [],
+            metricas: analise.metricas_visuais as unknown as MetricasVisuais,
+            ...(analise.cultura_informada ? { cultura: analise.cultura_informada } : {}),
+            ...(analise.observacoes ? { observacoes: analise.observacoes } : {}),
+            ...(analise.latitude !== null ? { latitude: analise.latitude } : {}),
+            ...(analise.longitude !== null ? { longitude: analise.longitude } : {}),
+            respostasCampo: unicas,
+        });
+
+        return prisma.analiseFoliar.update({
+            where: { id },
+            data: {
+                cultura_detectada: diagnostico.cultura_detectada ?? null,
+                cultura_cientifica: diagnostico.cultura_cientifica ?? null,
+                cultura_confianca: diagnostico.cultura_confianca ?? null,
+                status_geral: diagnostico.status_geral,
+                confianca: diagnostico.confianca,
+                origem_diagnostico: diagnostico.origem,
+                referencia_provedor: diagnostico.referencia_provedor ?? null,
+                versao_modelo: diagnostico.versao_modelo ?? null,
+                is_planta: diagnostico.is_planta ?? null,
+                hipoteses: paraJson(diagnostico.hipoteses),
+                recomendacoes: paraJson(diagnostico.recomendacoes),
+                perguntas_confirmacao: paraJson(diagnostico.perguntas),
+                confirmacoes_campo: paraJson(unicas),
+                avisos: paraJson([
+                    "Diagnóstico revisado com as respostas de campo informadas pelo usuário.",
+                    ...diagnostico.avisos,
+                ]),
+                revisado_em: new Date(),
+            },
+            select: camposPublicos,
+        });
     };
 
     registrarFeedback = async (

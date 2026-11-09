@@ -16,6 +16,17 @@ export interface FeedbackAnaliseFoliarBody {
     diagnostico_confirmado?: string;
 }
 
+export type RespostaConfirmacaoCampo = "sim" | "nao" | "nao_sei";
+
+export interface RespostaCampoFoliar {
+    pergunta: string;
+    resposta: RespostaConfirmacaoCampo;
+}
+
+export interface RevisarAnaliseFoliarBody {
+    respostas: RespostaCampoFoliar[];
+}
+
 export interface CriarCasoFoliarBody {
     analise_id: number;
     titulo?: string;
@@ -67,6 +78,9 @@ export interface HipoteseFoliar {
     probabilidade: number;
     descricao?: string;
     sintomas: string[];
+    evidencias_presentes?: string[];
+    evidencias_ausentes?: string[];
+    exige_confirmacao?: boolean;
     imagens_semelhantes?: Array<{
         url: string;
         citacao?: string;

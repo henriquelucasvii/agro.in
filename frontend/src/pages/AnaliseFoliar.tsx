@@ -52,7 +52,12 @@ interface Hipotese {
     probabilidade: number;
     descricao?: string;
     sintomas: string[];
+    evidencias_presentes?: string[];
+    evidencias_ausentes?: string[];
+    exige_confirmacao?: boolean;
 }
+
+type RespostaCampo = "sim" | "nao" | "nao_sei";
 
 interface Recomendacao {
     etapa: "agora" | "confirmacao" | "laboratorio";
@@ -102,6 +107,8 @@ interface Analise {
     hipoteses: Hipotese[];
     recomendacoes: Recomendacao[];
     perguntas_confirmacao: string[];
+    confirmacoes_campo?: Array<{ pergunta: string; resposta: RespostaCampo }> | null;
+    revisado_em?: string | null;
     metricas_visuais: MetricasVisuais;
     avisos: string[];
     observacoes?: string | null;
@@ -267,7 +274,8 @@ export default function AnaliseFoliar() {
     const [processoAtual, setProcessoAtual] = useState(0);
     const [erro, setErro] = useState("");
     const [carregandoPagina, setCarregandoPagina] = useState(true);
-    const [perguntasMarcadas, setPerguntasMarcadas] = useState<Set<number>>(new Set());
+    const [respostasCampo, setRespostasCampo] = useState<Record<string, RespostaCampo>>({});
+    const [revisando, setRevisando] = useState(false);
     const [diagnosticoReal, setDiagnosticoReal] = useState("");
     const [salvandoFeedback, setSalvandoFeedback] = useState(false);
 
@@ -345,13 +353,30 @@ export default function AnaliseFoliar() {
         () => (resultado ? STATUS[resultado.status_geral] ?? STATUS.inconclusivo : STATUS.inconclusivo),
         [resultado],
     );
+    const tituloResultado = useMemo(() => {
+        if (!resultado) return "Análise concluída";
+        const especifica = resultado.hipoteses[0]?.nome;
+        const revisadaComCampo = Boolean(resultado.revisado_em);
+        return revisadaComCampo && (resultado.confianca ?? 0) >= 0.65 && especifica
+            ? especifica
+            : status.titulo;
+    }, [resultado, status.titulo]);
+
+    const carregarRespostasCampo = (analise?: Analise | null) => {
+        const perguntasAtuais = new Set(analise?.perguntas_confirmacao ?? []);
+        setRespostasCampo(Object.fromEntries(
+            (analise?.confirmacoes_campo ?? [])
+                .filter((item) => perguntasAtuais.has(item.pergunta))
+                .map((item) => [item.pergunta, item.resposta]),
+        ));
+    };
 
     const selecionarFoto = async (evento: ChangeEvent<HTMLInputElement>) => {
         const arquivo = evento.target.files?.[0];
         if (!arquivo) return;
         setErro("");
         setResultado(null);
-        setPerguntasMarcadas(new Set());
+        setRespostasCampo({});
         try {
             setImagem(await comprimirFoto(arquivo));
         } catch (error) {
@@ -408,7 +433,7 @@ export default function AnaliseFoliar() {
             });
             setResultado(data);
             setHistorico((atual) => [data, ...atual.filter((item) => item.id !== data.id)]);
-            setPerguntasMarcadas(new Set());
+            setRespostasCampo({});
         } catch (error) {
             setErro(tratarErro(error, "Não foi possível concluir a análise."));
         } finally {
@@ -418,7 +443,7 @@ export default function AnaliseFoliar() {
 
     const abrirHistorico = async (analise: Analise) => {
         setResultado(analise);
-        setPerguntasMarcadas(new Set());
+        carregarRespostasCampo(analise);
         setDiagnosticoReal(analise.diagnostico_confirmado ?? "");
         setErro("");
         try {
@@ -438,7 +463,7 @@ export default function AnaliseFoliar() {
         if (!contexto) setCultura("");
         setObservacoes("");
         setConsentimento(false);
-        setPerguntasMarcadas(new Set());
+        setRespostasCampo({});
         setDiagnosticoReal("");
         setErro("");
         inputRef.current?.click();
@@ -475,6 +500,33 @@ export default function AnaliseFoliar() {
             setErro(tratarErro(error, "Não foi possível registrar o retorno."));
         } finally {
             setSalvandoFeedback(false);
+        }
+    };
+
+    const revisarDiagnostico = async () => {
+        if (!resultado) return;
+        const respostas = resultado.perguntas_confirmacao
+            .map((pergunta) => ({ pergunta, resposta: respostasCampo[pergunta] }))
+            .filter((item): item is { pergunta: string; resposta: RespostaCampo } => Boolean(item.resposta));
+        if (!respostas.length) {
+            setErro("Responda ao menos uma pergunta antes de revisar o diagnóstico.");
+            return;
+        }
+
+        setRevisando(true);
+        setErro("");
+        try {
+            const { data } = await api.post<Analise>(
+                `/analise-foliar/${resultado.id}/revisar`,
+                { respostas },
+            );
+            setResultado(data);
+            carregarRespostasCampo(data);
+            setHistorico((atual) => atual.map((item) => (item.id === data.id ? data : item)));
+        } catch (error) {
+            setErro(tratarErro(error, "Não foi possível revisar o diagnóstico."));
+        } finally {
+            setRevisando(false);
         }
     };
 
@@ -703,16 +755,16 @@ export default function AnaliseFoliar() {
                                         <div className="flex items-start justify-between gap-4">
                                             <div>
                                                 <span className="inline-flex rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em]" style={{ color: status.cor, background: status.fundo }}>{status.titulo}</span>
-                                                <h2 className="mt-4 text-2xl font-bold tracking-[-0.035em] md:text-3xl">{resultado.hipoteses[0]?.nome ?? "Análise concluída"}</h2>
+                                                <h2 className="mt-4 text-2xl font-bold tracking-[-0.035em] md:text-3xl">{tituloResultado}</h2>
                                                 {(resultado.cultura_detectada || resultado.cultura_informada) && <p className="mt-2 text-sm text-[#657064]">{resultado.cultura_detectada ?? resultado.cultura_informada}{resultado.cultura_cientifica ? ` · ${resultado.cultura_cientifica}` : ""}</p>}
                                             </div>
                                             <div className="flex h-17 w-17 shrink-0 items-center justify-center rounded-full" style={{ background: `conic-gradient(${status.cor} ${percentual(resultado.confianca)}, #E7EBE4 0)` }}>
-                                                <div className="flex h-13 w-13 items-center justify-center rounded-full bg-white text-sm font-bold">{percentual(resultado.confianca)}</div>
+                                                <div className="flex h-13 w-13 flex-col items-center justify-center rounded-full bg-white text-sm font-bold"><span>{percentual(resultado.confianca)}</span><span className="text-[7px] font-semibold uppercase tracking-wide text-[#7B847B]">suporte</span></div>
                                             </div>
                                         </div>
                                         <div className="mt-5 flex items-start gap-2.5 rounded-md border border-[#E8DDAA] bg-[#FFF9E5] p-3 text-[11px] leading-5 text-[#705C16]">
                                             <ShieldCheck size={17} className="mt-0.5 shrink-0" />
-                                            <span><strong>Hipótese, não laudo.</strong> Confiança indica semelhança visual, não certeza da causa. Use os diferenciais e perguntas abaixo.</span>
+                                            <span><strong>Hipótese, não laudo.</strong> O percentual mede o suporte combinado das evidências, não a certeza da causa. O nome específico só vira destaque depois da revisão de campo.</span>
                                         </div>
                                     </div>
 
@@ -756,6 +808,18 @@ export default function AnaliseFoliar() {
                                                             </div>
                                                         </div>
                                                         {hipotese.descricao && indice === 0 && <p className="mt-3 text-xs leading-5 text-[#697369]">{hipotese.descricao}</p>}
+                                                        {indice === 0 && ((hipotese.evidencias_presentes?.length ?? 0) > 0 || (hipotese.evidencias_ausentes?.length ?? 0) > 0) && (
+                                                            <div className="mt-3 grid gap-2 md:grid-cols-2">
+                                                                <div className="rounded-md bg-[#EEF7EC] p-3">
+                                                                    <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-[#397044]">Evidências observadas</p>
+                                                                    <p className="mt-1 text-[10px] leading-4 text-[#536A56]">{hipotese.evidencias_presentes?.join(" · ") || "Nenhum sinal específico confirmado na foto."}</p>
+                                                                </div>
+                                                                <div className="rounded-md bg-[#F7F4EC] p-3">
+                                                                    <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-[#766523]">O que ainda falta</p>
+                                                                    <p className="mt-1 text-[10px] leading-4 text-[#716A50]">{hipotese.evidencias_ausentes?.join(" · ") || "Confirmação de campo e evolução dos sintomas."}</p>
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 ))}
                                             </div>
@@ -763,22 +827,48 @@ export default function AnaliseFoliar() {
 
                                         <div className="border-b border-[#E3E8DF] p-5 md:p-7">
                                             <h3 className="text-sm font-bold">Confirme no campo</h3>
-                                            <p className="mt-1 text-[11px] leading-5 text-[#7D887D]">Marque o que você realmente observou. Essas respostas ajudam a separar causas parecidas.</p>
-                                            <div className="mt-4 space-y-2">
-                                                {resultado.perguntas_confirmacao.map((pergunta, indice) => {
-                                                    const marcada = perguntasMarcadas.has(indice);
-                                                    return (
-                                                        <button key={pergunta} onClick={() => setPerguntasMarcadas((atual) => {
-                                                            const proximo = new Set(atual);
-                                                            if (proximo.has(indice)) proximo.delete(indice); else proximo.add(indice);
-                                                            return proximo;
-                                                        })} className="flex w-full items-start gap-3 rounded-md border p-3 text-left transition" style={{ borderColor: marcada ? "#7FAD79" : "#E1E6DD", background: marcada ? "#F0F8ED" : "#FFFFFF" }}>
-                                                            <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded" style={{ background: marcada ? "#2F743D" : "#EEF1EC", color: "white" }}>{marcada && <Check size={11} />}</span>
-                                                            <span className="text-xs leading-5 text-[#536055]">{pergunta}</span>
-                                                        </button>
-                                                    );
-                                                })}
+                                            <p className="mt-1 text-[11px] leading-5 text-[#7D887D]">Responda o que você realmente observou. Agora essas respostas recalculam e podem trocar a hipótese principal.</p>
+                                            <div className="mt-4 space-y-3">
+                                                {resultado.perguntas_confirmacao.map((pergunta) => (
+                                                    <div key={pergunta} className="rounded-md border border-[#E1E6DD] bg-white p-3">
+                                                        <p className="text-xs leading-5 text-[#536055]">{pergunta}</p>
+                                                        <div className="mt-2 grid grid-cols-3 gap-2">
+                                                            {([
+                                                                ["sim", "Sim"],
+                                                                ["nao", "Não"],
+                                                                ["nao_sei", "Não sei"],
+                                                            ] as const).map(([valor, rotulo]) => {
+                                                                const selecionada = respostasCampo[pergunta] === valor;
+                                                                return (
+                                                                    <button
+                                                                        key={valor}
+                                                                        type="button"
+                                                                        onClick={() => setRespostasCampo((atual) => ({ ...atual, [pergunta]: valor }))}
+                                                                        className="min-h-9 rounded-md border px-2 text-[10px] font-bold transition"
+                                                                        style={{
+                                                                            borderColor: selecionada ? "#4D8655" : "#DDE4D9",
+                                                                            background: selecionada ? "#EAF5E8" : "#FAFBF9",
+                                                                            color: selecionada ? "#245C31" : "#6E786E",
+                                                                        }}
+                                                                    >
+                                                                        {selecionada && <Check size={11} className="mr-1 inline" />}{rotulo}
+                                                                    </button>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                ))}
                                             </div>
+                                            <button
+                                                type="button"
+                                                onClick={revisarDiagnostico}
+                                                disabled={revisando || Object.keys(respostasCampo).length === 0}
+                                                className="mt-4 flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-[#1F5B3A] px-4 text-xs font-bold text-white transition hover:bg-[#17482F] disabled:cursor-not-allowed disabled:opacity-45"
+                                            >
+                                                {revisando ? <LoaderCircle size={15} className="animate-spin" /> : <RefreshCw size={15} />}
+                                                {revisando ? "Revisando evidências..." : "Revisar diagnóstico com respostas"}
+                                            </button>
+                                            {resultado.revisado_em && <p className="mt-2 text-center text-[10px] text-[#6E7A6E]">Resultado revisado com informações de campo.</p>}
                                         </div>
 
                                         <div className="p-5 md:p-7">

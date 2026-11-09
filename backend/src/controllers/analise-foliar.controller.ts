@@ -7,6 +7,7 @@ import {
 import type {
     CriarAnaliseFoliarBody,
     FeedbackAnaliseFoliarBody,
+    RevisarAnaliseFoliarBody,
 } from "../types/analise-foliar.types.js";
 
 const responderErro = (
@@ -92,6 +93,26 @@ class AnaliseFoliarController {
             );
         } catch (error) {
             return responderErro(request, reply, error, "Erro ao registrar feedback.");
+        }
+    };
+
+    revisar = async (
+        request: FastifyRequest<{
+            Params: { id: string };
+            Body: RevisarAnaliseFoliarBody;
+        }>,
+        reply: FastifyReply,
+    ) => {
+        try {
+            return reply.send(
+                await analiseFoliarService.revisarDiagnostico(
+                    request.user.id,
+                    Number(request.params.id),
+                    request.body,
+                ),
+            );
+        } catch (error) {
+            return responderErro(request, reply, error, "Erro ao revisar o diagnóstico foliar.");
         }
     };
 
