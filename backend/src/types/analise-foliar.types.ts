@@ -78,12 +78,15 @@ export interface RecomendacaoFoliar {
     etapa: "agora" | "confirmacao" | "laboratorio";
     titulo: string;
     descricao: string;
+    tipo?: "monitoramento" | "manejo_cultural" | "manejo_biologico" | "manejo_quimico" | "diagnostico";
+    principios_ativos?: string[];
+    somente_apos_confirmacao?: boolean;
 }
 
 export interface ResultadoDiagnostico {
     status_geral: string;
     confianca: number;
-    origem: "triagem_visual" | "plantnet" | "crop_health";
+    origem: "triagem_visual" | "plantnet" | "crop_health" | "claude_vision" | "groq_vision" | "analise_cruzada";
     referencia_provedor?: string;
     versao_modelo?: string;
     is_planta?: number;

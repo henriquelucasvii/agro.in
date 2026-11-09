@@ -4,12 +4,15 @@ import type {
     RecomendacaoFoliar,
     ResultadoDiagnostico,
 } from "../types/analise-foliar.types.js";
+import { iaVisualFoliarService } from "./ia-visual-foliar.service.js";
 
 interface EntradaDiagnostico {
     imagem: Buffer;
     qualidade: "boa" | "aceitavel" | "refazer";
     alertasQualidade: string[];
     metricas: MetricasVisuais;
+    cultura?: string;
+    observacoes?: string;
     latitude?: number;
     longitude?: number;
 }
@@ -244,6 +247,109 @@ const triagemVisual = (entrada: EntradaDiagnostico, avisosExtras: string[] = [])
             "A imagem não estima nutrientes do solo nem substitui análise química de solo e tecido foliar.",
             ...avisosExtras,
         ],
+    };
+};
+
+const nomeProvedor = (origem: ResultadoDiagnostico["origem"]) => {
+    if (origem === "plantnet") return "Pl@ntNet Diseases";
+    if (origem === "crop_health") return "crop.health";
+    if (origem === "claude_vision") return "Claude Vision";
+    if (origem === "groq_vision") return "Groq Vision";
+    return origem;
+};
+
+const chaveTexto = (valor: string) =>
+    valor
+        .normalize("NFD")
+        .replace(/\p{Diacritic}/gu, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+
+const unicos = <T>(itens: T[], chave: (item: T) => string, limite: number) => {
+    const vistos = new Set<string>();
+    return itens.filter((item) => {
+        const valor = chave(item);
+        if (!valor || vistos.has(valor)) return false;
+        vistos.add(valor);
+        return true;
+    }).slice(0, limite);
+};
+
+const combinarDiagnosticos = (
+    especializado: ResultadoDiagnostico,
+    ia: ResultadoDiagnostico & { concordancia?: string },
+): ResultadoDiagnostico => {
+    const primeiraEspecializada = especializado.hipoteses[0];
+    const primeiraIa = ia.hipoteses[0];
+    if (!primeiraEspecializada || !primeiraIa) return especializado;
+    const provedorIa = ia.referencia_provedor?.includes("Claude Vision")
+        ? "Claude Vision"
+        : "Groq Vision";
+
+    const categoriasConcordam = primeiraEspecializada.categoria === primeiraIa.categoria;
+    const confianca = categoriasConcordam
+        ? Math.min(0.92, especializado.confianca * 0.6 + ia.confianca * 0.4 + 0.04)
+        : Math.min(0.58, Math.max(especializado.confianca, ia.confianca) * 0.7);
+    const hipotesesOrdenadas = categoriasConcordam
+        ? [
+            {
+                ...primeiraIa,
+                probabilidade: confianca,
+                descricao:
+                    `${primeiraIa.descricao ?? "A segunda leitura visual encontrou sinais compatíveis."} ` +
+                    `A categoria também apareceu no ${nomeProvedor(especializado.origem)}.`,
+            },
+            ...ia.hipoteses.slice(1),
+            ...especializado.hipoteses,
+        ]
+        : [...ia.hipoteses, ...especializado.hipoteses]
+            .sort((a, b) => b.probabilidade - a.probabilidade);
+    const hipoteses = unicos(
+        hipotesesOrdenadas,
+        (item) => `${item.categoria}:${chaveTexto(item.nome)}`,
+        4,
+    );
+    const principal = hipoteses[0] ?? primeiraEspecializada;
+    const recomendacoes = categoriasConcordam && ia.recomendacoes.length
+        ? ia.recomendacoes
+        : recomendacoesPorCategoria(principal.categoria);
+    const perguntas = unicos(
+        [...ia.perguntas, ...especializado.perguntas],
+        chaveTexto,
+        6,
+    );
+    const mensagemConcordancia = categoriasConcordam
+        ? `Análise cruzada convergente: ${nomeProvedor(especializado.origem)} e ${provedorIa} apontaram a categoria ${principal.categoria.replaceAll("_", " ")}.`
+        : `Análise cruzada divergente: ${nomeProvedor(especializado.origem)} e ${provedorIa} apontaram categorias diferentes; a confiança foi reduzida e não há recomendação química específica.`;
+    const versaoModelo = [especializado.versao_modelo, ia.versao_modelo]
+        .filter(Boolean)
+        .join(" + ");
+
+    return {
+        status_geral: statusDaCategoria(principal.categoria),
+        confianca,
+        origem: "analise_cruzada",
+        referencia_provedor: `${nomeProvedor(especializado.origem)} + ${provedorIa}`,
+        ...(versaoModelo ? { versao_modelo: versaoModelo } : {}),
+        ...(especializado.is_planta !== undefined ? { is_planta: especializado.is_planta } : {}),
+        ...(especializado.cultura_detectada ? { cultura_detectada: especializado.cultura_detectada } : {}),
+        ...(especializado.cultura_cientifica ? { cultura_cientifica: especializado.cultura_cientifica } : {}),
+        ...(especializado.cultura_confianca !== undefined
+            ? { cultura_confianca: especializado.cultura_confianca }
+            : {}),
+        hipoteses,
+        recomendacoes,
+        perguntas,
+        avisos: unicos(
+            [
+                mensagemConcordancia,
+                ...ia.avisos,
+                ...especializado.avisos,
+            ],
+            chaveTexto,
+            9,
+        ),
     };
 };
 
@@ -581,29 +687,65 @@ class DiagnosticoFoliarService {
     analisar = async (entrada: EntradaDiagnostico): Promise<ResultadoDiagnostico> => {
         const plantNetApiKey = process.env.PLANTNET_API_KEY?.trim();
         const cropHealthApiKey = process.env.KINDWISE_CROP_HEALTH_API_KEY?.trim();
+        const gatewayToken = process.env.AI_GATEWAY_API_KEY?.trim()
+            || process.env.VERCEL_OIDC_TOKEN?.trim();
+        const anthropicApiKey = process.env.ANTHROPIC_API_KEY?.trim();
+        const groqApiKey = process.env.GROQ_API_KEY?.trim();
 
         if (entrada.qualidade === "refazer") {
             return triagemVisual(entrada);
         }
 
         const avisosFallback: string[] = [];
+        let resultadoEspecializado: ResultadoDiagnostico | undefined;
 
         if (plantNetApiKey) {
             try {
-                return await this.analisarComPlantNet(entrada, plantNetApiKey);
+                resultadoEspecializado = await this.analisarComPlantNet(entrada, plantNetApiKey);
             } catch (error) {
                 const mensagem = error instanceof Error ? error.message : "falha desconhecida";
                 avisosFallback.push(`O Pl@ntNet não concluiu esta tentativa (${mensagem}).`);
             }
         }
 
-        if (cropHealthApiKey) {
+        if (!resultadoEspecializado && cropHealthApiKey) {
             try {
-                return await this.analisarComCropHealth(entrada, cropHealthApiKey);
+                resultadoEspecializado = await this.analisarComCropHealth(entrada, cropHealthApiKey);
             } catch (error) {
                 const mensagem = error instanceof Error ? error.message : "falha desconhecida";
                 avisosFallback.push(`O crop.health não concluiu esta tentativa (${mensagem}).`);
             }
+        }
+
+        if (gatewayToken || anthropicApiKey || groqApiKey) {
+            try {
+                const resultadoIa = await iaVisualFoliarService.analisar(
+                    {
+                        imagem: entrada.imagem,
+                        metricas: entrada.metricas,
+                        ...(entrada.cultura ? { cultura: entrada.cultura } : {}),
+                        ...(entrada.observacoes ? { observacoes: entrada.observacoes } : {}),
+                        ...(resultadoEspecializado ? { resultadoEspecializado } : {}),
+                    },
+                );
+
+                return resultadoEspecializado
+                    ? combinarDiagnosticos(resultadoEspecializado, resultadoIa)
+                    : resultadoIa;
+            } catch (error) {
+                const mensagem = error instanceof Error ? error.message : "falha desconhecida";
+                avisosFallback.push(`A segunda opinião visual não concluiu esta tentativa (${mensagem}).`);
+            }
+        }
+
+        if (resultadoEspecializado) {
+            return {
+                ...resultadoEspecializado,
+                avisos: [
+                    ...resultadoEspecializado.avisos,
+                    ...avisosFallback,
+                ],
+            };
         }
 
         return triagemVisual(

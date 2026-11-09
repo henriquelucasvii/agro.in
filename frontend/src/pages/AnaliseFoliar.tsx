@@ -6,6 +6,7 @@ import {
     ChevronRight,
     CircleHelp,
     Crosshair,
+    ExternalLink,
     FlaskConical,
     Focus,
     ImagePlus,
@@ -57,6 +58,9 @@ interface Recomendacao {
     etapa: "agora" | "confirmacao" | "laboratorio";
     titulo: string;
     descricao: string;
+    tipo?: "monitoramento" | "manejo_cultural" | "manejo_biologico" | "manejo_quimico" | "diagnostico";
+    principios_ativos?: string[];
+    somente_apos_confirmacao?: boolean;
 }
 
 interface MetricasVisuais {
@@ -93,7 +97,7 @@ interface Analise {
     cultura_confianca?: number | null;
     status_geral: string;
     confianca?: number | null;
-    origem_diagnostico: "triagem_visual" | "plantnet" | "crop_health";
+    origem_diagnostico: "triagem_visual" | "plantnet" | "crop_health" | "claude_vision" | "groq_vision" | "analise_cruzada";
     qualidade_foto: "boa" | "aceitavel" | "refazer";
     hipoteses: Hipotese[];
     recomendacoes: Recomendacao[];
@@ -132,6 +136,7 @@ interface VistoriaContexto {
 
 interface Capacidades {
     diagnostico_especializado: boolean;
+    analise_cruzada?: boolean;
     provedor_especializado: string | null;
     limite_gratuito_diario?: number | null;
 }
@@ -166,6 +171,14 @@ const etapaMeta: Record<Recomendacao["etapa"], { rotulo: string; icone: typeof L
     agora: { rotulo: "Agora", icone: Crosshair },
     confirmacao: { rotulo: "Confirme no campo", icone: CircleHelp },
     laboratorio: { rotulo: "Decisão técnica", icone: FlaskConical },
+};
+
+const tipoRecomendacao: Record<NonNullable<Recomendacao["tipo"]>, string> = {
+    monitoramento: "Monitoramento",
+    manejo_cultural: "Manejo cultural",
+    manejo_biologico: "Manejo biológico",
+    manejo_quimico: "Opção química a confirmar",
+    diagnostico: "Confirmação",
 };
 
 const formatarData = (data: string) =>
@@ -509,17 +522,21 @@ export default function AnaliseFoliar() {
                             <div className="flex items-center gap-2 rounded-full border border-[#D7DED2] bg-white px-3 py-2 text-xs font-semibold text-[#36533C]">
                                 <span className={`h-2 w-2 rounded-full ${capacidades?.diagnostico_especializado ? "bg-[#30B85D]" : "bg-[#D79A28]"}`} />
                                 {capacidades?.diagnostico_especializado
-                                    ? `${capacidades.provedor_especializado ?? "Diagnóstico ampliado"} ativo`
+                                    ? capacidades.analise_cruzada
+                                        ? "Análise cruzada ativa"
+                                        : `${capacidades.provedor_especializado ?? "Diagnóstico ampliado"} ativo`
                                     : "Triagem visual ativa"}
                             </div>
-                            {capacidades?.provedor_especializado === "Pl@ntNet Diseases" && (
+                            {capacidades?.provedor_especializado?.includes("Pl@ntNet") && (
                                 <a
                                     href="https://my.plantnet.org/"
                                     target="_blank"
                                     rel="noreferrer"
                                     className="mt-1.5 inline-block text-[10px] font-semibold text-[#617263] underline decoration-[#AFC0B0] underline-offset-2"
                                 >
-                                    Identificação baseada na API Pl@ntNet
+                                    {capacidades.analise_cruzada
+                                        ? "Pl@ntNet + segunda opinião visual"
+                                        : "Identificação baseada na API Pl@ntNet"}
                                 </a>
                             )}
                         </div>
@@ -775,12 +792,35 @@ export default function AnaliseFoliar() {
                                                             <div>
                                                                 <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#50805A]">{etapaMeta[recomendacao.etapa].rotulo}</p>
                                                                 <p className="mt-1 text-xs font-bold text-[#28372B]">{recomendacao.titulo}</p>
+                                                                {recomendacao.tipo && (
+                                                                    <span className="mt-1.5 inline-flex rounded-full bg-[#EEF3EB] px-2 py-1 text-[9px] font-bold uppercase tracking-[0.08em] text-[#49624E]">
+                                                                        {tipoRecomendacao[recomendacao.tipo]}
+                                                                    </span>
+                                                                )}
                                                                 <p className="mt-1 text-[11px] leading-5 text-[#707B70]">{recomendacao.descricao}</p>
+                                                                {recomendacao.principios_ativos && recomendacao.principios_ativos.length > 0 && (
+                                                                    <div className="mt-2 flex flex-wrap gap-1.5">
+                                                                        {recomendacao.principios_ativos.map((principio) => (
+                                                                            <span key={principio} className="rounded border border-[#D8C78E] bg-[#FFF8DF] px-2 py-1 text-[9px] font-semibold text-[#735E17]">
+                                                                                {principio}
+                                                                            </span>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         </div>
                                                     );
                                                 })}
                                             </div>
+                                            <a
+                                                href="https://agrofit.agricultura.gov.br/agrofit_cons/principal_agrofit_cons"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="mt-5 flex items-start gap-2 rounded-md border border-[#E2D49D] bg-[#FFF9E7] p-3 text-[10px] font-semibold leading-4 text-[#6E5B1C]"
+                                            >
+                                                <ExternalLink size={14} className="mt-0.5 shrink-0" />
+                                                Confira cultura, alvo e registro vigente no Agrofit antes de qualquer produto fitossanitário.
+                                            </a>
                                         </div>
 
                                         <div className="border-t border-[#E3E8DF] bg-[#F8FAF6] p-5 md:p-7">

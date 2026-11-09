@@ -238,6 +238,8 @@ class AnaliseFoliarService {
             qualidade: imagem.qualidade,
             alertasQualidade: imagem.alertas,
             metricas: imagem.metricas,
+            ...(cultura ? { cultura } : {}),
+            ...(observacoes ? { observacoes } : {}),
             ...(entrada.latitude !== undefined ? { latitude: entrada.latitude } : {}),
             ...(entrada.longitude !== undefined ? { longitude: entrada.longitude } : {}),
         });
@@ -398,16 +400,31 @@ class AnaliseFoliarService {
     capacidades = () => {
         const plantNetAtivo = Boolean(process.env.PLANTNET_API_KEY?.trim());
         const cropHealthAtivo = Boolean(process.env.KINDWISE_CROP_HEALTH_API_KEY?.trim());
+        const claudeVisionAtivo = Boolean(
+            process.env.AI_GATEWAY_API_KEY?.trim()
+            || process.env.VERCEL_OIDC_TOKEN?.trim()
+            || process.env.ANTHROPIC_API_KEY?.trim(),
+        );
+        const groqVisionAtivo = Boolean(process.env.GROQ_API_KEY?.trim());
+        const provedorVisual = claudeVisionAtivo
+            ? "Claude Vision"
+            : groqVisionAtivo
+                ? "Groq Vision"
+                : null;
+        const provedorBase = plantNetAtivo
+            ? "Pl@ntNet Diseases"
+            : cropHealthAtivo
+                ? "crop.health"
+                : null;
 
         return {
             pre_analise_local: true,
-            diagnostico_especializado: plantNetAtivo || cropHealthAtivo,
-            provedor_especializado: plantNetAtivo
-                ? "Pl@ntNet Diseases"
-                : cropHealthAtivo
-                    ? "crop.health"
-                    : null,
-            limite_gratuito_diario: plantNetAtivo ? 500 : null,
+            diagnostico_especializado: Boolean(provedorBase || provedorVisual),
+            analise_cruzada: Boolean(provedorBase && provedorVisual),
+            provedor_especializado: provedorBase && provedorVisual
+                ? `${provedorBase} + ${provedorVisual}`
+                : provedorBase ?? provedorVisual,
+            limite_gratuito_diario: null,
             analise_solo_por_foto: false,
             acompanhamento_temporal: true,
             vistoria_area: true,
