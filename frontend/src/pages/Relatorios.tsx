@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     Plus,
     X,
@@ -13,6 +13,7 @@ import {
     DollarSign,
     Sprout,
     Boxes,
+    CheckCircle2,
 } from "lucide-react";
 
 import { api } from "../lib/api";
@@ -122,25 +123,34 @@ export default function Relatorios() {
     const [gerando, setGerando] = useState(false);
     const [erroGeracao, setErroGeracao] = useState("");
     const [detalhe, setDetalhe] = useState<RelatorioGerado | null>(null);
-
-    const carregarPropriedades = useCallback(async () => {
-        setCarregandoPropriedades(true);
-        try {
-            const { data } = await api.get<Propriedade[]>("/propriedades");
-            setPropriedades(data);
-            if (data.length > 0) {
-                setPropriedadeId((atual) => atual ?? data[0].id);
-            }
-        } catch {
-            setPropriedades([]);
-        } finally {
-            setCarregandoPropriedades(false);
-        }
-    }, []);
+    const [acaoExportacao, setAcaoExportacao] = useState<"pdf" | "xlsx" | "email" | null>(null);
+    const [mensagemAcao, setMensagemAcao] = useState("");
+    const [erroAcao, setErroAcao] = useState("");
 
     useEffect(() => {
-        carregarPropriedades();
-    }, [carregarPropriedades]);
+        let ativo = true;
+        const carregar = async () => {
+            setCarregandoPropriedades(true);
+            try {
+                const { data } = await api.get<Propriedade[]>("/propriedades");
+                if (!ativo) return;
+                const lista = Array.isArray(data) ? data : [];
+                setPropriedades(lista);
+                if (lista.length > 0) setPropriedadeId((atual) => atual ?? lista[0].id);
+            } catch {
+                if (ativo) setPropriedades([]);
+            } finally {
+                if (ativo) setCarregandoPropriedades(false);
+            }
+        };
+        const tarefa = window.setTimeout(() => void carregar(), 0);
+        return () => {
+            ativo = false;
+            window.clearTimeout(tarefa);
+        };
+        // A propriedade persistida é lida uma vez ao abrir a tela.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // ------------------------------------------------------------
     // Ações
@@ -178,40 +188,65 @@ export default function Relatorios() {
         setHistorico((h) => h.map((r) => (r.id === id ? { ...r, compartilhado: !r.compartilhado } : r)));
     };
 
-    const exportarPDF = () => {
-        window.print();
+    const categoriaAtual: CategoriaRelatorio = abaCategoria === "todas" ? "geral" : abaCategoria;
+
+    const baixarArquivo = (conteudo: Blob, nome: string) => {
+        const url = URL.createObjectURL(conteudo);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = nome;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     };
 
-    const exportarPlanilha = () => {
-        const linhas = [
-            ["Relatório", "Categoria", "Status", "Gerado em"],
-            ...historicoFiltrado.map((r) => [
-                r.titulo,
-                CATEGORIA_LABEL[r.categoria],
-                r.status,
-                r.geradoEm.toLocaleDateString("pt-BR"),
-            ]),
-        ];
-        const csv = linhas.map((l) => l.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(";")).join("\n");
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `relatorios-agroin-${new Date().toISOString().split("T")[0]}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
+    const exportarArquivo = async (formato: "pdf" | "xlsx") => {
+        if (!propriedadeId) {
+            setErroAcao("Selecione uma propriedade para exportar o relatório.");
+            return;
+        }
+        setAcaoExportacao(formato);
+        setErroAcao("");
+        setMensagemAcao("");
+        try {
+            const resposta = await api.post(
+                `/relatorios/${propriedadeId}/exportar`,
+                { formato, categoria: categoriaAtual },
+                { responseType: "blob" },
+            );
+            const data = new Date().toISOString().slice(0, 10);
+            baixarArquivo(
+                resposta.data,
+                `relatorio-agroin-${categoriaAtual}-${data}.${formato}`,
+            );
+            setMensagemAcao(formato === "pdf" ? "PDF gerado e baixado." : "Planilha formatada e baixada.");
+        } catch {
+            setErroAcao("Não foi possível gerar o arquivo. Tente novamente.");
+        } finally {
+            setAcaoExportacao(null);
+        }
     };
 
-    const enviarPorEmail = () => {
-        const assunto = encodeURIComponent("Relatórios AGRO.IN");
-        const corpo = encodeURIComponent(
-            "Segue o resumo dos últimos relatórios:\n\n" +
-                historicoFiltrado
-                    .slice(0, 5)
-                    .map((r) => `- ${r.titulo} (${CATEGORIA_LABEL[r.categoria]})`)
-                    .join("\n")
-        );
-        window.location.href = `mailto:?subject=${assunto}&body=${corpo}`;
+    const enviarPorEmail = async () => {
+        if (!propriedadeId) {
+            setErroAcao("Selecione uma propriedade para enviar o relatório.");
+            return;
+        }
+        setAcaoExportacao("email");
+        setErroAcao("");
+        setMensagemAcao("");
+        try {
+            const { data } = await api.post<{ message: string; destinatario: string }>(
+                `/relatorios/${propriedadeId}/enviar-email`,
+                { categoria: categoriaAtual },
+            );
+            setMensagemAcao(`${data.message} Destino: ${data.destinatario}`);
+        } catch {
+            setErroAcao("O e-mail não foi enviado. Confira a configuração do remetente e tente novamente.");
+        } finally {
+            setAcaoExportacao(null);
+        }
     };
 
     // ------------------------------------------------------------
@@ -405,19 +440,51 @@ export default function Relatorios() {
                                 Exportar
                             </h3>
                             <div className="flex flex-col">
-                                <button onClick={exportarPDF} className="flex items-center gap-3 py-3 text-left transition hover:opacity-70" style={{ borderBottom: "1px solid #EFF3ED" }}>
-                                    <FileText size={17} style={{ color: "#4E829C" }} />
-                                    <span className="text-sm font-medium" style={{ color: "#25352B" }}>Exportar em PDF</span>
+                                <button
+                                    onClick={() => exportarArquivo("pdf")}
+                                    disabled={acaoExportacao !== null || !propriedadeId}
+                                    className="flex items-center gap-3 py-3 text-left transition hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-45"
+                                    style={{ borderBottom: "1px solid #EFF3ED" }}
+                                >
+                                    {acaoExportacao === "pdf" ? <RefreshCw size={17} className="animate-spin" style={{ color: "#4E829C" }} /> : <FileText size={17} style={{ color: "#4E829C" }} />}
+                                    <span className="text-sm font-medium" style={{ color: "#25352B" }}>
+                                        {acaoExportacao === "pdf" ? "Preparando PDF..." : "Exportar PDF profissional"}
+                                    </span>
                                 </button>
-                                <button onClick={exportarPlanilha} className="flex items-center gap-3 py-3 text-left transition hover:opacity-70" style={{ borderBottom: "1px solid #EFF3ED" }}>
-                                    <FileSpreadsheet size={17} style={{ color: "#4E829C" }} />
-                                    <span className="text-sm font-medium" style={{ color: "#25352B" }}>Exportar em planilha</span>
+                                <button
+                                    onClick={() => exportarArquivo("xlsx")}
+                                    disabled={acaoExportacao !== null || !propriedadeId}
+                                    className="flex items-center gap-3 py-3 text-left transition hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-45"
+                                    style={{ borderBottom: "1px solid #EFF3ED" }}
+                                >
+                                    {acaoExportacao === "xlsx" ? <RefreshCw size={17} className="animate-spin" style={{ color: "#4E829C" }} /> : <FileSpreadsheet size={17} style={{ color: "#4E829C" }} />}
+                                    <span className="text-sm font-medium" style={{ color: "#25352B" }}>
+                                        {acaoExportacao === "xlsx" ? "Montando planilha..." : "Exportar planilha com gráfico"}
+                                    </span>
                                 </button>
-                                <button onClick={enviarPorEmail} className="flex items-center gap-3 py-3 text-left transition hover:opacity-70">
-                                    <Mail size={17} style={{ color: "#4E829C" }} />
-                                    <span className="text-sm font-medium" style={{ color: "#25352B" }}>Enviar por e-mail</span>
+                                <button
+                                    onClick={enviarPorEmail}
+                                    disabled={acaoExportacao !== null || !propriedadeId}
+                                    className="flex items-center gap-3 py-3 text-left transition hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-45"
+                                >
+                                    {acaoExportacao === "email" ? <RefreshCw size={17} className="animate-spin" style={{ color: "#4E829C" }} /> : <Mail size={17} style={{ color: "#4E829C" }} />}
+                                    <span className="text-sm font-medium" style={{ color: "#25352B" }}>
+                                        {acaoExportacao === "email" ? "Enviando anexos..." : "Enviar PDF e planilha por e-mail"}
+                                    </span>
                                 </button>
                             </div>
+                            {mensagemAcao && (
+                                <div className="mt-4 flex items-start gap-2 rounded-md px-3 py-2.5 text-xs leading-5" style={{ background: "#E8F3EA", color: "#1F5B3A" }}>
+                                    <CheckCircle2 size={15} className="mt-0.5 shrink-0" />
+                                    <span>{mensagemAcao}</span>
+                                </div>
+                            )}
+                            {erroAcao && (
+                                <div className="mt-4 flex items-start gap-2 rounded-md px-3 py-2.5 text-xs leading-5" style={{ background: "#F8ECE8", color: "#A8553E" }}>
+                                    <AlertCircle size={15} className="mt-0.5 shrink-0" />
+                                    <span>{erroAcao}</span>
+                                </div>
+                            )}
                         </div>
                     </div>
 

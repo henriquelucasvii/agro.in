@@ -1,5 +1,13 @@
 import { Resend } from "resend";
 
+type ResendEmailPayload = Parameters<Resend["emails"]["send"]>[0];
+type ResendEmailResult = Awaited<ReturnType<Resend["emails"]["send"]>>;
+type ResendClient = {
+    emails: {
+        send(payload: ResendEmailPayload): Promise<ResendEmailResult>;
+    };
+};
+
 const escapeHtml = (value: string) =>
     value.replace(
         /[&<>"']/g,
@@ -13,7 +21,11 @@ const escapeHtml = (value: string) =>
             })[character] as string,
     );
 
-class EmailService {
+export class EmailService {
+    constructor(
+        private readonly clientFactory: (apiKey: string) => ResendClient = (apiKey) => new Resend(apiKey),
+    ) {}
+
     private getClient() {
         const apiKey = process.env.RESEND_API_KEY;
 
@@ -21,7 +33,7 @@ class EmailService {
             throw new Error("RESEND_API_KEY não configurada.");
         }
 
-        return new Resend(apiKey);
+        return this.clientFactory(apiKey);
     }
 
     async sendPasswordReset(to: string, nome: string, token: string) {
@@ -75,6 +87,75 @@ class EmailService {
         if (error) {
             throw new Error(`Falha ao enviar e-mail de redefinição: ${error.message}`);
         }
+    }
+
+    async sendReport(
+        to: string,
+        nome: string,
+        propriedade: string,
+        pdf: Buffer,
+        planilha: Buffer,
+    ) {
+        const from = process.env.RESEND_FROM_EMAIL ?? "Agro.in <onboarding@resend.dev>";
+        const safeName = escapeHtml(nome.normalize("NFC"));
+        const safeProperty = escapeHtml(propriedade.normalize("NFC"));
+        const referencia = new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+
+        const { data, error } = await this.getClient().emails.send({
+            from,
+            to,
+            subject: `Relatório Agro.in - ${propriedade}`,
+            html: `<!doctype html>
+                <html lang="pt-BR">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Relatório Agro.in</title>
+                    </head>
+                    <body style="margin:0;background:#f5f7f2;font-family:Arial,sans-serif;color:#25352b">
+                        <div style="padding:36px 16px">
+                            <div style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid #dce4da;border-radius:14px;overflow:hidden">
+                                <div style="background:#174f2f;border-bottom:4px solid #d5ad2b;padding:26px 30px">
+                                    <div style="color:#ffffff;font-size:20px;font-weight:700">AGRO.IN</div>
+                                    <div style="margin-top:5px;color:#b9d7bf;font-size:11px;letter-spacing:.12em">GESTÃO RURAL</div>
+                                </div>
+                                <div style="padding:30px">
+                                    <h1 style="margin:0 0 14px;font-size:24px;line-height:1.25">Seu relatório está pronto</h1>
+                                    <p style="margin:0 0 14px;line-height:1.6">Olá, ${safeName}.</p>
+                                    <p style="margin:0 0 22px;line-height:1.6;color:#526158">
+                                        Enviamos o relatório consolidado de <strong>${safeProperty}</strong>, referente a ${escapeHtml(referencia)}.
+                                        Os anexos incluem o PDF para leitura e a planilha para análise dos dados.
+                                    </p>
+                                    <div style="background:#f1f5ef;border-left:4px solid #4e9462;padding:14px 16px;border-radius:6px;color:#526158;font-size:14px;line-height:1.5">
+                                        PDF: visão executiva com indicadores e gráficos.<br>
+                                        Planilha: resumo, detalhes, filtros e gráfico de evolução.
+                                    </div>
+                                    <p style="margin:24px 0 0;font-size:12px;color:#78847d">Gerado automaticamente pelo Agro.in.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </body>
+                </html>`,
+            text: `Olá, ${nome}. O relatório da propriedade ${propriedade} está anexado em PDF e planilha.`,
+            attachments: [
+                {
+                    filename: "relatorio-agroin.pdf",
+                    content: pdf,
+                    contentType: "application/pdf",
+                },
+                {
+                    filename: "relatorio-agroin.xlsx",
+                    content: planilha,
+                    contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                },
+            ],
+        });
+
+        if (error) {
+            throw new Error(`Falha ao enviar relatório por e-mail: ${error.message}`);
+        }
+
+        return data?.id ?? null;
     }
 }
 

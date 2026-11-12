@@ -7,18 +7,23 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "postinstall": "prisma generate && node scripts/migrate-if-configured.mjs",
-    "test:foliar": "tsx --test src/service/calibracao-diagnostico-foliar.test.ts src/service/ia-visual-foliar.service.test.ts"
+    "test:foliar": "tsx --test src/service/calibracao-diagnostico-foliar.test.ts src/service/ia-visual-foliar.service.test.ts",
+    "test:relatorios": "tsx --test src/service/relatorios-export.service.test.ts src/service/email.service.test.ts",
+    "sample:relatorios": "tsx scripts/generate-report-samples.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@fastify/cors": "^11.2.0",
+    "@fontsource/noto-sans": "^5.3.0",
     "@prisma/client": "^6.19.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.4.2",
+    "exceljs": "^4.4.0",
     "fastify": "^5.8.5",
     "jsonwebtoken": "^9.0.3",
+    "pdfkit": "^0.20.2",
     "prisma": "^6.19.0",
     "resend": "^6.18.0",
     "sharp": "^0.35.3"
@@ -27,6 +32,7 @@
     "@types/bcrypt": "^6.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.0.1",
+    "@types/pdfkit": "^0.17.7",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
     "tsx": "^4.22.4",
