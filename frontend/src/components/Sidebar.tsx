@@ -6,6 +6,7 @@ import {
     Map,
     Menu,
     Package,
+    ReceiptText,
     Search,
     Sprout,
     Target,
@@ -34,6 +35,7 @@ const NAV: ItemNavegacao[] = [
     { key: "meta", label: "Metas", icone: Target },
     { key: "analise-foliar", label: "Análise foliar", icone: Leaf },
     { key: "relatorios", label: "Relatórios", icone: FileChartColumn },
+    { key: "notas-fiscais", label: "Notas fiscais", icone: ReceiptText },
     { key: "perfil", label: "Perfil", icone: UserRound },
 ];
 
