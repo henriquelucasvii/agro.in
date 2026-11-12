@@ -1,5 +1,6 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
+import rateLimit from "@fastify/rate-limit";
 import "dotenv/config";
 
 import { prisma } from "./lib/prisma.js";
@@ -41,6 +42,15 @@ const start = async () => {
     await app.register(cors, {
         origin: true,
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    });
+
+    await app.register(rateLimit, {
+        global: false,
+        errorResponseBuilder: () => ({
+            statusCode: 429,
+            error: "Limite da demonstração atingido. Aguarde alguns minutos e tente novamente.",
+            message: "Limite da demonstração atingido. Aguarde alguns minutos e tente novamente.",
+        }),
     });
 
     // Rotas de autenticação

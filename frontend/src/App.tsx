@@ -17,6 +17,7 @@ import QuarentenasFoliares from "./pages/QuarentenasFoliares";
 import VistoriasFoliares from "./pages/VistoriasFoliares";
 import Assistente from "./pages/Assistente";
 import NotasFiscais from "./pages/NotasFiscais";
+import AnaliseFoliarPublica from "./pages/AnaliseFoliarPublica";
 
 function ScrollToTop() {
     const { pathname } = useLocation();
@@ -47,6 +48,8 @@ function App() {
                 <Route path="/notas-fiscais" element={<NotasFiscais />} />
                 <Route path="/perfil" element={<Perfil />} />
                 <Route path="/analise-foliar" element={<AnaliseFoliar />} />
+                <Route path="/stand" element={<AnaliseFoliarPublica />} />
+                <Route path="/stand/analise-foliar" element={<AnaliseFoliarPublica />} />
                 <Route path="/analise-foliar/quarentenas" element={<QuarentenasFoliares />} />
                 <Route path="/analise-foliar/vistorias" element={<VistoriasFoliares />} />
                 <Route path="/assistente" element={<Assistente />} />

@@ -15,6 +15,20 @@ import type {
 } from "../types/analise-foliar.types.js";
 
 export const analiseFoliarRoutes = async (app: FastifyInstance) => {
+    app.post<{ Body: CriarAnaliseFoliarBody }>(
+        "/publica",
+        {
+            config: {
+                rateLimit: {
+                    max: 4,
+                    timeWindow: "30 minutes",
+                    keyGenerator: (request) =>
+                        String(request.headers["x-demo-session"] ?? request.ip).slice(0, 128),
+                },
+            },
+        },
+        analiseFoliarController.criarPublica,
+    );
     app.get("/capacidades", { preHandler: [authMiddleware] }, analiseFoliarController.capacidades);
     app.get("/", { preHandler: [authMiddleware] }, analiseFoliarController.listar);
     app.post<{ Body: CriarAnaliseFoliarBody }>(

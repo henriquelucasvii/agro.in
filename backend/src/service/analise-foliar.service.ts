@@ -119,6 +119,56 @@ class AnaliseFoliarService {
         }
     };
 
+    criarPublica = async (entrada: CriarAnaliseFoliarBody) => {
+        if (!entrada?.consentimento) {
+            throw new AnaliseFoliarError(
+                "Confirme o processamento temporário da foto para continuar.",
+                400,
+            );
+        }
+        if (!entrada.imagem) {
+            throw new AnaliseFoliarError("Tire ou selecione uma foto da folha.", 400);
+        }
+
+        const cultura = entrada.cultura?.trim().slice(0, 100) || undefined;
+        const observacoes = entrada.observacoes?.trim().slice(0, 600) || undefined;
+        const imagem = await imagemFoliarService.processar(entrada.imagem);
+        const diagnostico = await diagnosticoFoliarService.analisar({
+            imagem: imagem.dadosParaAnalise,
+            qualidade: imagem.qualidade,
+            alertasQualidade: imagem.alertas,
+            metricas: imagem.metricas,
+            ...(cultura ? { cultura } : {}),
+            ...(observacoes ? { observacoes } : {}),
+        });
+
+        return {
+            ...(cultura ? { cultura_informada: cultura } : {}),
+            ...(diagnostico.cultura_detectada
+                ? { cultura_detectada: diagnostico.cultura_detectada }
+                : {}),
+            ...(diagnostico.cultura_cientifica
+                ? { cultura_cientifica: diagnostico.cultura_cientifica }
+                : {}),
+            ...(diagnostico.cultura_confianca !== undefined
+                ? { cultura_confianca: diagnostico.cultura_confianca }
+                : {}),
+            status_geral: diagnostico.status_geral,
+            confianca: diagnostico.confianca,
+            origem_diagnostico: diagnostico.origem,
+            qualidade_foto: imagem.qualidade,
+            hipoteses: diagnostico.hipoteses,
+            recomendacoes: diagnostico.recomendacoes,
+            perguntas_confirmacao: diagnostico.perguntas,
+            metricas_visuais: imagem.metricas,
+            avisos: [
+                ...diagnostico.avisos,
+                "Demonstração pública: a foto não foi salva no histórico do Agro.in.",
+            ],
+            criado_em: new Date().toISOString(),
+        };
+    };
+
     criar = async (usuarioId: number, entrada: CriarAnaliseFoliarBody) => {
         if (!entrada?.consentimento) {
             throw new AnaliseFoliarError(

@@ -25,6 +25,21 @@ const responderErro = (
 };
 
 class AnaliseFoliarController {
+    criarPublica = async (
+        request: FastifyRequest<{ Body: CriarAnaliseFoliarBody }>,
+        reply: FastifyReply,
+    ) => {
+        try {
+            const analise = await analiseFoliarService.criarPublica(request.body);
+            return reply
+                .header("Cache-Control", "no-store")
+                .status(200)
+                .send(analise);
+        } catch (error) {
+            return responderErro(request, reply, error, "Erro ao processar demonstração foliar.");
+        }
+    };
+
     criar = async (
         request: FastifyRequest<{ Body: CriarAnaliseFoliarBody }>,
         reply: FastifyReply,
